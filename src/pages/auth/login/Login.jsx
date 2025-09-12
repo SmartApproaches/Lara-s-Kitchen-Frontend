@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 
 import WomanEatingImage from "../../../assets/images/woman-eating.svg";
+import LoginBgImage from "../../../assets/images/login-bg.svg";
 import { Button } from "../../../components";
 
 const loginSchema = yup.object().shape({
@@ -52,25 +53,24 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // login logic
   };
 
   return (
     <div className="relative h-full min-h-screen overflow-hidden">
       <img
-        src="/dummy-path/background.png"
+        src={LoginBgImage}
         alt="Background"
         className="fixed inset-0 w-full h-full object-cover"
       />
-      <div className="fixed inset-0 bg-primary" />
 
       <img
         src={WomanEatingImage}
         alt="Character"
-        className="hidden lg:block absolute -bottom-10 -left-5 animate-slide-in-left w-[54rem] h-[54rem] max-w-4xl"
+        className="hidden lg:block absolute -bottom-20 -left-5 animate-slide-in-left w-[54rem] h-[54rem] max-w-4xl"
       />
 
-      <div className="relative z-10 flex justify-end m-5 my-10 lg:m-10 min-h-[90vh]">
+      <div className="relative z-10 flex justify-end m-5 my-10 lg:m-10 lg:my-5 min-h-[95vh]">
         <div className="w-full max-w-3xl bg-white rounded-[12px] lg:rounded-[68px] shadow-2xl p-8 md:p-12 lg:p-12 overflow-y-auto">
           <div className="flex justify-center mb-6">
             <img
