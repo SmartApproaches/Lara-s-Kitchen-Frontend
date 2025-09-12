@@ -28,7 +28,7 @@ const DashboardLayout = ({
     sidebarItems.length > 0 ? sidebarItems : defaultSidebarItems;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
@@ -40,12 +40,13 @@ const DashboardLayout = ({
         className={`
         fixed md:static inset-y-0 left-0 z-50
         w-68 bg-white shadow-lg transform transition-transform duration-300 ease-in-out
+        flex flex-col
         ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }
       `}
       >
-        <div className="p-6">
+        <div className="p-6 flex-shrink-0">
           <div className="flex items-center justify-center">
             <img src={logo} alt="Abula Spot & Bar" className="h-28" />
             <button
@@ -61,7 +62,7 @@ const DashboardLayout = ({
           </div>
         </div>
 
-        <nav className="mt-6 px-3">
+        <nav className="flex-1 mt-6 px-3 overflow-y-auto">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -85,8 +86,8 @@ const DashboardLayout = ({
         </nav>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
+        <header className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between gap-x-4 h-20">
               <div className="flex items-center flex-1">
@@ -141,7 +142,7 @@ const DashboardLayout = ({
           </div>
         </header>
 
-        <main className="flex-1 bg-accent overflow-auto">
+        <main className="flex-1 bg-accent overflow-y-auto">
           <div className="p-4 mt-0 md:mt-5 animate-slide-in-bottom sm:p-6 lg:p-8">
             {children || (
               <div className="bg-white rounded-lg shadow-sm p-6 min-h-96">
