@@ -1,0 +1,1 @@
+// rtk query slice for super admin dashboard

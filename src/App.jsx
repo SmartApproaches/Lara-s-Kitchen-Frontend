@@ -1,0 +1,94 @@
+import React, { Suspense, lazy } from "react";
+import { Routes, Route } from "react-router-dom";
+
+import "./App.css";
+import "./animations/animations.css";
+import PageLoader from "./components/ui/loader/PageLoader";
+import Login from "./pages/auth/login/Login";
+
+const ProtectedRoutes = lazy(() =>
+  import("./layout/protected/ProtectedRouteLayout")
+);
+
+// Super Admin Dashboard
+const AdminDashboardLayout = lazy(() =>
+  import("./layout/admin/AdminDashboardLayout")
+);
+const AdminDashboard = lazy(() =>
+  import("./pages/admin/_pages/dashboard/Dashboard")
+);
+const AdminOrders = lazy(() => import("./pages/admin/_pages/orders/Orders"));
+const AdminCustomers = lazy(() =>
+  import("./pages/admin/_pages/customers/Customers")
+);
+const AdminPermission = lazy(() =>
+  import("./pages/admin/_pages/permission/Permission")
+);
+const AdminSpecialOffer = lazy(() =>
+  import("./pages/admin/_pages/special-offer/SpecialOffer")
+);
+const AdminCatalogue = lazy(() =>
+  import("./pages/admin/_pages/catalogue/Catalogue")
+);
+
+// Cashier Dashboard
+const CashierDashboardLayout = lazy(() =>
+  import("./layout/cashier/CashierDashboardLayout")
+);
+const CashierDashboard = lazy(() =>
+  import("./pages/cashier/_pages/dashboard/Dashboard")
+);
+const CashierOrders = lazy(() =>
+  import("./pages/cashier/_pages/orders/Orders")
+);
+const CashierMenuList = lazy(() =>
+  import("./pages/cashier/_pages/menu-list/MenuList")
+);
+const CashierTransaction = lazy(() =>
+  import("./pages/cashier/_pages/transaction/Transaction")
+);
+
+const App = () => {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        {/* Sign-Up Routes */}
+
+        {/* Admin Routes */}
+        <Route element={<ProtectedRoutes />}>
+          <Route element={<AdminDashboardLayout />}>
+            <Route index path="admin/dashboard" element={<AdminDashboard />} />
+            <Route path="admin/orders" element={<AdminOrders />} />
+            <Route path="admin/customers" element={<AdminCustomers />} />
+            <Route path="admin/permission" element={<AdminPermission />} />
+            <Route path="admin/special-offer" element={<AdminSpecialOffer />} />
+            <Route path="admin/catalogue" element={<AdminCatalogue />} />
+          </Route>
+        </Route>
+
+        {/* Cashier Routes */}
+        <Route element={<ProtectedRoutes />}>
+          <Route element={<CashierDashboardLayout />}>
+            <Route
+              index
+              path="cashier/dashboard"
+              element={<CashierDashboard />}
+            />
+            <Route path="cashier/orders" element={<CashierOrders />} />
+            <Route path="cashier/menu-list" element={<CashierMenuList />} />
+            <Route
+              path="cashier/transaction"
+              element={<CashierTransaction />}
+            />
+          </Route>
+        </Route>
+
+        {/* Kitchen Routes */}
+        {/* Driver Routes */}
+      </Routes>
+    </Suspense>
+  );
+};
+
+export default App;
