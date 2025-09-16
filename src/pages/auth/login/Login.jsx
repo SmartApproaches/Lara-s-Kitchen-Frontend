@@ -67,11 +67,11 @@ const LoginForm = () => {
       <img
         src={WomanEatingImage}
         alt="Character"
-        className="hidden lg:block absolute -bottom-20 -left-5 animate-slide-in-left w-[54rem] h-[54rem] max-w-4xl"
+        className="hidden lg:block absolute -bottom-20 -left-5 animate-slide-in-left w-[50rem] h-[50rem] max-w-4xl"
       />
 
-      <div className="relative z-10 flex justify-end m-5 my-10 lg:m-10 lg:my-5 min-h-[95vh]">
-        <div className="w-full max-w-3xl bg-white rounded-[12px] lg:rounded-[68px] shadow-2xl p-8 md:p-12 lg:p-12 overflow-y-auto">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 lg:justify-end lg:px-10">
+        <div className="w-full max-w-3xl bg-white rounded-[12px] lg:rounded-[68px] shadow-2xl p-8 md:p-12 lg:p-12 overflow-y-auto min-h-[50vh] lg:min-h-[90vh]">
           <div className="flex justify-center mb-6">
             <img
               ref={logoRef}
@@ -81,7 +81,9 @@ const LoginForm = () => {
             />
           </div>
 
-          <h2 className="text-4xl font-bold text-primary mb-6">Welcome Back</h2>
+          <h2 className="md:text-2xl text-xl lg:text-4xl font-bold text-primary mb-6">
+            Welcome Back
+          </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
@@ -95,6 +97,7 @@ const LoginForm = () => {
                 {...register("username")}
                 type="text"
                 id="username"
+                placeholder="Email address"
                 className={`w-full px-4 py-3 font-medium rounded-xl border-2 bg-[#F7F7F7] transition-colors focus:outline-none ${
                   errors.username
                     ? "border-red-300 focus:border-red-500"
@@ -119,6 +122,7 @@ const LoginForm = () => {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  placeholder="Enter your password"
                   className={`w-full px-4 py-3 pr-12 bg-[#F7F7F7] rounded-xl border-2 transition-colors focus:outline-none ${
                     errors.password
                       ? "border-red-300 focus:border-red-500"

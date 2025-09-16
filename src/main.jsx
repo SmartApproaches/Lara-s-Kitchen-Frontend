@@ -27,7 +27,7 @@ createRoot(document.getElementById("root")).render(
                 colorInfo: "#15008b",
                 colorTextBase: "#0e1430",
                 colorTextSecondary: "#545457",
-                fontFamily: "Euclid Circular B, sans-serif",
+                fontFamily: "Jura, sans-serif",
               },
               components: {
                 Button: {

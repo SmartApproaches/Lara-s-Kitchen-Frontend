@@ -13,10 +13,10 @@ export default function ErrorPage({ error, resetErrorBoundary }) {
       <Header />
       <main className="wrapper grow min-h-[40vh] mt-24 place-content-center gap-6 flex flex-col items-center">
         <div className="text-center">
-          <h1 className="text-2xl sm:text-4xl text-primary mb-2">
+          <h1 className="text-2xl sm:text-4xl font-medium text-primary mb-2">
             Oops! An error occured...
           </h1>
-          <p className="sm:text-2xl text-textHead">{error.message}</p>
+          <p className="sm:text-3xl font-semibold text-secondary text-lg">{error.message}</p>
         </div>
         <Button
           onClick={() => resetErrorBoundary()}
