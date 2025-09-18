@@ -4,25 +4,25 @@ import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
 
-const KitchenDashboardLayout = () => {
-  const kitchenSidebarItems = [
+const RiderDashboardLayout = () => {
+  const riderSidebarItems = [
     {
       icon: DashboardSquare02Icon,
       label: "Dashboard",
-      path: "/kitchen/dashboard",
+      path: "/rider/dashboard",
     },
   ];
 
   return (
     <DashboardLayout
       userImage=""
-      userRole="Kitchen"
+      userRole="Rider"
       userEmail="john@example.com"
-      sidebarItems={kitchenSidebarItems}
+      sidebarItems={riderSidebarItems}
     >
       <Outlet />
     </DashboardLayout>
   );
 };
 
-export default KitchenDashboardLayout;
+export default RiderDashboardLayout;

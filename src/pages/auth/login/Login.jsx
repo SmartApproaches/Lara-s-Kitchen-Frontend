@@ -8,6 +8,7 @@ import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import WomanEatingImage from "../../../assets/images/woman-eating.svg";
 import LoginBgImage from "../../../assets/images/login-bg.svg";
 import { Button } from "../../../components";
+import { Link } from "react-router-dom";
 
 const loginSchema = yup.object().shape({
   username: yup
@@ -61,36 +62,33 @@ const LoginForm = () => {
       <img
         src={LoginBgImage}
         alt="Background"
-        className="fixed inset-0 w-full h-full object-cover"
+        className="fixed inset-0 h-full w-full object-cover"
       />
 
       <img
         src={WomanEatingImage}
         alt="Character"
-        className="hidden lg:block absolute -bottom-20 -left-5 animate-slide-in-left w-[50rem] h-[50rem] max-w-4xl"
+        className="animate-slide-in-left absolute -bottom-20 -left-5 hidden h-[50rem] w-[50rem] max-w-4xl lg:block"
       />
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 lg:justify-end lg:px-10">
-        <div className="w-full max-w-3xl bg-white rounded-[12px] lg:rounded-[68px] shadow-2xl p-8 md:p-12 lg:p-12 overflow-y-auto min-h-[50vh] lg:min-h-[90vh]">
-          <div className="flex justify-center mb-6">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 lg:justify-end lg:px-10">
+        <div className="min-h-[50vh] w-full max-w-3xl overflow-y-auto rounded-[12px] bg-white p-8 shadow-2xl md:p-12 lg:min-h-[90vh] lg:rounded-[68px] lg:p-12">
+          <div className="mb-6 flex justify-center">
             <img
               ref={logoRef}
               src="/logo.svg"
               alt="Brand Logo"
-              className="w-32 h-auto animate-zoom-in hover-shake md:w-36 lg:w-40 xl:w-46 transition-all duration-200"
+              className="animate-zoom-in hover-shake h-auto w-32 transition-all duration-200 md:w-36 lg:w-40 xl:w-46"
             />
           </div>
 
-          <h2 className="md:text-2xl text-xl lg:text-4xl font-bold text-primary mb-6">
+          <h2 className="text-primary mb-6 text-xl font-bold md:text-2xl lg:text-4xl">
             Welcome Back
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-              <label
-                htmlFor="username"
-                className="block text-base font-medium text-gray-900 mb-2"
-              >
+              <label htmlFor="username" className="mb-2 block text-base font-medium text-gray-900">
                 Username
               </label>
               <input
@@ -98,23 +96,18 @@ const LoginForm = () => {
                 type="text"
                 id="username"
                 placeholder="Email address"
-                className={`w-full px-4 py-3 font-medium rounded-xl border-2 bg-[#F7F7F7] transition-colors focus:outline-none ${
+                className={`w-full rounded-xl border-2 bg-[#F7F7F7] px-4 py-3 font-medium transition-colors focus:outline-none ${
                   errors.username
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-200 focus:border-green-500"
                 }`}
               />
               {errors.username && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.username.message}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
               )}
             </div>
             <div>
-              <label
-                htmlFor="password"
-                className="block text-base font-medium text-gray-900 mb-2"
-              >
+              <label htmlFor="password" className="mb-2 block text-base font-medium text-gray-900">
                 Password
               </label>
               <div className="relative">
@@ -123,7 +116,7 @@ const LoginForm = () => {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   placeholder="Enter your password"
-                  className={`w-full px-4 py-3 pr-12 bg-[#F7F7F7] rounded-xl border-2 transition-colors focus:outline-none ${
+                  className={`w-full rounded-xl border-2 bg-[#F7F7F7] px-4 py-3 pr-12 transition-colors focus:outline-none ${
                     errors.password
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-200 focus:border-green-500"
@@ -132,19 +125,13 @@ const LoginForm = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  {showPassword ? (
-                    <ViewOffSlashIcon size={20} />
-                  ) : (
-                    <ViewIcon size={20} />
-                  )}
+                  {showPassword ? <ViewOffSlashIcon size={20} /> : <ViewIcon size={20} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.password.message}
-                </p>
+                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
             <div className="flex items-center">
@@ -156,7 +143,7 @@ const LoginForm = () => {
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
                   >
-                    <span className="text-base font-medium text-gray-600 font-primary">
+                    <span className="font-primary text-base font-medium text-gray-600">
                       Remember Me
                     </span>
                   </Checkbox>
@@ -173,6 +160,13 @@ const LoginForm = () => {
             >
               Login
             </Button>
+
+            <div className="mt-4 flex flex-col items-start space-y-2 text-start text-base font-medium text-gray-600">
+              <Link to="/admin/dashboard">Super admin's dashboard</Link>
+              <Link to="/cashier/dashboard">Cashier's dashboard</Link>
+              <Link to="/rider/dashboard">Rider's dashboard</Link>
+              <Link to="/kitchen/dashboard">Kitchen's dashboard</Link>
+            </div>
           </form>
         </div>
       </div>
