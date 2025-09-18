@@ -1,0 +1,31 @@
+name: Deploy to Namecheap
+
+on:
+  push:
+    branches:
+      - main # Deploy to smartapproaches.online
+
+jobs:
+  deploy-test:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Set up environment variables
+        run: echo "${{ secrets.ENV_MAIN }}" > .env
+
+      - name: Install dependencies and build the project
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to FTP server (smartapproaches.online)
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: 66.29.132.115
+          username: ibkisaac@smartapproaches.online
+          password: BAEtU8PY0HkV
+          local-dir: dist/
