@@ -10,7 +10,7 @@ const initialState = {
   loading: false,
   success: false,
   userLogin: null,
-  isLoggedIn: false,
+  isLoggedIn: true,
   error: null,
 };
 
@@ -86,7 +86,7 @@ const loginSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.userLogin = null;
-      state.isLoggedIn = false;
+      state.isLoggedIn = true;
       const errorMessage = action.payload?.message?.error;
       toast.error(
         typeof errorMessage === "string" && errorMessage
