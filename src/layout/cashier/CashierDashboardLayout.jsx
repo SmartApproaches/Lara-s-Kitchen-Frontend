@@ -1,42 +1,30 @@
 import React from "react";
-import {
-  DashboardSquare02Icon,
-  Note05Icon,
-  Menu02Icon,
-  Money01Icon,
-} from "hugeicons-react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { DashboardSquare02Icon, Note05Icon, Menu02Icon, Money01Icon } from "hugeicons-react";
+import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
 
 const CashierDashboardLayout = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const adminSidebarItems = [
+  const cashierSidebarItems = [
     {
       icon: DashboardSquare02Icon,
       label: "Dashboard",
-      active: location.pathname === "/cashier/dashboard",
-      onClick: () => navigate("/cashier/dashboard"),
+      path: "/cashier/dashboard",
     },
     {
       icon: Note05Icon,
       label: "Orders",
-      active: location.pathname === "/cashier/orders",
-      onClick: () => navigate("/cashier/orders"),
+      path: "/cashier/orders",
     },
     {
       icon: Menu02Icon,
       label: "Menu List",
-      active: location.pathname === "/cashier/menu-list",
-      onClick: () => navigate("/cashier/menu-list"),
+      path: "/cashier/menu-list",
     },
     {
       icon: Money01Icon,
       label: "Transaction",
-      active: location.pathname === "/cashier/transaction",
-      onClick: () => navigate("/cashier/transaction"),
+      path: "/cashier/transaction",
     },
   ];
 
@@ -45,7 +33,7 @@ const CashierDashboardLayout = () => {
       userImage=""
       userRole="Cashier"
       userEmail="Joy Timileyin"
-      sidebarItems={adminSidebarItems}
+      sidebarItems={cashierSidebarItems}
     >
       <Outlet />
     </DashboardLayout>

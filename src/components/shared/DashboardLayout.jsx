@@ -10,6 +10,7 @@ import {
 } from "hugeicons-react";
 
 import logo from "../../assets/images/logo.svg";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DashboardLayout = ({
   userImage,
@@ -18,6 +19,8 @@ const DashboardLayout = ({
   sidebarItems = [],
   children,
 }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const defaultSidebarItems = [
@@ -65,18 +68,21 @@ const DashboardLayout = ({
         <nav className="flex-1 mt-6 px-3 overflow-y-auto">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
+            const isActive =
+              location.pathname === item.path ||
+              location.pathname.startsWith(item.path + "/");
             return (
               <button
                 key={index}
                 className={`
                   w-full flex items-center my-4 px-3 py-3 mb-1 rounded-lg text-left transition-colors
                   ${
-                    item.active
+                    isActive
                       ? "bg-primary text-white shadow-sm"
                       : "text-secondary hover:bg-gray-50 cursor-pointer hover:text-gray-900"
                   }
                 `}
-                onClick={item.onClick}
+                onClick={() => navigate(item.path)}
               >
                 <Icon size={22} className="mr-3" />
                 <span className="font-semibold">{item.label}</span>

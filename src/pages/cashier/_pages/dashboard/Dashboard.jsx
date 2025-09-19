@@ -3,12 +3,11 @@ import DashboardHeader from "../../../admin/_pages/dashboard/_components/Dashboa
 import StatsCrad from "./components/statCard";
 import { ICONS } from "../../../../constants";
 import { AutoConversationsIcon, PlusSignIcon } from "hugeicons-react";
+import RecentOrders from "./components/recent-orders";
+import MenuList from "./components/menu-list";
+import QuickAccess from "./components/quick-action";
 const Dashboard = () => {
-  const {
-    data: statsData,
-    isLoading: isLoadingStats,
-    isError: isErrorStats,
-  } = {};
+  const { data: statsData, isLoading: isLoadingStats, isError: isErrorStats } = {};
   const stats = [
     {
       icon: ICONS.salesStats,
@@ -46,10 +45,7 @@ const Dashboard = () => {
   const renderStatsCards = () => {
     if (isLoadingStats) {
       return Array.from({ length: 3 }).map((_, index) => (
-        <div
-          key={index}
-          className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
-        >
+        <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <Skeleton active paragraph={{ rows: 2 }} />
         </div>
       ));
@@ -82,10 +78,13 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <DashboardHeader userName="Hello, Joy" onDateChange={handleDateChange} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+      <DashboardHeader userName="Joy" onDateChange={handleDateChange} />
+      <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {renderStatsCards()}
       </div>
+      <RecentOrders />
+      <QuickAccess />
+      <MenuList />
     </div>
   );
 };

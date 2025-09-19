@@ -23,8 +23,8 @@ createRoot(document.getElementById("root")).render(
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: "#15008b",
-                colorInfo: "#15008b",
+                colorPrimary: "#222222",
+                colorInfo: "#222222",
                 colorTextBase: "#0e1430",
                 colorTextSecondary: "#545457",
                 fontFamily: "Jura, sans-serif",
@@ -36,6 +36,49 @@ createRoot(document.getElementById("root")).render(
                   paddingInlineLG: 16,
                   controlHeight: 40,
                 },
+                Select: {
+                  controlHeightLG: 42,
+                  controlPaddingHorizontal: 16,
+                  activeBorderColor: "#d6fadb",
+                  hoverBorderColor: "#d6fadb",
+                  activeOutlineColor: "#d6fadb",
+                  optionSelectedBg: "#d6fadb",
+                  optionSelectedColor: "#1f5226",
+                  optionActiveBg: "#f0fdf4",
+                  colorText: "#222222",
+                  colorBgContainer: "#ffffff",
+                  borderRadiusLG: 8,
+                },
+                Dropdown: {
+                  menuBg: "#ffffff",
+                  itemHoverBg: "#C3F4C9",
+                  itemSelectedBg: "#C3F4C9",
+                  itemSelectedColor: "#1f5226",
+                  colorText: "#222222",
+                  fontSize: 16,
+                  borderRadiusLG: 8,
+                },
+                Input: {
+                  controlHeight: 42,
+                  controlPaddingHorizontal: 16,
+                  activeBorderColor: "#d6fadb",
+                  hoverBorderColor: "#d6fadb",
+                  activeOutlineColor: "#d6fadb",
+                },
+                TextArea: {
+                  controlHeight: 42,
+                  controlPaddingHorizontal: 16,
+                  activeBorderColor: "#d6fadb",
+                  hoverBorderColor: "#d6fadb",
+                  activeOutlineColor: "#d6fadb",
+                },
+                InputNumber: {
+                  controlHeight: 42,
+                  controlPaddingHorizontal: 16,
+                  activeBorderColor: "#d6fadb",
+                  hoverBorderColor: "#d6fadb",
+                  activeOutlineColor: "#d6fadb",
+                },
                 Divider: {
                   colorSplit: "rgb(234,236,240)",
                 },
@@ -46,7 +89,8 @@ createRoot(document.getElementById("root")).render(
                 },
                 Checkbox: {
                   colorPrimary: "rgb(233,235,243)",
-                  colorText: "rgb(102,112,133)",
+                  colorText: "#444444",
+                  fontSize: 16,
                   colorWhite: "#1f5226",
                   colorBorder: "rgb(208,213,221)",
                   colorPrimaryBorder: "rgb(21,0,139)",
@@ -99,5 +143,5 @@ createRoot(document.getElementById("root")).render(
         </PersistGate>
       </Provider>
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );
