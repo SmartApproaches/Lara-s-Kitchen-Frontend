@@ -16,11 +16,11 @@ export const customWarningToast = (message) => {
 export const customInfoToast = (message) => {
   return toast(message, {
     style: {
-      background: "#3498db",
-      color: "#fff",
+      background: "#d6fadb",
+      color: "#222222",
       fontWeight: "bold",
     },
     duration: 6000,
-    icon: <InformationDiamondIcon size={16} color="#fff" strokeWidth={2.4} />,
+    icon: <InformationDiamondIcon size={16} color="#222222" strokeWidth={2.4} />,
   });
 };
