@@ -12,6 +12,7 @@ import transactionsIcon from "../assets/icons/transactionsIcon.svg";
 import growthIcon from "../assets/icons/growthIcon.svg";
 import abula from "../assets/icons/abula.svg";
 import salesStats from "../assets/icons/salesStats.svg";
+import whine from "../assets/images/whine.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -31,4 +32,5 @@ export const ICONS = {
 
 export const IMAGES = {
   abula: abula,
+  whine: whine,
 };
