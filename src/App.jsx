@@ -20,6 +20,9 @@ const AdminCustomers = lazy(() => import("./pages/admin/_pages/customers/Custome
 const AdminPermission = lazy(() => import("./pages/admin/_pages/permission/Permission"));
 const AdminSpecialOffer = lazy(() => import("./pages/admin/_pages/special-offer/SpecialOffer"));
 const AdminCatalogue = lazy(() => import("./pages/admin/_pages/catalogue/Catalogue"));
+const AdminAddNewFood = lazy(
+  () => import("./pages/admin/_pages/catalogue/_components/add-new-food/AddNewFood"),
+);
 
 // Cashier Dashboard
 const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashboardLayout"));
@@ -51,6 +54,10 @@ const App = () => {
             <Route path="admin/permission" element={<AdminPermission />} />
             <Route path="admin/special-offer" element={<AdminSpecialOffer />} />
             <Route path="admin/catalogue" element={<AdminCatalogue />} />
+            <Route
+              path="admin/catalogue/add-new-food/:catalogueId?"
+              element={<AdminAddNewFood />}
+            />
           </Route>
         </Route>
 
