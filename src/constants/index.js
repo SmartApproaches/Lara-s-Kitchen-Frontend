@@ -60,7 +60,7 @@ export const IMAGES = {
   foodFour: foodFourImage,
   foodFive: foodFiveImage,
   emptyState: emptyStateImage,
-  previewBlob: previewBlob
+  previewBlob: previewBlob,
   abula: abula,
   whine: whine,
 };
