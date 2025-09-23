@@ -33,10 +33,6 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
 
-// Rider Dashboard
-const RiderDashboardLayout = lazy(() => import("./layout/rider/RiderDashboardLayout"));
-const RiderDashboard = lazy(() => import("./pages/rider/_pages/dashboard/Dashboard"));
-
 const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -73,13 +69,6 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route element={<KitchenDashboardLayout />}>
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
-          </Route>
-        </Route>
-
-        {/* Rider Routes */}
-        <Route element={<ProtectedRoutes />}>
-          <Route element={<RiderDashboardLayout />}>
-            <Route index path="rider/dashboard" element={<RiderDashboard />} />
           </Route>
         </Route>
       </Routes>

@@ -164,7 +164,6 @@ const LoginForm = () => {
             <div className="mt-4 flex flex-col items-start space-y-2 text-start text-base font-medium text-gray-600">
               <Link to="/admin/dashboard">Super admin's dashboard</Link>
               <Link to="/cashier/dashboard">Cashier's dashboard</Link>
-              <Link to="/rider/dashboard">Rider's dashboard</Link>
               <Link to="/kitchen/dashboard">Kitchen's dashboard</Link>
             </div>
           </form>
