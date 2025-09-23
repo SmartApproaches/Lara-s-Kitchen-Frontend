@@ -10,37 +10,31 @@ const initialState = {
   loading: false,
   success: false,
   userLogin: null,
-  isLoggedIn: !false,
+  isLoggedIn: true,
   error: null,
 };
 
-export const loginAuth = createAsyncThunk(
-  "login/loginAuth",
-  async (data, { dispatch }) => {
-    return axios
-      .post(`${BASE_URL}/`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        const access_token = response.data?.access_token;
-        dispatch(setTokens({ accessToken: access_token }));
-        return response.data;
-      })
-      .catch((error) => {
-        return error.response.data;
-      });
-  }
-);
+export const loginAuth = createAsyncThunk("login/loginAuth", async (data, { dispatch }) => {
+  return axios
+    .post(`${BASE_URL}/`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => {
+      const access_token = response.data?.access_token;
+      dispatch(setTokens({ accessToken: access_token }));
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+});
 
-export const logoutVendor = createAsyncThunk(
-  "login/logout",
-  async (_, { dispatch }) => {
-    dispatch(clearTokens());
-    dispatch(logout());
-  }
-);
+export const logoutVendor = createAsyncThunk("login/logout", async (_, { dispatch }) => {
+  dispatch(clearTokens());
+  dispatch(logout());
+});
 
 const loginSlice = createSlice({
   name: "login",
@@ -78,7 +72,7 @@ const loginSlice = createSlice({
         toast.error(
           typeof errorMessage === "string" && errorMessage
             ? errorMessage
-            : "Failed to login, please try again."
+            : "Failed to login, please try again.",
         );
       }
     });
@@ -86,12 +80,12 @@ const loginSlice = createSlice({
       state.loading = false;
       state.success = false;
       state.userLogin = null;
-      state.isLoggedIn = false;
+      state.isLoggedIn = true;
       const errorMessage = action.payload?.message?.error;
       toast.error(
         typeof errorMessage === "string" && errorMessage
           ? errorMessage
-          : "Failed to login, please try again."
+          : "Failed to login, please try again.",
       );
       state.error = "sysError";
     });
