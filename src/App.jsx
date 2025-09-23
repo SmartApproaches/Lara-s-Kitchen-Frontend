@@ -61,7 +61,7 @@ const App = () => {
             <Route index path="cashier/dashboard" element={<CashierDashboard />} />
             <Route path="cashier/orders" element={<CashierOrders />} />
             <Route path="cashier/menu-list" element={<MenuList />} />
-            <Route path="cashier/transaction" element={<Transaction />} />
+            <Route path="cashier/transaction" element={<CashierTransaction />} />
           </Route>
         </Route>
 

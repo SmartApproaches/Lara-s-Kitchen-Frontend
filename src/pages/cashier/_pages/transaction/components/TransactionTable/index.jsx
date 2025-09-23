@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Tag, Button } from "antd";
-import { PrinterOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PrinterIcon, Delete02Icon } from "hugeicons-react";
 
 // Sample data
 const data = [
@@ -47,10 +47,12 @@ const columns = [
   {
     title: "ORDER NUMBER",
     dataIndex: "orderNumber",
+    render: (text) => <span className="text-sm font-bold text-[#222222]">{text}</span>,
   },
   {
     title: "CUSTOMER NAME",
     dataIndex: "customer",
+    render: (text) => <span className="text-sm font-bold text-[#222222]">{text}</span>,
   },
   {
     title: "ORDER SUMMARY",
@@ -58,31 +60,36 @@ const columns = [
     render: (items, record) => (
       <div className="flex flex-wrap gap-2">
         {items.slice(0, 2).map((item, i) => (
-          <Tag key={i} className="text-gray-700">
+          <Tag
+            key={i}
+            className="rounded-md !border-none !bg-gray-100 px-2 py-1 font-bold text-[#222222]"
+          >
             {item}
           </Tag>
         ))}
-        <Tag className="text-gray-700">+{record.extra} items</Tag>
+        <Tag className="rounded-md !border-none !bg-gray-100 px-2 py-1 font-bold text-[#222222]">
+          +{record.extra} items
+        </Tag>
       </div>
     ),
   },
   {
     title: "PRICE",
     dataIndex: "price",
+    render: (text) => <span className="text-sm font-bold text-[#222222]">{text}</span>,
   },
   {
     title: "PAYMENT METHOD",
     dataIndex: "method",
+    render: (text) => <span className="text-sm font-bold text-[#222222]">{text}</span>,
   },
   {
     title: "PAYMENT STATUS",
     dataIndex: "status",
     render: (status) => (
       <Tag
-        className={`rounded px-3 py-1 ${
-          status === "Successful"
-            ? "border !border-green-300 !bg-green-100 text-green-700"
-            : "border !border-red-300 !bg-red-100 text-red-700"
+        className={`rounded-md !border-none px-3 py-1 ${
+          status === "Successful" ? "!bg-green-100 text-green-700" : "!bg-red-100 text-red-700"
         }`}
       >
         {status}
@@ -93,8 +100,8 @@ const columns = [
     title: "ACTION",
     render: () => (
       <div className="flex gap-3">
-        <Button icon={<PrinterOutlined />} type="text" />
-        <Button icon={<DeleteOutlined />} danger type="text" />
+        <Button icon={<PrinterIcon />} type="text" />
+        <Button icon={<Delete02Icon />} danger type="text" />
       </div>
     ),
   },
@@ -103,7 +110,13 @@ const columns = [
 const TransactionTable = () => {
   return (
     <div className="rounded-lg bg-white p-4 shadow">
-      <Table columns={columns} dataSource={data} pagination={false} rowKey="key" />
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={false}
+        rowKey="key"
+        className="custom-table"
+      />
     </div>
   );
 };
