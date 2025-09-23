@@ -5,6 +5,11 @@ import "./App.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
+
+import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
+import Transaction from "./pages/cashier/_pages/transaction/Transaction";
+
+
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
