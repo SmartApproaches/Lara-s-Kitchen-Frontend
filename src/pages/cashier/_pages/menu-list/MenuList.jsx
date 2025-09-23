@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MenuStats from "./components/menuStats";
 import { SearchOutlined, FilterOutlined, CloseOutlined } from "@ant-design/icons";
-import MenuFilterBar from "./components/MenuFilterBar";
+
 import { Input, Button } from "antd";
 import MenuCard from "../dashboard/components/menuCard";
 

@@ -13,6 +13,14 @@ import growthIcon from "../assets/icons/growthIcon.svg";
 import abula from "../assets/icons/abula.svg";
 import salesStats from "../assets/icons/salesStats.svg";
 import whine from "../assets/images/whine.svg";
+import exportIcon from "../assets/icons/exportIcon.png";
+import mark from "../assets/icons/mark.svg";
+import allorderIcon from "../assets/icons/allorderIcon.svg";
+import foodIcon from "../assets/icons/foodIcon.svg";
+import drinksIcon from "../assets/icons/drinksIcon.svg";
+import proteinIcon from "../assets/icons/proteinIcon.svg";
+import extrasIcon from "../assets/icons/extrasIcon.svg";
+import jollofRice from "../assets/icons/jollofRice.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -28,6 +36,14 @@ export const ICONS = {
   transactionsIcon: transactionsIcon,
   growthIcon: growthIcon,
   salesStats: salesStats,
+  exportIcon: exportIcon,
+  mark: mark,
+  allorderIcon: allorderIcon,
+  foodIcon: foodIcon,
+  drinksIcon: drinksIcon,
+  proteinIcon: proteinIcon,
+  extrasIcon: extrasIcon,
+  jollofRice: jollofRice,
 };
 
 export const IMAGES = {

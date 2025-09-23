@@ -6,19 +6,33 @@ import {
   Delete02Icon,
   PencilEdit02Icon,
 } from "hugeicons-react";
-import { IMAGES } from "../../../../../constants";
-
+import { ICONS, IMAGES } from "../../../../../constants";
+import { Modal, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 const steps = ["Order received", "In Kitchen", "Order ready", "Paid", "Received"];
 
 const OrderSidePanel = ({ order, onClose }) => {
+  const navigate = useNavigate();
   const [isCustomerInfoExpanded, setIsCustomerInfoExpanded] = useState(true);
   const [selectedMethod, setSelectedMethod] = useState("Send");
   const [activeStep, setActiveStep] = useState(1); // default: "In Kitchen"
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
+  };
+
+  const handleYes = () => {
+    setIsModalOpen(false);
+    navigate(`/cashier/edit-order/${order?.orderId}`); // go to edit page
+  };
+  const handleEditClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleNo = () => {
+    setIsModalOpen(false);
   };
 
   const customerData = {
@@ -67,10 +81,10 @@ const OrderSidePanel = ({ order, onClose }) => {
             <h2 className="text-lg font-semibold text-gray-900">{order?.orderId}</h2>
             <div className="flex gap-1">
               <button className="rounded p-1 hover:bg-gray-100">
-                <Delete02Icon className="h-4 w-4 text-gray-400" />
+                <PencilEdit02Icon className="h-4 w-4 text-[#222222]" onClick={handleEditClick} />
               </button>
               <button className="rounded p-1 hover:bg-gray-100">
-                <PencilEdit02Icon className="h-4 w-4 text-gray-400" />
+                <Delete02Icon className="text-primary h-4 w-4" />
               </button>
             </div>
           </div>
@@ -199,6 +213,30 @@ const OrderSidePanel = ({ order, onClose }) => {
           </button>
         </div>
       </div>
+      <Modal open={isModalOpen} footer={null} centered onCancel={handleNo}>
+        <div className="flex flex-col items-center space-y-4 text-center">
+          <div className="flex items-center justify-center rounded-full bg-green-100">
+            <img src={ICONS.mark} alt="Mark" className="h-28 w-28 text-green-600" />
+          </div>
+          <p className="text-2xl font-bold text-green-700">
+            Are you sure you would like to edit this Order
+          </p>
+          <p className="text-lg font-medium text-[#444444]">Order Number: {order?.orderId}</p>
+
+          <div className="flex w-full gap-4 pt-4">
+            <Button
+              type="primary"
+              className="!hover:bg-green-800 !bg-primary !w-full"
+              onClick={handleYes}
+            >
+              Yes
+            </Button>
+            <Button onClick={handleNo} className="!w-full">
+              No
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

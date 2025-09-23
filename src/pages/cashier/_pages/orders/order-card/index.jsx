@@ -41,7 +41,7 @@ const OrderCard = ({
   return (
     <Card
       onClick={onClick}
-      className={`cursor-pointer rounded-2xl transition-all duration-300 ${isSelected ? "scale-[1.02] border-2 border-green-500 shadow-lg" : "border border-gray-200"} `}
+      className={`cursor-pointer rounded-2xl transition-all duration-300 ${isSelected ? "scale-[1.02] border-2 !border-green-500 shadow-lg" : "border border-gray-200"} `}
       bodyStyle={{ padding: "1rem" }}
     >
       {/* Top Section: Main Image + Thumbnails */}

@@ -3,7 +3,8 @@ import RecentOrders from "../dashboard/components/recent-orders";
 import OrderCard from "./order-card";
 import { IMAGES, ICONS } from "../../../../constants";
 import OrderSidePanel from "./order-sidepanel";
-
+import { SearchOutlined, FilterOutlined, CloseOutlined } from "@ant-design/icons";
+import { Input, Button } from "antd";
 const orders = [
   {
     status: "pending",
@@ -58,6 +59,30 @@ const Orders = () => {
     <div>
       <h3 className="text-primary text-3xl font-bold">Order List</h3>
       <RecentOrders />
+      <div className="mt-6 flex items-center justify-between px-2">
+        {/* Search */}
+
+        {/* Chips & Filter button */}
+        <div className="flex items-center gap-2">
+          <Button
+            size="small"
+            className="flex items-center gap-1 rounded-full border border-gray-300 px-3 text-gray-600"
+          >
+            General <CloseOutlined className="text-xs" />
+          </Button>
+          <Button
+            size="small"
+            shape="circle"
+            icon={<FilterOutlined />}
+            className="border border-gray-300"
+          />
+        </div>
+
+        <div className="bg-primary flex items-center gap-2 rounded-md px-3 py-1">
+          <img src={ICONS.exportIcon} alt="Export" className="h-5 w-5" />
+          <span className="font-medium text-white">Export</span>
+        </div>
+      </div>
 
       {/* Main content + side panel wrapper */}
       <div className="mt-5 flex gap-4">
