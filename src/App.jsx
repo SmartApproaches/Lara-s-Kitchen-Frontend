@@ -5,8 +5,10 @@ import "./App.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
+
 import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
 import Transaction from "./pages/cashier/_pages/transaction/Transaction";
+
 
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
@@ -24,6 +26,7 @@ const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashbo
 const CashierDashboard = lazy(() => import("./pages/cashier/_pages/dashboard/Dashboard"));
 const CashierOrders = lazy(() => import("./pages/cashier/_pages/orders/Orders"));
 const CashierMenuList = lazy(() => import("./pages/cashier/_pages/menu-list/MenuList"));
+const CashierEditOrder = lazy(() => import("./pages/cashier/_pages/orders/edit-order"));
 const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction/Transaction"));
 
 // Kitchen Dashboard
@@ -60,7 +63,8 @@ const App = () => {
           <Route element={<CashierDashboardLayout />}>
             <Route index path="cashier/dashboard" element={<CashierDashboard />} />
             <Route path="cashier/orders" element={<CashierOrders />} />
-            <Route path="cashier/menu-list" element={<MenuList />} />
+            <Route path="cashier/menu-list" element={<CashierMenuList />} />
+            <Route path="cashier/edit-order/:id" element={<CashierEditOrder />} />
             <Route path="cashier/transaction" element={<CashierTransaction />} />
           </Route>
         </Route>
