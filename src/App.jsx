@@ -6,6 +6,10 @@ import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
 
+import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
+import Transaction from "./pages/cashier/_pages/transaction/Transaction";
+
+
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -25,15 +29,12 @@ const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashbo
 const CashierDashboard = lazy(() => import("./pages/cashier/_pages/dashboard/Dashboard"));
 const CashierOrders = lazy(() => import("./pages/cashier/_pages/orders/Orders"));
 const CashierMenuList = lazy(() => import("./pages/cashier/_pages/menu-list/MenuList"));
+const CashierEditOrder = lazy(() => import("./pages/cashier/_pages/orders/edit-order"));
 const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction/Transaction"));
 
 // Kitchen Dashboard
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
-
-// Rider Dashboard
-const RiderDashboardLayout = lazy(() => import("./layout/rider/RiderDashboardLayout"));
-const RiderDashboard = lazy(() => import("./pages/rider/_pages/dashboard/Dashboard"));
 
 const App = () => {
   return (
@@ -66,6 +67,7 @@ const App = () => {
             <Route index path="cashier/dashboard" element={<CashierDashboard />} />
             <Route path="cashier/orders" element={<CashierOrders />} />
             <Route path="cashier/menu-list" element={<CashierMenuList />} />
+            <Route path="cashier/edit-order/:id" element={<CashierEditOrder />} />
             <Route path="cashier/transaction" element={<CashierTransaction />} />
           </Route>
         </Route>
@@ -74,13 +76,6 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route element={<KitchenDashboardLayout />}>
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
-          </Route>
-        </Route>
-
-        {/* Rider Routes */}
-        <Route element={<ProtectedRoutes />}>
-          <Route element={<RiderDashboardLayout />}>
-            <Route index path="rider/dashboard" element={<RiderDashboard />} />
           </Route>
         </Route>
       </Routes>

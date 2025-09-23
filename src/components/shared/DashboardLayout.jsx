@@ -149,7 +149,7 @@ const DashboardLayout = ({
         </header>
 
         <main className="flex-1 bg-[#e5ffe9] overflow-y-auto">
-          <div className="p-6 mt-0 md:mt-5 animate-slide-in-bottom sm:p-8 lg:p-12">
+          <div className="p-6 mt-0 md:mt-5 animate-slide-in-bottom sm:p-8 lg:p-10">
             {children || (
               <div className="bg-white rounded-lg shadow-sm p-6 min-h-96">
                 <div className="text-center text-gray-500 py-12">
