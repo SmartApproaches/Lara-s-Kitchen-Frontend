@@ -5,10 +5,7 @@ import "./App.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
-
-import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
-import Transaction from "./pages/cashier/_pages/transaction/Transaction";
-
+import LandingPage from "./pages/landing";
 
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
@@ -40,7 +37,7 @@ const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
 
         {/* Sign-Up Routes */}
