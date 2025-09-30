@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Carousel, Avatar } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import { IMAGES } from "../../../constants";
+import { IMAGES } from "../../../../constants";
 
 const testimonials = [
   {

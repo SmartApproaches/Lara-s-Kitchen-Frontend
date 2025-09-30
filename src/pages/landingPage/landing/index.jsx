@@ -1,6 +1,6 @@
 import React from "react";
 import HerSection from "./hero";
-import { Header } from "../../components";
+import { Header } from "../../../components";
 import CravingNigeriaFood from "./cravingNigeriaSection";
 import MostPopularDishes from "./mostPopularDishes";
 import WhatSetsUsApart from "./whatSetUsApart";

@@ -51,6 +51,11 @@ import callIcon from "../assets/icons/callIcon.svg";
 import mailIcon from "../assets/icons/mailIcon.svg";
 import facebookIcon from "../assets/icons/facebookIcon.svg";
 import instagramIcon from "../assets/icons/instagramIcon.svg";
+import footerPolygon from "../assets/images/footerPolygon.svg";
+import mobilePolyGon from "../assets/images/mobilePolyGon.svg";
+import menuPolyGon from "../assets/images/menuPolyGon.svg";
+import menuTrasperent from "../assets/images/menuTrasperent.svg";
+
 export const ICONS = {
   descent: descentIcon,
   dish: dishIcon,
@@ -108,4 +113,8 @@ export const IMAGES = {
   scanToView: scanToView,
   PlayStoreApple: PlayStoreApple,
   logo: logo,
+  footerPolygon: footerPolygon,
+  mobilePolyGon: mobilePolyGon,
+  menuPolyGon: menuPolyGon,
+  menuTrasperent: menuTrasperent,
 };

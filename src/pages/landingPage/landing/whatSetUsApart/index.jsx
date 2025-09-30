@@ -1,5 +1,5 @@
 import React from "react";
-import { ICONS } from "../../../constants";
+import { ICONS } from "../../../../constants";
 
 const WhatSetsUsApart = () => {
   const features = [

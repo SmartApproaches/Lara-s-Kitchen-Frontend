@@ -1,9 +1,9 @@
 import React from "react";
-import { IMAGES } from "../../../constants";
+import { IMAGES } from "../../../../constants";
 
 const CravingNigeriaFood = () => {
   return (
-    <section className="relative flex min-h-screen w-full items-center bg-white">
+    <section className="relative flex h-fit w-full items-center bg-white md:min-h-screen">
       <div className="mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           {/* Heading */}

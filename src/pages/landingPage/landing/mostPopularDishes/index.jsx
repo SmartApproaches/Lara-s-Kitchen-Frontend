@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
-import { IMAGES, ICONS } from "../../../constants";
 import { Carousel, Card } from "antd";
 import { StarFilled, RightOutlined, LeftOutlined } from "@ant-design/icons";
+import { IMAGES, ICONS } from "../../../../constants";
 
 const dishes = [
   {

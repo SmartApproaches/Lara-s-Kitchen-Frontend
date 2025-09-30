@@ -5,8 +5,8 @@ import "./App.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
-import LandingPage from "./pages/landing";
-
+import LandingPage from "./pages/landingPage/landing";
+import LandingMenu from "./pages/landingPage/menu";
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -38,6 +38,7 @@ const App = () => {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/menu" element={<LandingMenu />} />
         <Route path="/login" element={<Login />} />
 
         {/* Sign-Up Routes */}
