@@ -55,6 +55,7 @@ import footerPolygon from "../assets/images/footerPolygon.svg";
 import mobilePolyGon from "../assets/images/mobilePolyGon.svg";
 import menuPolyGon from "../assets/images/menuPolyGon.svg";
 import menuTrasperent from "../assets/images/menuTrasperent.svg";
+import menuMobilePolygon from "../assets/images/menuMobilePolygon.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -117,4 +118,5 @@ export const IMAGES = {
   mobilePolyGon: mobilePolyGon,
   menuPolyGon: menuPolyGon,
   menuTrasperent: menuTrasperent,
+  menuMobilePolygon: menuMobilePolygon,
 };

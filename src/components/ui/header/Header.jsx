@@ -88,33 +88,28 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="animate-slide-in-down mt-4 rounded-lg bg-white p-4 shadow-lg md:hidden">
-            <ul className="space-y-2">
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <NavLink
-                    to={item.path}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      `block rounded-lg px-4 py-2 text-center font-medium transition-colors ${
-                        isActive ? "bg-orange-400 text-white" : "text-gray-700 hover:bg-gray-100"
-                      }`
-                    }
-                  >
-                    {item.name}
-                  </NavLink>
-                </li>
-              ))}
-              <li>
-                <NavLink
-                  to="/order"
-                  onClick={() => setMenuOpen(false)}
-                  className="block rounded-lg bg-orange-400 px-4 py-2 text-center font-medium text-white"
-                >
-                  Order Now
-                </NavLink>
-              </li>
-            </ul>
+          <div className="mt-6 flex flex-col items-center space-y-6 bg-white py-5 md:hidden">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `text-lg font-medium ${
+                    isActive ? "rounded-full bg-orange-400 px-6 py-2 text-white" : "text-gray-800"
+                  }`
+                }
+              >
+                {item.name}
+              </NavLink>
+            ))}
+            <NavLink
+              to="/order"
+              onClick={() => setMenuOpen(false)}
+              className="rounded-md bg-green-800 px-6 py-2 font-medium text-white"
+            >
+              Order Now
+            </NavLink>
           </div>
         )}
       </div>

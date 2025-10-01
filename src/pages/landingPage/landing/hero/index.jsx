@@ -33,8 +33,8 @@ const HerSection = () => {
         </div>
 
         {/* Hero heading */}
-        <div className="animate-fade-in-up absolute top-1/4 left-6 sm:top-1/3 sm:left-12 md:left-20 md:max-w-xl">
-          <h2 className="text-primary text-2xl leading-snug font-bold sm:text-3xl md:text-5xl">
+        <div className="animate-fade-in-up absolute top-1/4 left-6 md:left-20 md:max-w-xl">
+          <h2 className="text-primary max-w-[20rem] text-2xl leading-snug font-bold md:max-w-full md:text-5xl">
             A True Taste of Nigeria,
             <span className="text-[#FFC107]"> Just for You</span>
           </h2>
@@ -52,7 +52,7 @@ const HerSection = () => {
         </div>
 
         {/* Cloud */}
-        <div className="animate-slide-in-bottom absolute right-0 -bottom-20 left-0 sm:-bottom-32 md:-bottom-44">
+        <div className="animate-slide-in-bottom absolute right-0 -bottom-16 left-0 md:-bottom-44">
           <img src={IMAGES.cloudimge} alt="cloud" className="w-full" />
         </div>
       </div>
