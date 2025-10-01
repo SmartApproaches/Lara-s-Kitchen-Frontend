@@ -28,6 +28,34 @@ import drinksIcon from "../assets/icons/drinksIcon.svg";
 import proteinIcon from "../assets/icons/proteinIcon.svg";
 import extrasIcon from "../assets/icons/extrasIcon.svg";
 import jollofRice from "../assets/icons/jollofRice.svg";
+import potIcon from "../assets/icons/potIcon.svg";
+import freshlyCooked from "../assets/icons/freshlyCooked.svg";
+import playIcon from "../assets/icons/playIcon.svg";
+import fastDelivery from "../assets/icons/fastDelivery.svg";
+import authenticIcon from "../assets/icons/authenticIcon.svg";
+import landingSplash from "../assets/images/landingSplash.svg";
+import watermelonbg from "../assets/images/watermelonbg.svg";
+import phones from "../assets/images/iphone.svg";
+import testimonialImage from "../assets/images/testimonialImage.svg";
+import footterTransperant from "../assets/images/solar_flame-broken.svg";
+import resturantImage from "../assets/images/resturantImage.png";
+import womanLandingPage from "../assets/images/womanLandingPage.png";
+import cloudimge from "../assets/images/cloudimge.svg";
+import scanToView from "../assets/images/scanToView.svg";
+import PlayStoreApple from "../assets/images/PlayStoreApple.svg";
+import ourLounge from "../assets/images/ourLounge.png";
+import logo from "../assets/images/logo.svg";
+import xIcon from "../assets/icons/xIcon.svg";
+import locationIcon from "../assets/icons/locationIcon.svg";
+import callIcon from "../assets/icons/callIcon.svg";
+import mailIcon from "../assets/icons/mailIcon.svg";
+import facebookIcon from "../assets/icons/facebookIcon.svg";
+import instagramIcon from "../assets/icons/instagramIcon.svg";
+import footerPolygon from "../assets/images/footerPolygon.svg";
+import mobilePolyGon from "../assets/images/mobilePolyGon.svg";
+import menuPolyGon from "../assets/images/menuPolyGon.svg";
+import menuTrasperent from "../assets/images/menuTrasperent.svg";
+import menuMobilePolygon from "../assets/images/menuMobilePolygon.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -51,6 +79,17 @@ export const ICONS = {
   proteinIcon: proteinIcon,
   extrasIcon: extrasIcon,
   jollofRice: jollofRice,
+  freshlyCooked: freshlyCooked,
+  playIcon: playIcon,
+  fastDelivery: fastDelivery,
+  authenticIcon: authenticIcon,
+  potIcon: potIcon,
+  xIcon: xIcon,
+  locationIcon: locationIcon,
+  callIcon: callIcon,
+  mailIcon: mailIcon,
+  facebookIcon: facebookIcon,
+  instagramIcon: instagramIcon,
 };
 
 export const IMAGES = {
@@ -61,6 +100,23 @@ export const IMAGES = {
   foodFive: foodFiveImage,
   emptyState: emptyStateImage,
   previewBlob: previewBlob,
+  ourLounge: ourLounge,
   abula: abula,
   whine: whine,
+  landingSplash: landingSplash,
+  watermelonbg: watermelonbg,
+  phones: phones,
+  testimonialImage: testimonialImage,
+  footterTransperant: footterTransperant,
+  resturantImage: resturantImage,
+  womanLandingPage: womanLandingPage,
+  cloudimge: cloudimge,
+  scanToView: scanToView,
+  PlayStoreApple: PlayStoreApple,
+  logo: logo,
+  footerPolygon: footerPolygon,
+  mobilePolyGon: mobilePolyGon,
+  menuPolyGon: menuPolyGon,
+  menuTrasperent: menuTrasperent,
+  menuMobilePolygon: menuMobilePolygon,
 };

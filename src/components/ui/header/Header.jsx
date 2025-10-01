@@ -1,105 +1,117 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 import Button from "../button/Button";
 
 const Header = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "Menu", path: "/menu" },
+    { name: "Contact Us", path: "/contact" },
+  ];
+
   return (
-    <header className="w-full">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4">
+    <header className="fixed top-0 right-0 z-50 w-full">
+      <div className="mx-auto max-w-7xl px-4 py-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between">
+          {/* Logo */}
           <div className="flex-shrink-0">
-            <img
-              src="/logo.svg"
-              alt="Abuja Spot & Bar Logo"
-              className="h-12 md:h-24 w-auto"
-            />
+            <NavLink to="/">
+              <img
+                src="/logo.svg"
+                alt="Abuja Spot & Bar Logo"
+                className="h-10 w-auto sm:h-12 md:h-16 lg:h-20"
+              />
+            </NavLink>
           </div>
 
-          <nav className="hidden md:flex items-center">
-            <div className="bg-white rounded-full px-5 py-4">
+          {/* Desktop Nav */}
+          <nav className="hidden items-center md:flex">
+            <div className="rounded-full bg-white px-5 py-3 shadow-md">
               <ul className="flex items-center space-x-1">
-                <li>
-                  <Link
-                    to="#"
-                    className="px-6 py-2 bg-orange-400 text-white rounded-full font-medium hover:bg-orange-500 transition-colors"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="px-6 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Menu
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="px-6 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-                  >
-                    Contact Us
-                  </Link>
-                </li>
+                {navItems.map((item) => (
+                  <li key={item.path}>
+                    <NavLink
+                      to={item.path}
+                      className={({ isActive }) =>
+                        `rounded-full px-6 py-2 font-medium transition-colors ${
+                          isActive
+                            ? "bg-orange-400 text-white"
+                            : "text-gray-700 hover:text-gray-900"
+                        }`
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                ))}
               </ul>
             </div>
           </nav>
 
-          <div className="flex-shrink-0">
-            <Link to="#">
+          {/* CTA */}
+          <div className="hidden md:flex">
+            <NavLink to="/order">
               <Button size="lg">Order Now</Button>
-            </Link>
+            </NavLink>
           </div>
 
+          {/* Mobile Toggle */}
           <div className="md:hidden">
-            <button className="text-gray-700 hover:text-gray-900">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-gray-700 hover:text-gray-900 focus:outline-none"
+            >
+              {menuOpen ? (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
             </button>
           </div>
         </div>
 
-        <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg p-4">
-          <ul className="space-y-2">
-            <li>
-              <Link
-                to="#"
-                className="block px-4 py-2 bg-orange-400 text-white rounded-lg font-medium text-center"
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="mt-6 flex flex-col items-center space-y-6 bg-white py-5 md:hidden">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `text-lg font-medium ${
+                    isActive ? "rounded-full bg-orange-400 px-6 py-2 text-white" : "text-gray-800"
+                  }`
+                }
               >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="#"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-center transition-colors"
-              >
-                Menu
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="#"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg text-center transition-colors"
-              >
-                Contact Us
-              </Link>
-            </li>
-          </ul>
-        </div>
+                {item.name}
+              </NavLink>
+            ))}
+            <NavLink
+              to="/order"
+              onClick={() => setMenuOpen(false)}
+              className="rounded-md bg-green-800 px-6 py-2 font-medium text-white"
+            >
+              Order Now
+            </NavLink>
+          </div>
+        )}
       </div>
     </header>
   );
