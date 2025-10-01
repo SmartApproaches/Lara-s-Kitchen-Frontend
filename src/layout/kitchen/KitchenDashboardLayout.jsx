@@ -1,5 +1,5 @@
 import React from "react";
-import { DashboardSquare02Icon } from "hugeicons-react";
+import { DashboardSquare02Icon, Note05Icon } from "hugeicons-react";
 import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
@@ -10,6 +10,11 @@ const KitchenDashboardLayout = () => {
       icon: DashboardSquare02Icon,
       label: "Dashboard",
       path: "/kitchen/dashboard",
+    },
+    {
+      icon: Note05Icon,
+      label: "Orders",
+      path: "/kitchen/orders",
     },
   ];
 

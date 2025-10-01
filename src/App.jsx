@@ -5,9 +5,16 @@ import "./App.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
+
 import LandingPage from "./pages/landingPage/landing";
 import LandingMenu from "./pages/landingPage/menu";
 import ContactUs from "./pages/landingPage/contact";
+
+
+import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
+import Transaction from "./pages/cashier/_pages/transaction/Transaction";
+
+
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -33,6 +40,7 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 // Kitchen Dashboard
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
+const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
 
 const App = () => {
   return (
@@ -43,8 +51,6 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
 
         <Route path="/login" element={<Login />} />
-
-        {/* Sign-Up Routes */}
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
@@ -77,6 +83,7 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route element={<KitchenDashboardLayout />}>
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
+            <Route path="kitchen/orders" element={<KitchenOrders />} />
           </Route>
         </Route>
       </Routes>
