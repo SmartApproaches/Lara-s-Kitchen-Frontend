@@ -9,7 +9,6 @@ import Login from "./pages/auth/login/Login";
 import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
 import Transaction from "./pages/cashier/_pages/transaction/Transaction";
 
-
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -35,6 +34,7 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 // Kitchen Dashboard
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
+const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
 
 const App = () => {
   return (
@@ -42,8 +42,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-
-        {/* Sign-Up Routes */}
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
@@ -76,6 +74,7 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route element={<KitchenDashboardLayout />}>
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
+            <Route path="kitchen/orders" element={<KitchenOrders />} />
           </Route>
         </Route>
       </Routes>
