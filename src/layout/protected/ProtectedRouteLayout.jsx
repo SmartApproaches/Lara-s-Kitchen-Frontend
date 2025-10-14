@@ -7,11 +7,7 @@ const ProtectedRouteLayout = () => {
   const location = useLocation();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
 
-  return isLoggedIn ? (
-    <Outlet />
-  ) : (
-    <Navigate to={"/login"} state={{ from: location }} replace />
-  );
+  return isLoggedIn ? <Outlet /> : <Navigate to={"/login"} state={{ from: location }} replace />;
 };
 
 export default ProtectedRouteLayout;
