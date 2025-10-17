@@ -129,7 +129,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                   <div className="hidden sm:block">
                     <div className="text-secondary text-base font-semibold capitalize">
                       {user?.role
-                        ? user.role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+                        ? user.role?.role?.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
                         : "N/A"}
                     </div>
                     <div className="text-secondary text-sm font-medium">{user?.email || "N/A"}</div>

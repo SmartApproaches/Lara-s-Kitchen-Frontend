@@ -63,11 +63,11 @@ const LoginForm = () => {
   }, []);
 
   useEffect(() => {
-    if (user?.role === "super_admin") {
+    if (user?.role?.role === "super_admin") {
       navigate("/admin/dashboard");
-    } else if (user?.role === "kitchen") {
+    } else if (user?.role?.role === "kitchen") {
       navigate("/kitchen/dashboard");
-    } else if (user?.role === "cashier") {
+    } else if (user?.role?.role === "cashier") {
       navigate("/cashier/dashboard");
     }
   }, [isLoggedIn, navigate, location, user]);
