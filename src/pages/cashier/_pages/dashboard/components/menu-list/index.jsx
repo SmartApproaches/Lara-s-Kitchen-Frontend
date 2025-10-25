@@ -188,7 +188,6 @@ const MenuList = () => {
         ))}
       </Row>
 
-      {/* Pagination */}
       {paginationInfo && (
         <div className="mt-8 flex justify-center">
           <Pagination
