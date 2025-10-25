@@ -31,15 +31,13 @@ const DashboardHeader = ({ userName, onDateChange }) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+    <div className="mb-6 flex flex-col items-start justify-between sm:flex-row sm:items-center">
       <div>
-        <h1 className="text-2xl lg:text-4xl font-bold text-green-900">Hello, {userName}</h1>
-        <p className="text-green-600 text-lg mt-1">
-          This is what is happening in your store
-        </p>
+        <h1 className="text-2xl font-bold text-green-900 lg:text-4xl">Hello, {userName}</h1>
+        <p className="mt-1 text-lg text-green-600">This is what is happening in your store</p>
       </div>
 
-      <div className="flex items-center gap-3 mt-4 sm:mt-0">
+      <div className="mt-4 flex items-center gap-3 sm:mt-0">
         <Dropdown
           menu={{ items: menuItems, onClick: handleMenuClick }}
           placement="bottomLeft"
@@ -69,7 +67,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
           />
 
           {openCalendar && (
-            <div className="absolute right-0 mt-2 z-50 shadow-lg rounded-lg">
+            <div className="absolute right-0 z-50 mt-2 rounded-lg shadow-lg">
               <DatePicker
                 open
                 onChange={handleCalendarChange}
