@@ -89,7 +89,7 @@ const Dashboard = () => {
       <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {renderStatsCards()}
       </div>
-      <RecentOrders />
+      <RecentOrders recentOrders={dashboardData?.data?.recent_orders || []} loading={isLoading} />
       <QuickAccess />
       <MenuList />
     </div>

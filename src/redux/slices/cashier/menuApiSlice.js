@@ -2,9 +2,22 @@ import { api } from "../../api/rtkQuery";
 
 export const menuApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getCashierDashboardMenu: builder.query({
-      query: () => "/cashier/dashboard/menu",
+    getCashierdMenu: builder.query({
+      query: ({ page = 1, per_page = 10, search, category_id }) => {
+        const params = new URLSearchParams({
+          page,
+          per_page,
+        });
+
+        if (search) params.append("search", search);
+        if (category_id) params.append("category_id", category_id);
+
+        return `/cashier/menus?${params.toString()}`;
+      },
+
+      providesTags: ["Menu"],
     }),
+
     updateMenuAvailability: builder.mutation({
       query: (body) => ({
         url: "/cashier/menus/update-menu-availability",
@@ -15,7 +28,14 @@ export const menuApiSlice = api.injectEndpoints({
         },
       }),
     }),
+    getCashierMenuCategories: builder.query({
+      query: () => "/cashier/menus/categories",
+    }),
   }),
 });
 
-export const { useGetCashierDashboardMenuQuery, useUpdateMenuAvailabilityMutation } = menuApiSlice;
+export const {
+  useGetCashierdMenuQuery,
+  useUpdateMenuAvailabilityMutation,
+  useGetCashierMenuCategoriesQuery,
+} = menuApiSlice;
