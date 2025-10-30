@@ -46,12 +46,7 @@ const AdminDashboardLayout = () => {
   ];
 
   return (
-    <DashboardLayout
-      userImage=""
-      userRole="Super Admin"
-      userEmail="john@example.com"
-      sidebarItems={adminSidebarItems}
-    >
+    <DashboardLayout sidebarItems={adminSidebarItems}>
       <Outlet />
     </DashboardLayout>
   );

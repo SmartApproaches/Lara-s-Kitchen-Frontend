@@ -1,109 +1,74 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Switch, Dropdown, Button } from "antd";
+import { Card, Row, Col, Switch, Skeleton } from "antd";
 
-import { IMAGES } from "../../../../../../constants";
-const menuItems = [
-  {
-    id: 1,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula, // placeholder food image
-    available: true,
-  },
-  {
-    id: 2,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula,
-    available: false,
-  },
-  {
-    id: 3,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula,
-    available: true,
-  },
-  {
-    id: 4,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula,
-    available: true,
-  },
-  {
-    id: 5,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula,
-    available: false,
-  },
-  {
-    id: 6,
-    name: "Abula",
-    desc: "1 wrap of Amala, Meat, Ponmo, Gbegiri and Ewedu",
-    price: 12,
-    image: IMAGES.abula,
-    available: true,
-  },
-];
-const MenuCard = () => {
-  const [items, setItems] = useState(menuItems);
-
-  const handleToggle = (id) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, available: !item.available } : item)),
-    );
-  };
+const MenuCard = ({ items, onToggle, updatingId, isSkeleton }) => {
   return (
     <Row gutter={[16, 16]}>
-      {items.map((item) => (
-        <Col key={item.id} xs={24} sm={12} md={8}>
-          <Card
-            hoverable
-            style={{
-              borderRadius: "12px",
-              border: "1px solid #f0f0f0",
-            }}
-            bodyStyle={{ padding: "12px" }}
-            className="flex flex-col !bg-[#F7F7F7]"
-          >
-            <div className="flex gap-3">
-              {/* Food Image */}
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-24 w-24 rounded-full object-cover"
-              />
+      {items.map((item, index) => {
+        const available = item?.availability === "in_stock";
+        const isUpdating = updatingId === item?.id; // ✅ Only disable this switch
 
-              {/* Info */}
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <h4 className="text-primary text-xl font-bold">{item.name}</h4>
-                  <p className="text-primary text-sm">{item.desc}</p>
+        return (
+          <Col key={item?.id || index} xs={24} sm={12} md={8}>
+            <Card
+              hoverable={!isSkeleton}
+              style={{
+                borderRadius: "12px",
+                border: "1px solid #f0f0f0",
+              }}
+              bodyStyle={{ padding: "12px" }}
+              className="flex flex-col !bg-[#F7F7F7]"
+            >
+              <div className="flex gap-3">
+                {isSkeleton ? (
+                  <Skeleton.Avatar active size={96} shape="circle" />
+                ) : (
+                  <img
+                    src={item.media?.url}
+                    alt={item.name}
+                    className="h-24 w-24 rounded-full object-cover"
+                  />
+                )}
+
+                <div className="flex flex-1 flex-col justify-between">
+                  {isSkeleton ? (
+                    <>
+                      <Skeleton.Input active size="small" style={{ width: 120 }} />
+                      <Skeleton.Input active size="small" style={{ width: 150, marginTop: 6 }} />
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="text-primary text-xl font-bold">{item.name}</h4>
+                      <p className="text-primary text-sm">{item.description}</p>
+                    </>
+                  )}
                 </div>
               </div>
-            </div>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="font-semibold text-green-700">£{item.price.toFixed(2)}</span>
-              <Switch
-                checked={item.available}
-                onChange={() => handleToggle(item.id)}
-                checkedChildren=""
-                unCheckedChildren=""
-                style={{
-                  backgroundColor: item.available ? "#195B38" : "#ff4d4f",
-                }}
-              />
-            </div>
-          </Card>
-        </Col>
-      ))}
+
+              <div className="mt-2 flex items-center justify-between">
+                {isSkeleton ? (
+                  <Skeleton.Input active size="small" style={{ width: 50 }} />
+                ) : (
+                  <span className="font-semibold text-green-700">£{item.base_price}</span>
+                )}
+
+                {!isSkeleton && (
+                  <Switch
+                    checked={available}
+                    onChange={(checked) => onToggle(item.id, checked)}
+                    checkedChildren=""
+                    unCheckedChildren=""
+                    loading={isUpdating} // ✅ Only show loader on this one
+                    disabled={isUpdating} // ✅ Prevent double-click
+                    style={{
+                      backgroundColor: available ? "#195B38" : "#ff4d4f",
+                    }}
+                  />
+                )}
+              </div>
+            </Card>
+          </Col>
+        );
+      })}
     </Row>
   );
 };
