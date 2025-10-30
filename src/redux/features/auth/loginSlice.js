@@ -10,28 +10,29 @@ const initialState = {
   loading: false,
   success: false,
   userLogin: null,
-  isLoggedIn: true,
+  isLoggedIn: false,
   error: null,
 };
 
 export const loginAuth = createAsyncThunk("login/loginAuth", async (data, { dispatch }) => {
   return axios
-    .post(`${BASE_URL}/`, data, {
+    .post(`${BASE_URL}/auth/login`, data, {
       headers: {
         "Content-Type": "application/json",
       },
     })
     .then((response) => {
-      const access_token = response.data?.access_token;
-      dispatch(setTokens({ accessToken: access_token }));
-      return response.data;
+      const access_token = response.data?.data?.access_token;
+      const refresh_token = response.data?.data?.refresh_token;
+      dispatch(setTokens({ accessToken: access_token, refreshToken: refresh_token }));
+      return response.data?.data;
     })
     .catch((error) => {
       return error.response.data;
     });
 });
 
-export const logoutVendor = createAsyncThunk("login/logout", async (_, { dispatch }) => {
+export const logoutUser = createAsyncThunk("login/logout", async (_, { dispatch }) => {
   dispatch(clearTokens());
   dispatch(logout());
 });
@@ -68,7 +69,7 @@ const loginSlice = createSlice({
         state.userLogin = null;
         state.isLoggedIn = false;
         state.error = toast.error("You have errors in your form.");
-        const errorMessage = action.payload?.message?.error;
+        const errorMessage = action.payload?.message;
         toast.error(
           typeof errorMessage === "string" && errorMessage
             ? errorMessage
@@ -81,7 +82,7 @@ const loginSlice = createSlice({
       state.success = false;
       state.userLogin = null;
       state.isLoggedIn = true;
-      const errorMessage = action.payload?.message?.error;
+      const errorMessage = action.payload?.message;
       toast.error(
         typeof errorMessage === "string" && errorMessage
           ? errorMessage

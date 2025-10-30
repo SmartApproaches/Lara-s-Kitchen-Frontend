@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Checkbox } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,13 +10,10 @@ import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
 import WomanEatingImage from "../../../assets/images/woman-eating.svg";
 import LoginBgImage from "../../../assets/images/login-bg.svg";
 import { Button } from "../../../components";
-import { Link } from "react-router-dom";
+import { loginAuth, resetError } from "../../../redux/features/auth/loginSlice";
 
 const loginSchema = yup.object().shape({
-  username: yup
-    .string()
-    .required("Username is required")
-    .min(3, "Username must be at least 3 characters"),
+  username: yup.string().email("Please enter a valid email address").required("Email is required"),
   password: yup
     .string()
     .required("Password is required")
@@ -23,8 +22,34 @@ const loginSchema = yup.object().shape({
 });
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const logoRef = useRef(null);
+
+  const isLoggedIn = useSelector((state) => state.login?.isLoggedIn);
+  const loading = useSelector((state) => state.login?.loading);
+  const user = useSelector((state) => state.login?.userLogin);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: "onBlur",
+    defaultValues: {
+      username: "",
+      password: "",
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (data) => {
+    dispatch(loginAuth({ email: data.username, password: data.password }));
+  };
 
   useEffect(() => {
     const logo = logoRef.current;
@@ -37,25 +62,19 @@ const LoginForm = () => {
     }
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: yupResolver(loginSchema),
-    mode: "onBlur",
-    defaultValues: {
-      username: "",
-      password: "",
-      rememberMe: false,
-    },
-  });
+  useEffect(() => {
+    if (user?.role?.role === "super_admin") {
+      navigate("/admin/dashboard");
+    } else if (user?.role?.role === "kitchen") {
+      navigate("/kitchen/dashboard");
+    } else if (user?.role?.role === "cashier") {
+      navigate("/cashier/dashboard");
+    }
+  }, [isLoggedIn, navigate, location, user]);
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    // login logic
-  };
+  useEffect(() => {
+    dispatch(resetError());
+  }, [dispatch]);
 
   return (
     <div className="relative h-full min-h-screen overflow-hidden">
@@ -76,6 +95,7 @@ const LoginForm = () => {
           <div className="mb-6 flex justify-center">
             <img
               ref={logoRef}
+              onClick={() => navigate("/")}
               src="/logo.svg"
               alt="Brand Logo"
               className="animate-zoom-in hover-shake h-auto w-32 transition-all duration-200 md:w-36 lg:w-40 xl:w-46"
@@ -153,19 +173,13 @@ const LoginForm = () => {
             <Button
               type="submit"
               size="xl"
-              disabled={isSubmitting}
-              loading={isSubmitting}
+              disabled={loading}
+              loading={loading}
               variant="primary"
               className="w-full"
             >
               Login
             </Button>
-
-            <div className="mt-4 flex flex-col items-start space-y-2 text-start text-base font-medium text-gray-600">
-              <Link to="/admin/dashboard">Super admin's dashboard</Link>
-              <Link to="/cashier/dashboard">Cashier's dashboard</Link>
-              <Link to="/kitchen/dashboard">Kitchen's dashboard</Link>
-            </div>
           </form>
         </div>
       </div>

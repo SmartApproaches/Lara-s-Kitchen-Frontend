@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+
 import rootReducer from "../rootReducer/rootReducer";
 import { api } from "../api/rtkQuery";
 
@@ -18,6 +19,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  whitelist: ["tokens", "login"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
