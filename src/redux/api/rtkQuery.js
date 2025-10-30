@@ -4,7 +4,7 @@ const PROXY = import.meta.env.VITE_API_BASE_URL;
 const baseQuery = fetchBaseQuery({
   baseUrl: PROXY,
   prepareHeaders: (headers, { getState }) => {
-    const accessToken = getState().token.states.accessToken;
+    const accessToken = getState().tokens?.accessToken;
     if (accessToken) headers.set("authorization", `Bearer ${accessToken}`);
     return headers;
   },

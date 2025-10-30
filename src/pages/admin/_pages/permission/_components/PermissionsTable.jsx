@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Table, Skeleton, Alert, Checkbox, Modal, Tag } from "antd";
-import { ArrowLeft01Icon, ArrowRight01Icon, Delete01Icon, Edit02Icon } from "hugeicons-react";
+import { Delete01Icon, Edit02Icon } from "hugeicons-react";
 import { IMAGES } from "../../../../../constants";
 
-const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, isDeleting }) => {
-  const [page, setPage] = useState(1);
+const PermissionsTable = ({
+  permissions,
+  isLoading,
+  isError,
+  onEdit,
+  onDelete,
+  isDeleting,
+  pagination,
+  onPageChange,
+}) => {
   const [permissionsData, setPermissionsData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
   const [bulkDeleteModalVisible, setBulkDeleteModalVisible] = useState(false);
-  const pageSize = 5;
-  const totalPages = Math.ceil((permissionsData?.length || 0) / pageSize);
 
   useEffect(() => {
     if (permissions) {
       setPermissionsData(permissions);
+      setSelectedRows([]);
     }
   }, [permissions]);
 
@@ -29,13 +36,10 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
 
   const handleSelectAll = (checked) => {
     if (checked) {
-      const currentPageData = permissionsData?.slice((page - 1) * pageSize, page * pageSize);
-      const currentPageIds = currentPageData?.map((item) => item.id) || [];
-      setSelectedRows([...new Set([...selectedRows, ...currentPageIds])]);
+      const allIds = permissionsData?.map((item) => item?.id) || [];
+      setSelectedRows(allIds);
     } else {
-      const currentPageData = permissionsData?.slice((page - 1) * pageSize, page * pageSize);
-      const currentPageIds = currentPageData?.map((item) => item.id) || [];
-      setSelectedRows(selectedRows.filter((id) => !currentPageIds.includes(id)));
+      setSelectedRows([]);
     }
   };
 
@@ -50,12 +54,16 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
     setDeleteModalVisible(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (recordToDelete && onDelete) {
-      onDelete(recordToDelete.id);
+  const handleConfirmDelete = async () => {
+    try {
+      if (recordToDelete && onDelete) {
+        await onDelete(recordToDelete.id);
+      }
+    } catch (error) {
+    } finally {
+      setDeleteModalVisible(false);
+      setRecordToDelete(null);
     }
-    setDeleteModalVisible(false);
-    setRecordToDelete(null);
   };
 
   const handleCancelDelete = () => {
@@ -70,12 +78,16 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
     setBulkDeleteModalVisible(true);
   };
 
-  const handleConfirmBulkDelete = () => {
-    if (onDelete) {
-      onDelete(selectedRows);
+  const handleConfirmBulkDelete = async () => {
+    try {
+      if (onDelete) {
+        await onDelete(selectedRows);
+      }
       setSelectedRows([]);
+    } catch (error) {
+    } finally {
+      setBulkDeleteModalVisible(false);
     }
-    setBulkDeleteModalVisible(false);
   };
 
   const handleCancelBulkDelete = () => {
@@ -91,46 +103,47 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
       case "completed":
         return "green";
       default:
-        return "gray";
+        return "green";
     }
   };
+
+  const allIds = permissionsData?.map((item) => item?.id) || [];
+  const isAllSelected = allIds.length > 0 && allIds.every((id) => selectedRows.includes(id));
+  const isSomeSelected = allIds.some((id) => selectedRows.includes(id)) && !isAllSelected;
 
   const columns = [
     {
       title: (
         <Checkbox
           onChange={(e) => handleSelectAll(e.target.checked)}
-          checked={permissionsData
-            ?.slice((page - 1) * pageSize, page * pageSize)
-            .every((item) => selectedRows.includes(item.id))}
-          indeterminate={
-            permissionsData
-              ?.slice((page - 1) * pageSize, page * pageSize)
-              .some((item) => selectedRows.includes(item.id)) &&
-            !permissionsData
-              ?.slice((page - 1) * pageSize, page * pageSize)
-              .every((item) => selectedRows.includes(item.id))
-          }
+          checked={isAllSelected}
+          indeterminate={isSomeSelected}
         />
       ),
       dataIndex: "select",
       width: 60,
       render: (_, record) => (
         <Checkbox
-          checked={selectedRows.includes(record.id)}
-          onChange={(e) => handleRowSelect(record.id, e.target.checked)}
+          checked={selectedRows.includes(record?.id)}
+          onChange={(e) => handleRowSelect(record?.id, e.target.checked)}
         />
       ),
     },
     {
       title: "NAME",
       dataIndex: "name",
+      className: ["font-medium", "capitalize"],
+    },
+    {
+      title: "EMAIL",
+      dataIndex: "email",
       className: "font-medium",
     },
     {
       title: "ROLE",
       dataIndex: "role",
-      className: "font-medium",
+      className: ["font-medium", "capitalize"],
+      render: (roleObj) => roleObj?.name || "N/A",
     },
     {
       title: "STATUS",
@@ -141,19 +154,21 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
           color={getStatusColor(status)}
           className="!rounded-[11px] !p-1 !px-4 capitalize sm:!text-base"
         >
-          {status}
+          {status || "Inactive"}
         </Tag>
       ),
     },
     {
       title: "DATE ADDED",
-      dataIndex: "dateAdded",
+      dataIndex: "created_at",
       className: "font-medium",
+      render: (created_at) => (created_at ? new Date(created_at).toLocaleString() : "N/A"),
     },
     {
       title: "LAST UPDATED",
-      dataIndex: "lastUpdated",
+      dataIndex: "updated_at",
       className: "font-medium",
+      render: (updated_at) => (updated_at ? new Date(updated_at).toLocaleString() : "N/A"),
     },
     {
       title: "ACTION",
@@ -202,8 +217,6 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
       </div>
     );
 
-  const paginatedData = permissionsData?.slice((page - 1) * pageSize, page * pageSize);
-
   return (
     <div className="mt-8">
       {selectedRows.length > 0 && (
@@ -213,7 +226,7 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
           </span>
           <button
             onClick={handleBulkDelete}
-            className="cursor-pointer rounded bg-red-500 px-3 py-1 md:py-2 text-sm font-medium text-white transition-colors hover:bg-red-600"
+            className="cursor-pointer rounded bg-red-500 px-3 py-1 text-sm font-medium text-white transition-colors hover:bg-red-600 md:py-2"
             type="button"
           >
             Delete Selected
@@ -230,38 +243,21 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
           </div>
         ) : (
           <Table
-            dataSource={paginatedData}
+            dataSource={permissionsData}
             columns={columns}
             rowKey="id"
-            pagination={false}
+            pagination={{
+              current: pagination?.current || 1,
+              pageSize: pagination?.pageSize || 10,
+              total: pagination?.total || 0,
+              showSizeChanger: false,
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+              onChange: (page) => onPageChange(page),
+            }}
             className="custom-table min-w-[1000px]"
           />
         )}
       </div>
-
-      {permissions?.length > 0 && (
-        <div className="mt-4 flex items-center justify-between font-semibold text-gray-600">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-            type="button"
-          >
-            <ArrowLeft01Icon strokeWidth={2} size={20} />
-          </button>
-          <span className="text-base">
-            {page} of {totalPages}
-          </span>
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-            type="button"
-          >
-            <ArrowRight01Icon strokeWidth={2} size={20} />
-          </button>
-        </div>
-      )}
 
       <Modal
         title={
@@ -282,15 +278,18 @@ const PermissionsTable = ({ permissions, isLoading, isError, onEdit, onDelete, i
           <p>Are you sure you want to delete this permission?</p>
           {recordToDelete && (
             <div className="mt-3 rounded bg-gray-50 p-3">
-              <p className="font-medium text-gray-900">{recordToDelete.name}</p>
-              <p className="text-sm text-gray-600">Role: {recordToDelete.role}</p>
+              <p className="font-medium text-gray-900">{recordToDelete?.name}</p>
+              <p className="text-sm text-gray-600">Email: {recordToDelete?.email}</p>
+              <p className="text-sm text-gray-600">Role: {recordToDelete?.role?.name || "N/A"}</p>
               <p className="text-sm text-gray-600">
                 Status:{" "}
-                <Tag color={getStatusColor(recordToDelete.status)} className="ml-1 capitalize">
+                <Tag color={getStatusColor(recordToDelete?.status)} className="ml-1 capitalize">
                   {recordToDelete.status}
                 </Tag>
               </p>
-              <p className="text-sm text-gray-600">Added: {recordToDelete.dateAdded}</p>
+              <p className="text-sm text-gray-600">
+                Added: {new Date(recordToDelete?.created_at).toLocaleString()}
+              </p>
             </div>
           )}
         </div>

@@ -6,9 +6,10 @@ import { Button } from "../../../../../components";
 
 const PermissionSuccessModal = ({ visible, onClose, userName, userRole, isEditMode = false }) => {
   const title = isEditMode ? "Permission Updated" : "Permission Granted";
+  const role = userRole === "super_admin" ? "Super Admin" : userRole;
   const message = isEditMode
-    ? `You have updated ${userName}'s ${userRole} Permission`
-    : `You have given ${userName} ${userRole} Permission`;
+    ? `You have updated ${userName?.toLowerCase()}'s ${role?.toLowerCase()}'s permission`
+    : `You have given ${userName?.toLowerCase()} ${role?.toLowerCase()} permission`;
 
   return (
     <Modal
@@ -16,17 +17,17 @@ const PermissionSuccessModal = ({ visible, onClose, userName, userRole, isEditMo
       onCancel={onClose}
       footer={null}
       centered
-      width={400}
+      width={500}
       closable={false}
       className="permission-success-modal"
       styles={{
         body: {
           textAlign: "center",
-          padding: "40px 24px",
+          padding: "30px 10px",
         },
       }}
     >
-      <div className="flex flex-col items-center justify-center space-y-6">
+      <div className="flex flex-col items-center justify-center space-y-6 md:space-y-10">
         <div className="flex h-32 w-32 items-center justify-center rounded-full bg-green-500">
           <Tick02Icon strokeWidth={2} size={80} className="text-2xl text-white" />
         </div>

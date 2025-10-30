@@ -63,17 +63,25 @@ const PermissionsModal = ({
         "Update order status (preparing → ready)",
       ],
     },
+    {
+      value: "Consumer",
+      label: "Consumer",
+      description: "The Consumer would have access to:",
+      permissions: [
+        "Browse menu items",
+        "Place orders for dine-in, takeout, or delivery",
+        "Make payments securely",
+        "View order history and status",
+      ],
+    },
   ];
 
-  useEffect(() => {
-    if (isEditMode && editData) {
-      setEmployeeName(editData.name || "");
-      setEmail(editData.email || "");
-      setSelectedRole(editData.role || "");
+  const handleSubmit = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-  }, [isEditMode, editData]);
 
-  const handleSubmit = async () => {
     if (!employeeName.trim()) {
       customWarningToast("Please enter employee name");
       return;
@@ -82,37 +90,52 @@ const PermissionsModal = ({
       customWarningToast("Please enter email address");
       return;
     }
-    if (!selectedRole) {
-      customWarningToast("Please select a role");
-      return;
-    }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       customWarningToast("Please enter a valid email address");
       return;
     }
+    if (!selectedRole) {
+      customWarningToast("Please select a role");
+      return;
+    }
 
-    const currentDate = new Date().toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    const normalizedRole =
+      selectedRole?.toLowerCase() === "super admin" ? "super_admin" : selectedRole?.toLowerCase();
 
-    const permissionData = {
-      id: isEditMode ? editData.id : Date.now().toString(),
-      name: employeeName,
-      email: email,
-      role: selectedRole,
-      status: isEditMode ? editData.status : "Active",
-      dateAdded: isEditMode ? editData.dateAdded : currentDate,
-      lastUpdated: currentDate,
-    };
+    const permissionData = {};
+
+    if (isEditMode && editData) {
+      if (employeeName !== editData?.name) {
+        permissionData.name = employeeName;
+      }
+      if (email !== editData?.email) {
+        permissionData.email = email;
+      }
+      const originalRole =
+        editData?.role?.name?.toLowerCase() === "super admin"
+          ? "super_admin"
+          : editData?.role?.name?.toLowerCase();
+      if (normalizedRole !== originalRole) {
+        permissionData.role = normalizedRole;
+      }
+      if (Object.keys(permissionData).length === 0) {
+        customWarningToast("No changes made to update");
+        return;
+      }
+    } else {
+      permissionData.name = employeeName;
+      permissionData.email = email;
+      permissionData.role = normalizedRole;
+    }
 
     try {
-      await onSubmit(permissionData, isEditMode);
-      handleClose();
-    } catch {}
+      await onSubmit(permissionData);
+
+      setEmployeeName("");
+      setEmail("");
+      setSelectedRole("");
+    } catch (error) {}
   };
 
   const handleClose = () => {
@@ -122,7 +145,24 @@ const PermissionsModal = ({
     onClose();
   };
 
-  const selectedRoleData = roles.find((role) => role.value === selectedRole);
+  const adminSelection =
+    selectedRole === "super_admin"
+      ? "Super Admin"
+      : selectedRole === "Kitchen Staff"
+        ? "Kitchen"
+        : selectedRole;
+
+  const selectedRoleData = roles.find(
+    (role) => role.value.toLowerCase() === adminSelection.toLowerCase(),
+  );
+
+  useEffect(() => {
+    if (isEditMode && editData) {
+      setEmployeeName(editData?.name || "");
+      setEmail(editData?.email || "");
+      setSelectedRole(editData?.role?.name || "");
+    }
+  }, [isEditMode, editData]);
 
   return (
     <Modal
@@ -133,8 +173,10 @@ const PermissionsModal = ({
           </h2>
         </div>
       }
+      closable={true}
       open={visible}
       onCancel={handleClose}
+      maskClosable={false}
       footer={null}
       width="100%"
       style={{ maxWidth: 600, padding: 10 }}
@@ -147,7 +189,7 @@ const PermissionsModal = ({
             size="large"
             value={employeeName}
             onChange={(e) => setEmployeeName(e.target.value)}
-            className="text-base"
+            className="text-base capitalize"
             style={{ backgroundColor: "#f5f5f5", border: "none" }}
           />
         </div>
@@ -172,7 +214,7 @@ const PermissionsModal = ({
             size="large"
             value={selectedRole}
             onChange={setSelectedRole}
-            className="w-full text-base"
+            className="w-full text-base capitalize"
             style={{ backgroundColor: "#f5f5f5" }}
           >
             {roles.map((role) => (
@@ -202,8 +244,10 @@ const PermissionsModal = ({
           type="primary"
           className="w-full"
           size="lg"
+          htmltype="button"
           onClick={handleSubmit}
           loading={isSubmitting}
+          disabled={isSubmitting}
         >
           {isEditMode ? "Update Permission" : "Give Permission"}
         </Button>
