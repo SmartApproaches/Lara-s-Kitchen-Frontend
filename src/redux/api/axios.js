@@ -12,7 +12,7 @@ export const axiosAuth = axios.create({
 
 export const createAuthInterceptor = (instance, store) => {
   instance.interceptors.request.use((config) => {
-    const accessToken = store.getState().token.states.accessToken;
+    const accessToken = store.getState().tokens?.accessToken;
     if (accessToken) {
       config.headers = {
         ...config.headers,

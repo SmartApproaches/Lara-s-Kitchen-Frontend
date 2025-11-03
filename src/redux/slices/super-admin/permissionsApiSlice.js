@@ -3,16 +3,19 @@ import { api } from "../../api/rtkQuery";
 export const permissionsApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getPermissions: builder.query({
-      query: () => "/permissions",
+      query: (args) => ({
+        url: "/admin/permission/employees",
+        params: { page: args?.page ?? 1 },
+      }),
       providesTags: ["Permissions"],
     }),
     getPermission: builder.query({
-      query: (id) => `/permissions/${id}`,
+      query: (id) => `/admin/permission/employee-details/${id}`,
       providesTags: ["Permissions"],
     }),
     createPermission: builder.mutation({
-      query: (data) => ({
-        url: "/permissions",
+      query: ({ ...data }) => ({
+        url: "/admin/permission/add-employee",
         method: "POST",
         body: data,
       }),
@@ -20,7 +23,7 @@ export const permissionsApiSlice = api.injectEndpoints({
     }),
     updatePermission: builder.mutation({
       query: ({ id, ...data }) => ({
-        url: `/permissions/${id}`,
+        url: `/admin/permission/update-employee/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -28,7 +31,7 @@ export const permissionsApiSlice = api.injectEndpoints({
     }),
     deletePermission: builder.mutation({
       query: (id) => ({
-        url: `/permissions/${id}`,
+        url: `/admin/permission/delete-employee/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Permissions"],
