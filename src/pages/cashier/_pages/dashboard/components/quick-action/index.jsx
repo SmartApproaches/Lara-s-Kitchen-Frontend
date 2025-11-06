@@ -1,23 +1,14 @@
-// import React from "react";
-// import { Button } from "antd";
-// import { ICONS } from "../../../../../../constants";
-
-// const QuickAccess = () => {
-//   return (
-//     <div className="flex">
-//       <h3 className="text-2xl font-semibold text-[#00BC1A]">Quick access</h3>
-//       <Button className="!bg-inherit" />
-//     </div>
-//   );
-// };
-
-// export default QuickAccess;
-
 import React from "react";
 import { Button } from "antd";
-import { BellOutlined, PlusOutlined, DollarOutlined } from "@ant-design/icons";
 import { ICONS } from "../../../../../../constants";
+import { useNavigate } from "react-router-dom";
+
 const QuickAccess = () => {
+  const naviagte = useNavigate();
+
+  const btnClasses =
+    "!border-primary text-primary flex w-full items-center gap-2 rounded-md border !bg-transparent text-xl hover:!bg-[#B4FFC0] hover:!border-primary hover:!text-primary transition-all duration-200";
+
   return (
     <div className="flex w-full items-center gap-6 bg-inherit p-5">
       {/* Title */}
@@ -27,21 +18,23 @@ const QuickAccess = () => {
       <div className="flex w-full gap-4">
         <Button
           icon={<img src={ICONS.dishBorder} alt="dish" className="h-6 w-6" />}
-          className="!border-primary text-primary flex w-full items-center gap-2 rounded-md border !bg-transparent text-xl"
+          className={btnClasses}
+          onClick={() => naviagte("/cashier/orders")}
         >
-          New orders Queue
+          All Orders
         </Button>
 
         <Button
           icon={<img src={ICONS.addIcon} alt="add" className="h-6 w-6" />}
-          className="text-primary !border-primary flex w-full items-center gap-2 rounded-md border !bg-transparent text-xl"
+          className={btnClasses}
         >
           Add New Order
         </Button>
 
         <Button
           icon={<img src={ICONS.transactionsIcon} alt="transactionsIcon" className="h-6 w-6" />}
-          className="text-primary !border-primary flex w-full items-center gap-2 rounded-md border !bg-transparent text-xl"
+          className={btnClasses}
+          onClick={() => naviagte("/cashier/transaction")}
         >
           All Transactions
         </Button>
