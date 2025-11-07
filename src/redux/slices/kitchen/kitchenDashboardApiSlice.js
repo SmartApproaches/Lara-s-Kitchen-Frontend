@@ -7,9 +7,13 @@ export const kitchenDashboardApiSlice = api.injectEndpoints({
       providesTags: ["KitchenDashboard"],
     }),
     getDasOrderToPrepare: builder.query({
-      query: ({ page = 1 }) => `/kitchen/dashboard/order-to-prepare?page=${page}`,
+      query: ({ page = 1, status }) => {
+        const statusQuery = status ? `&status=${status}` : "";
+        return `/kitchen/orders/orders-to-prepare?page=${page}${statusQuery}`;
+      },
       providesTags: ["KitchenDashboard"],
     }),
+
     updateOrderStatus: builder.mutation({
       query: ({ orderId, status }) => ({
         url: `/kitchen/orders/${orderId}/update-order-status`,

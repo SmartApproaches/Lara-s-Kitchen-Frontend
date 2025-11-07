@@ -21,20 +21,20 @@ const Orders = () => {
     isLoading: isLoadingStats,
     isError: isErrorStats,
   } = useGetKitchenDashBoardDataQuery();
+
   const {
-    data: pendingOrdersData,
+    data: ordersData,
     isLoading: isLoadingOrders,
     isError: isErrorOrders,
-  } = useGetDasOrderToPrepareQuery({ page: currentPage });
+  } = useGetDasOrderToPrepareQuery({
+    page: currentPage,
+    status: activeTab, // ✅ status filter applied here
+  });
 
   const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
 
-  const allOrders = pendingOrdersData?.data?.data || [];
-  const pagination = pendingOrdersData?.data;
-  // ✅ Filtering based on order status
-  const pendingOrders = allOrders.filter((order) => order.status === "pending");
-  const preparingOrders = allOrders.filter((order) => order.status === "preparing");
-  const readyOrders = allOrders.filter((order) => order.status === "ready");
+  const orders = ordersData?.data?.data || [];
+  const pagination = ordersData?.data;
 
   const statsConfig = [
     {
@@ -48,14 +48,12 @@ const Orders = () => {
       footerIcon: AutoConversationsIcon,
       title: "Completed Orders",
       value: orderStats?.data?.completed_orders || 0,
-      // footer: "20% Growth",
     },
     {
       icon: ICONS.ordersBeingPrepared,
       footerIcon: AutoConversationsIcon,
       title: "Orders being prepared",
       value: orderStats?.data?.orders_preparing || 0,
-      // footer: "30% Done",
     },
   ];
 
@@ -69,13 +67,6 @@ const Orders = () => {
   };
 
   const renderOrders = () => {
-    let filteredOrders =
-      activeTab === "pending"
-        ? pendingOrders
-        : activeTab === "preparing"
-          ? preparingOrders
-          : readyOrders;
-
     if (isLoadingOrders) {
       return Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="rounded-xl border bg-white p-4 shadow">
@@ -84,16 +75,13 @@ const Orders = () => {
       ));
     }
 
-    if (filteredOrders.length === 0)
+    if (orders.length === 0)
       return <p className="py-6 text-center text-gray-400">No orders found</p>;
 
-    return filteredOrders.map((order) => (
+    return orders.map((order) => (
       <PendingOrderCard
         key={order.id}
-        order={{
-          ...order,
-          order_type: order.order_type?.toUpperCase(),
-        }}
+        order={{ ...order, order_type: order.order_type?.toUpperCase() }}
         disablePreparing={order.status !== "pending"}
         disableReady={order.status !== "preparing"}
         onMarkAsPreparing={() => handleUpdateStatus(order.id, "preparing")}
@@ -113,6 +101,7 @@ const Orders = () => {
         ))}
       </div>
 
+      {/* ✅ Status Filter Tabs */}
       <div className="mb-6 flex gap-2 rounded-full bg-[#D6FADB] p-2">
         {[
           { id: "pending", label: "Pending" },
@@ -121,8 +110,13 @@ const Orders = () => {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 rounded-full px-5 py-2 font-semibold transition ${activeTab === tab.id ? "bg-white" : "text-gray-600"} `}
+            onClick={() => {
+              setActiveTab(tab.id);
+              setCurrentPage(1); // ✅ Reset page when switching tab
+            }}
+            className={`flex-1 rounded-full px-5 py-2 font-semibold transition ${
+              activeTab === tab.id ? "bg-white" : "text-gray-600"
+            } `}
           >
             {tab.label}
           </button>
@@ -130,6 +124,8 @@ const Orders = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">{renderOrders()}</div>
+
+      {/* ✅ Pagination */}
       {pagination?.total > pagination?.per_page && (
         <div className="mt-6 flex justify-center">
           <Pagination
@@ -140,16 +136,17 @@ const Orders = () => {
             showSizeChanger={false}
             className="custom-pagination"
           />
+
           <style>
             {`
-        .custom-pagination .ant-pagination-item-active {
-          background-color: #1F5226 !important;
-          border-color: #1F5226 !important;
-        }
-        .custom-pagination .ant-pagination-item-active a {
-          color: #fff !important;
-        }
-      `}
+              .custom-pagination .ant-pagination-item-active {
+                background-color: #1F5226 !important;
+                border-color: #1F5226 !important;
+              }
+              .custom-pagination .ant-pagination-item-active a {
+                color: #fff !important;
+              }
+            `}
           </style>
         </div>
       )}

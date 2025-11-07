@@ -69,6 +69,19 @@ const Dashboard = () => {
     }
   };
 
+  const handleCancel = async (order) => {
+    try {
+      await updateOrderStatus({
+        orderId: order.id,
+        status: "cancel",
+      }).unwrap();
+
+      toast.success("Order moved to Preparing");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update order ❌");
+    }
+  };
+
   const handleMarkAsReady = async (order) => {
     try {
       await updateOrderStatus({
@@ -140,6 +153,7 @@ const Dashboard = () => {
         disableReady={order.status !== "preparing"}
         onMarkAsPreparing={handleMarkAsPreparing}
         onMarkAsReady={handleMarkAsReady}
+        onCancel={handleCancel}
       />
     ));
   };

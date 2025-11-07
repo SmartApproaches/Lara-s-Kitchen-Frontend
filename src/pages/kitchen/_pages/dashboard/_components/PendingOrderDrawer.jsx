@@ -30,7 +30,6 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
   const isPending = status === "pending";
   const isPreparing = status === "preparing";
   const isReady = status === "ready";
-  // Use the real order object (or null)
   const data = useMemo(() => {
     if (!orderData) return null;
 
@@ -122,6 +121,7 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
       width={400}
       bodyStyle={{ padding: 0 }}
       title={null}
+      onClick={(e) => e.stopPropagation()}
     >
       {data ? (
         <div className="h-full overflow-x-hidden overflow-y-auto">
@@ -310,14 +310,16 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
 
           <Divider style={{ margin: "0 24px" }} />
 
-          {/* Footer actions */}
           <div className="p-6">
             <div className="mb-6 flex items-center justify-between text-lg font-semibold">
               <span>Total:</span>
               <span className="text-green-600">£{totalAmount.toFixed(2)}</span>
             </div>
+
+            {/* Hide everything when READY */}
             {!isReady && (
               <div className="space-y-3">
+                {/* Preparing Button */}
                 <Button
                   size="large"
                   block
@@ -335,6 +337,7 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                   {isPreparing ? "Preparing" : "Mark as Preparing"}
                 </Button>
 
+                {/* Ready Button */}
                 <Button
                   size="large"
                   block
@@ -352,17 +355,15 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                   Mark as Ready
                 </Button>
 
+                {/* Cancel Button: ✅ Only active if Pending */}
                 <Button
                   size="large"
                   block
-                  onClick={handleCancel}
+                  onClick={() => onCancel(orderData)}
                   danger
                   ghost
-                  style={{
-                    borderRadius: "5px",
-                    height: "48px",
-                    fontWeight: "600",
-                  }}
+                  className="rounded-lg font-semibold"
+                  style={{ height: "48px" }}
                 >
                   Cancel Order
                 </Button>
