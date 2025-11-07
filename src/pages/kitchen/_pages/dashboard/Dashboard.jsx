@@ -163,7 +163,19 @@ const Dashboard = () => {
             pageSize={pagination.per_page}
             onChange={(page) => setCurrentPage(page)}
             showSizeChanger={false}
+            className="custom-pagination"
           />
+          <style>
+            {`
+        .custom-pagination .ant-pagination-item-active {
+          background-color: #1F5226 !important;
+          border-color: #1F5226 !important;
+        }
+        .custom-pagination .ant-pagination-item-active a {
+          color: #fff !important;
+        }
+      `}
+          </style>
         </div>
       )}
     </div>
