@@ -222,9 +222,7 @@ const Orders = () => {
         </div>
 
         {selectedOrder && (
-          <div className="w-1/4 transition-all duration-300">
-            <OrderSidePanel order={selectedOrder} onClose={() => setSelectedOrder(null)} />
-          </div>
+          <OrderSidePanel order={selectedOrder} onClose={() => setSelectedOrder(null)} />
         )}
       </div>
     </div>

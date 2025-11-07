@@ -47,6 +47,7 @@ import ourLounge from "../assets/images/ourLounge.png";
 import logo from "../assets/images/logo.svg";
 import xIcon from "../assets/icons/xIcon.svg";
 import locationIcon from "../assets/icons/locationIcon.svg";
+import ordersBeingPrepared from "../assets/icons/ordersBeingPre.svg";
 import callIcon from "../assets/icons/callIcon.svg";
 import mailIcon from "../assets/icons/mailIcon.svg";
 import facebookIcon from "../assets/icons/facebookIcon.svg";
@@ -90,6 +91,7 @@ export const ICONS = {
   mailIcon: mailIcon,
   facebookIcon: facebookIcon,
   instagramIcon: instagramIcon,
+  ordersBeingPrepared: ordersBeingPrepared,
 };
 
 export const IMAGES = {
