@@ -28,7 +28,7 @@ const Orders = () => {
     isError: isErrorOrders,
   } = useGetDasOrderToPrepareQuery({
     page: currentPage,
-    status: activeTab, // ✅ status filter applied here
+    status: activeTab,
   });
 
   const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
