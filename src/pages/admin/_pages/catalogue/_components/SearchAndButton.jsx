@@ -4,7 +4,7 @@ import { PlusSignIcon, Search01Icon } from "hugeicons-react";
 
 import { Button } from "../../../../../components";
 
-const SearchAndButton = () => {
+const SearchAndButton = ({ searchQuery, onSearchChange }) => {
   return (
     <div className="relative flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center">
       <div className="relative w-full max-w-lg">
@@ -13,6 +13,8 @@ const SearchAndButton = () => {
         </div>
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search by name"
           className="block w-full rounded-4xl bg-[#D2FFD9] py-3 pr-3 pl-6 font-medium text-[#0CA921] placeholder:text-base placeholder:text-[#0CA921] focus:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none md:text-[18px]"
         />

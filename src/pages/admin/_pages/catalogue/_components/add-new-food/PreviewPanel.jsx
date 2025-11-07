@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Button, Card, Typography, Input } from "antd";
+import React, { useMemo, useState } from "react";
+import { Button, Card, Typography, Input, Image } from "antd";
 import { MinusOutlined, PlusOutlined, SearchOutlined, MenuOutlined } from "@ant-design/icons";
 import {
   ArrowLeft02Icon,
-  ArrowUp01Icon,
   BatteryLowIcon,
   FavouriteIcon,
   GoogleDocIcon,
@@ -24,23 +23,19 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
   const date = new Date();
   const [isFavorited, setIsFavorited] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [drinkQuantities, setDrinkQuantities] = useState({
-    monster: 1,
-    cocacola: 1,
-  });
+
+  const previewUrl = useMemo(() => {
+    if (!uploadedImage) return null;
+    if (typeof uploadedImage === "string") return uploadedImage;
+    if (uploadedImage instanceof File) return URL.createObjectURL(uploadedImage);
+    return null;
+  }, [uploadedImage]);
 
   const hasData = formData?.itemName || uploadedImage;
 
   const finalPrice = formData?.basePrice
-    ? (formData.basePrice - (formData.basePrice * (formData.discount || 0)) / 100).toFixed(2)
+    ? (formData.basePrice - (formData.basePrice * (formData?.discount || 0)) / 100).toFixed(2)
     : "12.00";
-
-  const updateDrinkQuantity = (drink, change) => {
-    setDrinkQuantities((prev) => ({
-      ...prev,
-      [drink]: Math.max(1, prev[drink] + change),
-    }));
-  };
 
   const hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -279,9 +274,9 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
               </div>
 
               <div className="relative flex justify-center">
-                <div className="flex w-80 items-center justify-center overflow-hidden rounded-full md:h-80 md:w-80 lg:h-96 lg:w-96 xl:w-[25rem] 2xl:h-[20rem] 2xl:w-[32rem]">
-                  <img
-                    src={uploadedImage || IMAGES.foodFive}
+                <div className="flex w-40 items-center justify-center overflow-hidden rounded-full md:h-[15rem] md:w-[15rem] lg:h-96 lg:w-96 xl:w-[15rem] xl:h-[15rem]">
+                  <Image
+                    src={previewUrl || IMAGES.foodFive}
                     alt="Food preview"
                     className="relative h-full w-fit object-cover"
                   />
@@ -293,13 +288,13 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
           <div className="relative mt-24">
             <div className="bg-w relative p-3 sm:p-4">
               <h3 className="text-lg font-semibold text-gray-800 capitalize sm:text-xl">
-                {formData?.itemName || "Abula"}
+                {formData?.itemName || "Not specified"}
               </h3>
               <span className="mb-2 block text-lg font-bold text-green-600 sm:text-xl">
                 £{finalPrice}
               </span>
 
-              <div className="mb-3 flex items-center justify-between gap-2 text-sm font-semibold text-gray-500 sm:gap-4">
+              <div className="my-3 flex items-center justify-between gap-2 text-sm font-semibold text-gray-500 sm:gap-4">
                 <div className="flex items-center gap-1">
                   <StarIcon size={16} fill="#FFC107" color="#FFC107" className="text-xs" />
                   <span>4.5</span>
@@ -309,73 +304,14 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
               </div>
 
               <div className="mb-4">
-                <h3 className="text-sm text-gray-700 sm:text-base">Contents:</h3>
-                <p className="mt-1 block w-fit rounded-sm bg-[#F8FFF9] p-2 text-xs font-semibold text-gray-600 sm:text-sm">
+                <h3 className="text-sm font-medium text-gray-500 sm:text-base">Contents:</h3>
+                <p className="mt-3 block w-fit rounded-sm bg-[#F8FFF9] p-2 text-xs font-semibold text-gray-600 capitalize sm:text-sm">
                   {formData?.description || "No description provided."}
                 </p>
               </div>
 
-              <div className="mb-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-gray-700 sm:text-base">Drink</h4>
-                  <Button type="text" className="h-auto p-0">
-                    <ArrowUp01Icon className="text-gray-600" size={16} />
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Text className="text-xs sm:text-sm">Monster Energy- Fury</Text>
-                    <div className="flex items-center rounded border border-gray-300 bg-gray-50">
-                      <Button
-                        type="text"
-                        icon={<MinusOutlined />}
-                        onClick={() => updateDrinkQuantity("monster", -1)}
-                        disabled={drinkQuantities.monster <= 1}
-                        className="flex h-6 w-6 items-center justify-center border-0 !p-0 text-gray-400 hover:text-gray-600 sm:h-7 sm:w-7"
-                        size="small"
-                      />
-                      <Text className="min-w-[20px] px-2 text-center text-xs font-medium sm:px-3 sm:text-sm">
-                        {drinkQuantities.monster}
-                      </Text>
-                      <Button
-                        type="text"
-                        icon={<PlusOutlined />}
-                        onClick={() => updateDrinkQuantity("monster", 1)}
-                        className="flex h-6 w-6 items-center justify-center border-0 !p-0 text-gray-400 hover:text-gray-600 sm:h-7 sm:w-7"
-                        size="small"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <Text className="text-xs sm:text-sm">Coca-cola 35cl</Text>
-                    <div className="flex items-center rounded border border-gray-300 bg-gray-50">
-                      <Button
-                        type="text"
-                        icon={<MinusOutlined />}
-                        onClick={() => updateDrinkQuantity("cocacola", -1)}
-                        disabled={drinkQuantities.cocacola <= 1}
-                        className="flex h-6 w-6 items-center justify-center border-0 !p-0 text-gray-400 hover:text-gray-600 sm:h-7 sm:w-7"
-                        size="small"
-                      />
-                      <Text className="min-w-[20px] px-2 text-center text-xs font-medium sm:px-3 sm:text-sm">
-                        {drinkQuantities.cocacola}
-                      </Text>
-                      <Button
-                        type="text"
-                        icon={<PlusOutlined />}
-                        onClick={() => updateDrinkQuantity("cocacola", 1)}
-                        className="flex h-6 w-6 items-center justify-center border-0 !p-0 text-gray-400 hover:text-gray-600 sm:h-7 sm:w-7"
-                        size="small"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center rounded-lg border">
+              <div className="mt-20 mb-5 flex items-center justify-between">
+                <div className="border-primary flex items-center rounded-lg border">
                   <Button
                     type="text"
                     icon={<MinusOutlined />}
@@ -388,7 +324,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                     type="text"
                     icon={<PlusOutlined />}
                     onClick={() => setQuantity(quantity + 1)}
-                    className="border-0"
+                    className="text-primary border-0"
                   />
                 </div>
 

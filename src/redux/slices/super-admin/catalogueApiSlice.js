@@ -3,16 +3,22 @@ import { api } from "../../api/rtkQuery";
 export const catalogueApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getCatalogue: builder.query({
-      query: () => "/catalogue",
+      query: (args) => ({
+        url: "/admin/catalogue/all-menus",
+        params: {
+          page: args?.page ?? 1,
+          search: args?.search ?? "",
+        },
+      }),
       providesTags: ["Catalogue"],
     }),
     getCatalogueItem: builder.query({
-      query: (id) => `/catalogue/${id}`,
+      query: (id) => `/admin/catalogue/menu-details/${id}`,
       providesTags: ["Catalogue"],
     }),
     editCatalogueItem: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/catalogue/${id}`,
+      query: ({ id, data }) => ({
+        url: `/admin/catalogue/update-menu/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -20,7 +26,7 @@ export const catalogueApiSlice = api.injectEndpoints({
     }),
     addCatalogueItem: builder.mutation({
       query: (data) => ({
-        url: "/catalogue",
+        url: "/admin/catalogue/add-menu",
         method: "POST",
         body: data,
       }),
@@ -28,7 +34,7 @@ export const catalogueApiSlice = api.injectEndpoints({
     }),
     deleteCatalogueItem: builder.mutation({
       query: (id) => ({
-        url: `/catalogue/${id}`,
+        url: `/admin/catalogue/delete-menu/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Catalogue"],
