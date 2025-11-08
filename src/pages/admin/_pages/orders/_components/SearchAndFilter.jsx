@@ -5,46 +5,108 @@ import {
   Cancel01Icon,
   Upload04Icon,
   Search02Icon,
+  Calendar01Icon,
 } from "hugeicons-react";
-import dayjs from "dayjs";
 
 import { Button as CustomButton } from "../../../../../components";
 
-const SearchAndFilters = ({ handleCSVExport }) => {
+const { RangePicker } = DatePicker;
+
+const SearchAndFilters = ({
+  handleCSVExport,
+  onDateChange,
+  onSearchChange,
+  onFilterChange,
+  onOrderTypeChange,
+}) => {
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [selectedDateRange, setSelectedDateRange] = useState("thisMonth");
-  const [customDate, setCustomDate] = useState(null);
+  const [selectedOrderType, setSelectedOrderType] = useState(null);
+  const [openCalendar, setOpenCalendar] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState("This Month");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filterMenuItems = [
-    { key: "Completed", label: "Completed" },
-    { key: "Pending", label: "Pending" },
-    { key: "Canceled", label: "Canceled" },
+    { key: "completed", label: "Completed" },
+    { key: "pending", label: "Pending" },
+    { key: "cancelled", label: "Cancelled" },
+    { key: "general", label: "General" },
+  ];
+
+  const orderTypeMenuItems = [
+    { key: "all", label: "All" },
+    { key: "specialOffer", label: "Special Offer" },
+    { key: "generalOrder", label: "General Order" },
   ];
 
   const dateRangeMenuItems = [
-    { key: "thisMonth", label: "This Month" },
-    { key: "thisWeek", label: "This Week" },
     { key: "today", label: "Today" },
+    { key: "thisWeek", label: "This Week" },
+    { key: "thisMonth", label: "This Month" },
     { key: "lastWeek", label: "Last Week" },
     { key: "lastMonth", label: "Last Month" },
+    { key: "lastYear", label: "Last Year" },
   ];
 
-  const handleFilterSelect = ({ key }) => setSelectedFilter(key);
-  const handleClearFilter = () => setSelectedFilter(null);
-  const handleDateRangeSelect = ({ key }) => {
-    setSelectedDateRange(key);
-    setCustomDate(null);
-  };
-  const handleDateChange = (date) => {
-    setSelectedDateRange("custom");
-    setCustomDate(date);
+  const handleFilterSelect = ({ key }) => {
+    setSelectedFilter(key);
+    if (onFilterChange) {
+      onFilterChange(key);
+    }
   };
 
-  const getDateRangeLabel = () => {
-    if (selectedDateRange === "custom" && customDate) {
-      return dayjs(customDate).format("MMM DD, YYYY");
+  const handleClearFilter = () => {
+    setSelectedFilter(null);
+    if (onFilterChange) {
+      onFilterChange(null);
     }
-    return dateRangeMenuItems.find((item) => item.key === selectedDateRange)?.label || "This Month";
+  };
+
+  const handleOrderTypeSelect = ({ key }) => {
+    setSelectedOrderType(key);
+    if (onOrderTypeChange) {
+      onOrderTypeChange(key);
+    }
+  };
+
+  const handleClearOrderType = () => {
+    setSelectedOrderType(null);
+    if (onOrderTypeChange) {
+      onOrderTypeChange(null);
+    }
+  };
+
+  const handleDateRangeSelect = ({ key }) => {
+    const item = dateRangeMenuItems.find((m) => m.key === key);
+    if (item) {
+      setSelectedLabel(item.label);
+      if (onDateChange) {
+        onDateChange({ type: "preset", value: key });
+      }
+    }
+  };
+
+  const handleCalendarChange = (dates, dateStrings) => {
+    if (dates && dateStrings.length === 2) {
+      const [from, to] = dateStrings;
+      setSelectedLabel(`${from} → ${to}`);
+      if (onDateChange) {
+        onDateChange({ type: "custom", from, to });
+      }
+    }
+    setOpenCalendar(false);
+  };
+
+  const handleSearchInput = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (onSearchChange) {
+      onSearchChange(value);
+    }
+  };
+
+  const getOrderTypeLabel = (key) => {
+    const item = orderTypeMenuItems.find((m) => m.key === key);
+    return item ? item.label : "";
   };
 
   return (
@@ -56,21 +118,52 @@ const SearchAndFilters = ({ handleCSVExport }) => {
           </div>
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search by order number or customer name"
+            value={searchTerm}
+            onChange={handleSearchInput}
             className="block w-full rounded-full bg-green-100 py-3 pr-12 pl-6 font-medium text-green-700 placeholder:text-base placeholder:text-green-700 focus:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none md:text-lg"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-          <Dropdown menu={{ items: dateRangeMenuItems, onClick: handleDateRangeSelect }}>
-            <Button className="!bg-accent border-none text-[18px]">{getDateRangeLabel()}</Button>
+          <Dropdown
+            menu={{ items: dateRangeMenuItems, onClick: handleDateRangeSelect }}
+            placement="bottomLeft"
+            trigger={["click"]}
+          >
+            <Button
+              style={{
+                backgroundColor: "#b9f8cf",
+                border: "none",
+                color: "#1F5226",
+                fontWeight: 500,
+                fontSize: "18px",
+              }}
+            >
+              {selectedLabel}
+            </Button>
           </Dropdown>
 
-          <DatePicker
-            onChange={handleDateChange}
-            value={customDate}
-            className="!bg-accent !w-auto !py-2 text-[18px]"
-          />
+          <div className="relative">
+            <Button
+              style={{
+                backgroundColor: "#b9f8cf",
+                color: "#1F5226",
+                border: "none",
+              }}
+              icon={<Calendar01Icon size={20} />}
+              onClick={() => setOpenCalendar((prev) => !prev)}
+            />
+            {openCalendar && (
+              <div className="absolute right-0 z-50 mt-2 rounded-lg bg-white p-2 shadow-lg">
+                <RangePicker
+                  open
+                  onChange={handleCalendarChange}
+                  onOpenChange={(open) => !open && setOpenCalendar(false)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -101,7 +194,36 @@ const SearchAndFilters = ({ handleCSVExport }) => {
                 </span>
               }
             >
-              {selectedFilter}
+              {selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1)}
+            </Tag>
+          )}
+
+          <Dropdown menu={{ items: orderTypeMenuItems, onClick: handleOrderTypeSelect }}>
+            <Button className="border-none !bg-gray-100 !text-base">
+              Sort by: {selectedOrderType ? getOrderTypeLabel(selectedOrderType) : "All"}
+            </Button>
+          </Dropdown>
+
+          {selectedOrderType && selectedOrderType !== "all" && (
+            <Tag
+              style={{
+                padding: "9px 20px",
+                fontSize: "16px",
+                color: "black",
+                display: "flex",
+                alignItems: "center",
+              }}
+              color="white"
+              className="font-semibold"
+              closable
+              onClose={handleClearOrderType}
+              closeIcon={
+                <span className="ml-2 cursor-pointer rounded-full bg-gray-200 p-1">
+                  <Cancel01Icon size={14} />
+                </span>
+              }
+            >
+              {getOrderTypeLabel(selectedOrderType)}
             </Tag>
           )}
         </div>
