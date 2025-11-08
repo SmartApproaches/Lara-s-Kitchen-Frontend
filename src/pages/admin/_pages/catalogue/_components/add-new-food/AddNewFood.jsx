@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ArrowLeft02Icon } from "hugeicons-react";
-import { Button, Row, Col, Typography, message, Spin } from "antd";
+import { Button, Row, Col, Typography, Spin } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -25,6 +25,8 @@ const { Title } = Typography;
 const schema = yup.object().shape({
   itemName: yup.string().required("Item name is required"),
   category: yup.string().required("Category is required"),
+  subcategoryId: yup.string().required("Sub category is required"),
+  typeOfMeal: yup.string().required("Type of meal is required"),
   description: yup
     .string()
     .nullable()
@@ -45,201 +47,49 @@ const schema = yup.object().shape({
   calorieSize: yup
     .number()
     .typeError("Calories must be a number")
+    .required("Calorie size is required")
     .min(0, "Calories must be positive"),
   preparationTime: yup
     .number()
     .typeError("Preparation time must be a number")
+    .required("Preparation time is required")
     .min(1, "Preparation time must be at least 1 minute"),
-  portionSizes: yup.object().shape({
-    small: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Small portion price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    medium: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Medium portion price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    large: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Large portion price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-  }),
-  addOns: yup.object().shape({
-    drinks: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Drinks add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    extraProteins: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Extra proteins add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    sideDish: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Side dish add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-  }),
 });
 
 const step0Schema = yup.object().shape({
   itemName: yup.string().required("Item name is required"),
   category: yup.string().required("Category is required"),
+  subcategoryId: yup.string().required("Sub category is required"),
+  typeOfMeal: yup.string().required("Type of meal is required"),
+});
+
+const step1Schema = yup.object().shape({
+  calorieSize: yup
+    .number()
+    .typeError("Calories must be a number")
+    .required("Calorie size is required")
+    .min(0, "Calories must be positive"),
+  preparationTime: yup
+    .number()
+    .typeError("Preparation time must be a number")
+    .required("Preparation time is required")
+    .min(1, "Preparation time must be at least 1 minute"),
   basePrice: yup
     .number()
     .typeError("Base price must be a number")
     .required("Base price is required")
     .min(0, "Price must be positive"),
+  discount: yup
+    .number()
+    .typeError("Discount must be a number")
+    .min(0, "Discount must be positive")
+    .max(100, "Discount cannot exceed 100%")
+    .nullable()
+    .transform((value, originalValue) => (String(originalValue).trim() === "" ? null : value)),
   stockAvailability: yup.string().required("Stock availability is required"),
 });
 
-const step1Schema = yup.object().shape({
-  preparationTime: yup
-    .number()
-    .required("Preparation time is required")
-    .min(1, "Preparation time must be at least 1 minute"),
-  portionSizes: yup
-    .object()
-    .test("at-least-one-portion", "At least one portion size must be enabled", function (value) {
-      return value.small.enabled || value.medium.enabled || value.large.enabled;
-    })
-    .shape({
-      small: yup.object().shape({
-        enabled: yup.boolean(),
-        price: yup.mixed().when("enabled", {
-          is: true,
-          then: () =>
-            yup
-              .number()
-              .typeError("Price must be a number")
-              .required("Small portion price is required")
-              .min(0, "Price must be positive"),
-          otherwise: () => yup.mixed().notRequired(),
-        }),
-      }),
-      medium: yup.object().shape({
-        enabled: yup.boolean(),
-        price: yup.mixed().when("enabled", {
-          is: true,
-          then: () =>
-            yup
-              .number()
-              .typeError("Price must be a number")
-              .required("Medium portion price is required")
-              .min(0, "Price must be positive"),
-          otherwise: () => yup.mixed().notRequired(),
-        }),
-      }),
-      large: yup.object().shape({
-        enabled: yup.boolean(),
-        price: yup.mixed().when("enabled", {
-          is: true,
-          then: () =>
-            yup
-              .number()
-              .typeError("Price must be a number")
-              .required("Large portion price is required")
-              .min(0, "Price must be positive"),
-          otherwise: () => yup.mixed().notRequired(),
-        }),
-      }),
-    }),
-  addOns: yup.object().shape({
-    drinks: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Drinks add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    extraProteins: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Extra proteins add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-    sideDish: yup.object().shape({
-      enabled: yup.boolean(),
-      price: yup.mixed().when("enabled", {
-        is: true,
-        then: () =>
-          yup
-            .number()
-            .typeError("Price must be a number")
-            .required("Side dish add-on price is required")
-            .min(0, "Price must be positive"),
-        otherwise: () => yup.mixed().notRequired(),
-      }),
-    }),
-  }),
-});
-
-const ImageUploadAndCustomizationsStep = ({ control, watch, uploadedImage, setUploadedImage }) => {
+const ImageUploadAndCustomizationsStep = ({ control, uploadedImage, setUploadedImage, errors }) => {
   return (
     <div className="space-y-8">
       <ImageUploadStep
@@ -247,7 +97,7 @@ const ImageUploadAndCustomizationsStep = ({ control, watch, uploadedImage, setUp
         uploadedImage={uploadedImage}
         setUploadedImage={setUploadedImage}
       />
-      <CustomizationsStep control={control} watch={watch} />
+      <CustomizationsStep control={control} errors={errors} />
     </div>
   );
 };
@@ -277,32 +127,24 @@ const AddNewFood = () => {
     () => ({
       itemName: "",
       category: "",
+      subcategoryId: "",
+      typeOfMeal: "normal",
       description: "",
       basePrice: "",
       discount: "",
       stockAvailability: "",
-      calorieSize: "",
+      calorieSize: 0,
       preparationTime: 15,
-      portionSizes: {
-        small: { enabled: true, price: 10 },
-        medium: { enabled: true, price: 10 },
-        large: { enabled: false, price: "" },
-      },
-      addOns: {
-        drinks: { enabled: true, price: 10 },
-        extraProteins: { enabled: true, price: 10 },
-        sideDish: { enabled: false, price: "" },
-      },
     }),
     [],
   );
 
   const {
     control,
-    handleSubmit,
     watch,
     reset,
     trigger,
+    setValue,
     getValues,
     formState: { errors },
   } = useForm({
@@ -315,78 +157,121 @@ const AddNewFood = () => {
   useEffect(() => {
     if (isEditMode && catalogueItem && !isFormInitialized) {
       const formData = {
-        itemName: catalogueItem.itemName || catalogueItem.name || "",
-        category: catalogueItem.category || "",
-        description: catalogueItem.description || "",
-        basePrice: catalogueItem.basePrice || catalogueItem.price || "",
-        discount: catalogueItem.discount || "",
-        stockAvailability: catalogueItem.stockAvailability || catalogueItem.availability || "",
-        calorieSize: catalogueItem.calorieSize || catalogueItem.calories || "",
-        preparationTime: catalogueItem.preparationTime || 15,
-        portionSizes: catalogueItem.portionSizes
-          ? typeof catalogueItem.portionSizes === "string"
-            ? JSON.parse(catalogueItem.portionSizes)
-            : catalogueItem.portionSizes
-          : defaultValues.portionSizes,
-        addOns: catalogueItem.addOns
-          ? typeof catalogueItem.addOns === "string"
-            ? JSON.parse(catalogueItem.addOns)
-            : catalogueItem.addOns
-          : defaultValues.addOns,
+        itemName: catalogueItem?.name || "",
+        category: catalogueItem?.category_id || "",
+        subcategoryId: catalogueItem?.subcategory_id || "",
+        description: catalogueItem?.description || "",
+        basePrice: catalogueItem?.base_price || "",
+        typeOfMeal: catalogueItem?.menu_type || "normal",
+        discount: catalogueItem?.discount_price || null,
+        stockAvailability: catalogueItem?.availability || "",
+        calorieSize: catalogueItem?.calorie_size || 0,
+        preparationTime: catalogueItem?.preparation_time
+          ? parseInt(catalogueItem?.preparation_time.replace(/\D/g, ""))
+          : "",
       };
 
       reset(formData);
 
-      if (catalogueItem.image) {
-        setUploadedImage(catalogueItem.image);
+      if (catalogueItem.media?.url) {
+        setUploadedImage(catalogueItem.media.url);
       }
 
       setIsFormInitialized(true);
     }
   }, [catalogueItem, isEditMode, reset, isFormInitialized, defaultValues]);
 
-  const steps = [
-    {
-      title: "Basic Information",
-      content: <BasicInfoStep control={control} errors={errors} />,
-    },
-    {
-      title: "Image Upload & Customizations",
-      content: (
-        <ImageUploadAndCustomizationsStep
-          control={control}
-          watch={watch}
-          uploadedImage={uploadedImage}
-          setUploadedImage={setUploadedImage}
-        />
-      ),
-    },
-  ];
-
   const onSubmit = async (data) => {
     const formData = new FormData();
-    formData.append("itemName", data.itemName);
-    formData.append("category", data.category);
-    if (data?.description) {
-      formData.append("description", data.description);
-    }
-    formData.append("basePrice", data.basePrice);
-    if (data?.discount) {
-      formData.append("discount", data.discount || 0);
-    }
-    formData.append("stockAvailability", data.stockAvailability);
-    formData.append("calorieSize", data.calorieSize || 0);
-    formData.append("preparationTime", data.preparationTime);
-    formData.append("portionSizes", JSON.stringify(data.portionSizes));
-    formData.append("addOns", JSON.stringify(data.addOns));
+    let hasChanges = false;
 
-    if (uploadedImage && typeof uploadedImage !== "string") {
-      formData.append("image", uploadedImage);
+    if (isEditMode && catalogueItem) {
+      if (data.itemName !== catalogueItem.name) {
+        formData.append("menu_name", data.itemName);
+        hasChanges = true;
+      }
+      if (data.category !== catalogueItem.category_id) {
+        formData.append("category_id", data.category);
+        hasChanges = true;
+      }
+      if (data.subcategoryId !== catalogueItem.subcategory_id) {
+        formData.append("subcategory_id", data.subcategoryId);
+        hasChanges = true;
+      }
+      if (data.typeOfMeal !== catalogueItem.menu_type) {
+        formData.append("menu_type", data.typeOfMeal);
+        hasChanges = true;
+      }
+      if (data.description !== (catalogueItem.description || "")) {
+        formData.append("menu_description", data.description || "");
+        hasChanges = true;
+      }
+      if (data.basePrice !== catalogueItem.base_price) {
+        formData.append("base_price", data.basePrice);
+        hasChanges = true;
+      }
+      const currentDiscount = data.discount ? Number(data.discount) : null;
+      const originalDiscount = catalogueItem.discount_price
+        ? Number(catalogueItem.discount_price)
+        : null;
+      if (currentDiscount !== originalDiscount) {
+        formData.append("discount_price", data.discount || "");
+        hasChanges = true;
+      }
+      if (data.stockAvailability !== catalogueItem.availability) {
+        formData.append("availability", data.stockAvailability);
+        hasChanges = true;
+      }
+      if ((data.calorieSize || 0) !== (catalogueItem.calorie_size || 0)) {
+        formData.append("calorie_size", data.calorieSize || 0);
+        hasChanges = true;
+      }
+
+      const originalPrepTime = catalogueItem.preparation_time
+        ? parseInt(catalogueItem.preparation_time.replace(/\D/g, ""))
+        : null;
+      if (data.preparationTime !== originalPrepTime) {
+        formData.append("preparation_time", `${data.preparationTime}m`);
+        hasChanges = true;
+      }
+
+      if (uploadedImage && uploadedImage instanceof File) {
+        formData.append("file", uploadedImage);
+        hasChanges = true;
+      }
+
+      if (!hasChanges) {
+        customInfoToast("No changes detected. Please modify at least one field.");
+        return;
+      }
+    } else {
+      formData.append("menu_name", data.itemName);
+      formData.append("category_id", data.category);
+      formData.append("subcategory_id", data.subcategoryId);
+      formData.append("menu_type", data.typeOfMeal);
+
+      if (data?.description) {
+        formData.append("menu_description", data.description);
+      }
+
+      formData.append("base_price", data.basePrice);
+
+      if (data?.discount) {
+        formData.append("discount_price", data.discount);
+      }
+
+      formData.append("availability", data.stockAvailability);
+      formData.append("calorie_size", data.calorieSize || 0);
+      formData.append("preparation_time", `${data.preparationTime}m`);
+
+      if (uploadedImage && uploadedImage instanceof File) {
+        formData.append("file", uploadedImage);
+      }
     }
 
     try {
       if (isEditMode) {
-        await editCatalogueItem({ id: catalogueId, formData }).unwrap();
+        await editCatalogueItem({ id: catalogueId, data: formData }).unwrap();
         toast.success("Food item updated successfully!");
       } else {
         await addCatalogueItem(formData).unwrap();
@@ -397,15 +282,43 @@ const AddNewFood = () => {
       }
     } catch (error) {
       const errorMessage =
-        error?.data?.message ||
-        (isEditMode ? "Failed to update food item." : "Failed to publish food item.");
+        typeof error?.data?.message === "string"
+          ? error.data.message
+          : isEditMode
+            ? "Failed to update food item."
+            : "Failed to publish food item.";
       toast.error(errorMessage);
     }
   };
 
+  const steps = [
+    {
+      title: "Basic Information",
+      content: <BasicInfoStep control={control} errors={errors} setValue={setValue} />,
+    },
+    {
+      title: "Image Upload & Customizations",
+      content: (
+        <ImageUploadAndCustomizationsStep
+          control={control}
+          watch={watch}
+          uploadedImage={uploadedImage}
+          setUploadedImage={setUploadedImage}
+          errors={errors}
+        />
+      ),
+    },
+  ];
+
   const handlePublish = async () => {
     const isValid = await trigger();
+
     if (isValid) {
+      if (!isEditMode && !uploadedImage) {
+        customInfoToast("Please upload an image");
+        return;
+      }
+
       const formData = getValues();
       onSubmit(formData);
     } else {
@@ -418,18 +331,22 @@ const AddNewFood = () => {
 
     try {
       if (currentStep === 0) {
-        await step0Schema.validate(currentValues, { abortEarly: false });
+        await step0Schema.validate(currentValues, { abortEarly: true });
         return true;
       } else if (currentStep === 1) {
-        await step1Schema.validate(currentValues, { abortEarly: false });
+        await step1Schema.validate(currentValues, { abortEarly: true });
+
+        if (!isEditMode && !uploadedImage) {
+          customInfoToast("Please upload an image");
+          return false;
+        }
+
         return true;
       }
       return true;
     } catch (validationError) {
-      if (validationError.errors && validationError.errors.length > 0) {
-        validationError.errors.forEach((error) => {
-          customInfoToast(error);
-        });
+      if (validationError.message) {
+        customInfoToast(validationError.message);
       } else {
         customInfoToast("Please fill in all required fields before proceeding.");
       }
@@ -442,7 +359,6 @@ const AddNewFood = () => {
 
     if (isValid && currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-      message.success("Step completed successfully!");
     }
   };
 
@@ -456,27 +372,21 @@ const AddNewFood = () => {
     if (isEditMode) {
       if (catalogueItem) {
         const formData = {
-          itemName: catalogueItem.itemName || catalogueItem.name || "",
-          category: catalogueItem.category || "",
-          description: catalogueItem.description || "",
-          basePrice: catalogueItem.basePrice || catalogueItem.price || "",
-          discount: catalogueItem.discount || "",
-          stockAvailability: catalogueItem.stockAvailability || catalogueItem.availability || "",
-          calorieSize: catalogueItem.calorieSize || catalogueItem.calories || "",
-          preparationTime: catalogueItem.preparationTime || 15,
-          portionSizes: catalogueItem.portionSizes
-            ? typeof catalogueItem.portionSizes === "string"
-              ? JSON.parse(catalogueItem.portionSizes)
-              : catalogueItem.portionSizes
-            : defaultValues.portionSizes,
-          addOns: catalogueItem.addOns
-            ? typeof catalogueItem.addOns === "string"
-              ? JSON.parse(catalogueItem.addOns)
-              : catalogueItem.addOns
-            : defaultValues.addOns,
+          itemName: catalogueItem?.name || "",
+          category: catalogueItem?.category_id || "",
+          subcategoryId: catalogueItem?.subcategory_id || "",
+          typeOfMeal: catalogueItem?.type_of_meal || "normal",
+          description: catalogueItem?.description || "",
+          basePrice: catalogueItem?.base_price || "",
+          discount: catalogueItem?.discount_price || "",
+          stockAvailability: catalogueItem?.availability || "",
+          calorieSize: catalogueItem?.calorie_size || "",
+          preparationTime: catalogueItem?.preparation_time
+            ? parseInt(catalogueItem?.preparation_time.replace(/\D/g, ""))
+            : 15,
         };
         reset(formData);
-        setUploadedImage(catalogueItem.image || null);
+        setUploadedImage(catalogueItem?.media?.url || null);
       }
     } else {
       reset(defaultValues);

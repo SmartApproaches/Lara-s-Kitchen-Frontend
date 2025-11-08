@@ -1,19 +1,19 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { Checkbox, Divider, InputNumber, Typography } from "antd";
+import { InputNumber, Select } from "antd";
 
-const { Title } = Typography;
+const { Option } = Select;
 
-const CustomizationsStep = ({ control, watch }) => {
-  const watchedValues = watch();
-
+const CustomizationsStep = ({ control, errors }) => {
   return (
     <div className="space-y-6">
-      <div className="rounded-lg bg-white p-5 shadow-sm">
-        <Title level={4}>Customizations / Add-ons</Title>
+      <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-medium text-[#232323] md:text-xl">Customizations / Add-ons</h3>
 
-        <div className="mb-6 flex flex-col gap-y-2">
-          <p className="text-base font-normal text-[#414141]">Calorie size</p>
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">
+            Calorie size <span className="text-red-500">*</span>
+          </label>
           <Controller
             name="calorieSize"
             control={control}
@@ -23,14 +23,21 @@ const CustomizationsStep = ({ control, watch }) => {
                 placeholder="Enter amount"
                 className="w-full"
                 min={0}
+                size="large"
                 addonAfter="kcal"
+                status={errors?.calorieSize ? "error" : ""}
               />
             )}
           />
+          {errors?.calorieSize && (
+            <span className="text-sm text-red-500">{errors.calorieSize.message}</span>
+          )}
         </div>
 
-        <div className="mb-6 flex flex-col gap-y-2">
-          <p className="text-base font-normal text-[#414141]">Preparation Time</p>
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">
+            Preparation Time <span className="text-red-500">*</span>
+          </label>
           <Controller
             name="preparationTime"
             control={control}
@@ -39,222 +46,103 @@ const CustomizationsStep = ({ control, watch }) => {
                 {...field}
                 placeholder="Enter amount"
                 className="w-full"
-                min={0}
+                min={1}
+                size="large"
                 addonAfter="minutes"
+                status={errors?.preparationTime ? "error" : ""}
               />
             )}
           />
+          {errors?.preparationTime && (
+            <span className="text-sm text-red-500">{errors.preparationTime.message}</span>
+          )}
         </div>
 
-        <div className="mb-6 flex flex-col gap-y-2">
-          <p className="text-base font-semibold">Portion Sizes</p>
+        <h5 className="mt-6 text-lg font-medium text-[#232323] md:text-xl">
+          Pricing and Availability
+        </h5>
 
-          <div className="space-y-1">
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="portionSizes.small.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Small
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-y-2">
+            <label className="text-base font-normal text-gray-800">
+              Base Price <span className="text-red-500">*</span>
+            </label>
+            <Controller
+              name="basePrice"
+              control={control}
+              render={({ field }) => (
+                <div className="relative">
+                  <span className="absolute top-2 left-3 z-10 text-gray-500">£</span>
+                  <input
+                    {...field}
+                    type="number"
+                    placeholder="Enter Price"
+                    min="0"
+                    step="0.01"
+                    className={`w-full rounded-md border py-2 pr-3 pl-8 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                      errors?.basePrice ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
                 </div>
-                <Controller
-                  name="portionSizes.small.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="£ 10.00"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.portionSizes?.small?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <Divider type="horizontal" style={{ margin: "5px 0" }} className="h-1" />
+              )}
+            />
+            {errors?.basePrice && (
+              <span className="text-sm text-red-500">{errors.basePrice.message}</span>
+            )}
+          </div>
 
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="portionSizes.medium.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Medium
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
+          <div className="flex flex-col gap-y-2">
+            <label className="text-base font-normal text-gray-800">
+              Discount / Promo (Optional)
+            </label>
+            <Controller
+              name="discount"
+              control={control}
+              render={({ field }) => (
+                <div className="relative">
+                  <input
+                    {...field}
+                    type="number"
+                    placeholder="Enter Amount"
+                    min="0"
+                    max="100"
+                    className={`w-full rounded-md border px-3 py-2 pr-8 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                      errors?.discount ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                  <span className="absolute top-2 right-3 text-gray-500">%</span>
                 </div>
-                <Controller
-                  name="portionSizes.medium.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="£ 10.00"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.portionSizes?.medium?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <Divider type="horizontal" style={{ margin: "5px 0" }} className="h-1" />
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="portionSizes.large.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Large
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
-                </div>
-                <Controller
-                  name="portionSizes.large.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="Enter amount"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.portionSizes?.large?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
+              )}
+            />
+            {errors?.discount && (
+              <span className="text-sm text-red-500">{errors.discount.message}</span>
+            )}
           </div>
         </div>
 
-        <div className="space-y-4">
-          <p className="text-base font-semibold">Add ons</p>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="addOns.drinks.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Drinks
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
-                </div>
-                <Controller
-                  name="addOns.drinks.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="£ 10.00"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.addOns?.drinks?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <Divider type="horizontal" style={{ margin: "5px 0" }} className="h-1" />
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="addOns.extraProteins.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Extra Proteins
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
-                </div>
-                <Controller
-                  name="addOns.extraProteins.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="£ 10.00"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.addOns?.extraProteins?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <Divider type="horizontal" style={{ margin: "5px 0" }} className="h-1" />
-            <div className="flex items-center justify-between rounded-lg p-3">
-              <Controller
-                name="addOns.sideDish.enabled"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox {...field} checked={field.value}>
-                    Side Dish
-                  </Checkbox>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <div className="bg-accent rounded-[6px] px-3 py-2 font-medium text-green-900">
-                  Price:
-                </div>
-                <Controller
-                  name="addOns.sideDish.price"
-                  control={control}
-                  render={({ field }) => (
-                    <InputNumber
-                      {...field}
-                      placeholder="Enter amount"
-                      className="w-24"
-                      min={0}
-                      step={0.01}
-                      disabled={!watchedValues.addOns?.sideDish?.enabled}
-                      formatter={(value) => `£ ${value}`}
-                      parser={(value) => value.replace("£ ", "")}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-          </div>
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">
+            Stock Availability <span className="text-red-500">*</span>
+          </label>
+          <Controller
+            name="stockAvailability"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                placeholder="Choose Availability"
+                className="w-full"
+                size="large"
+                status={errors?.stockAvailability ? "error" : ""}
+              >
+                <Option value="in_stock">In Stock</Option>
+                <Option value="out_of_stock">Out of Stock</Option>
+              </Select>
+            )}
+          />
+          {errors?.stockAvailability && (
+            <span className="text-sm text-red-500">{errors.stockAvailability.message}</span>
+          )}
         </div>
       </div>
     </div>
