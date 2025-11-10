@@ -7,10 +7,10 @@ const { Text } = Typography;
 const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
   const price = parseFloat(item.base_price || 0).toFixed(2);
   const catergory = item?.subcategory?.name;
-  console.log("item", item);
+  const isOutOfStock = item?.availability === "out_of_stock";
   return (
     <Card
-      hoverable
+      hoverable={!isOutOfStock}
       style={{
         borderRadius: 20,
         padding: " 12px",
@@ -19,6 +19,7 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
         backgroundColor: "#F9FFF9",
         boxShadow: "0 0 6px rgba(0,0,0,0.05)",
         transition: "0.3s",
+        opacity: isOutOfStock ? 0.7 : 1,
       }}
       bodyStyle={{ padding: 2 }}
       cover={
@@ -31,6 +32,7 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
             alignItems: "center",
             borderRadius: "10px",
             borderBottom: "1px solid #E9F9ED",
+            position: "relative",
           }}
         >
           <img
@@ -48,7 +50,7 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
       }
     >
       <div style={{ minHeight: 60, textAlign: "left" }}>
-        <Text strong style={{ fontSize: 14 }}>
+        <Text strong style={{ fontSize: 14, color: isOutOfStock ? "#999" : "#000" }}>
           {item.name}
         </Text>
         <div>
@@ -59,7 +61,7 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
       </div>
 
       <div className="flex items-center !justify-between">
-        <Text strong style={{ fontSize: 14 }}>
+        <Text strong style={{ fontSize: 14, color: isOutOfStock ? "#999" : "#000" }}>
           £{price}
         </Text>
         <div className="flex items-center gap-1 rounded-full bg-[#EEFFF1] px-2 py-1">
@@ -72,8 +74,11 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
                   : ICONS.grainsIcon
             }
             alt=""
+            style={{ opacity: isOutOfStock ? 0.5 : 1 }}
           />
-          <p className="text-[10px] text-[#00BC1A]">{catergory}</p>
+          <p className="text-[10px] text-[#00BC1A]" style={{ opacity: isOutOfStock ? 0.5 : 1 }}>
+            {catergory}
+          </p>
         </div>
       </div>
 
@@ -81,16 +86,18 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
         {qty === 0 ? (
           <Button
             block
+            disabled={isOutOfStock}
             style={{
-              backgroundColor: "#154A2F",
-              color: "#fff",
+              backgroundColor: isOutOfStock ? "#D9D9D9" : "#154A2F",
+              color: isOutOfStock ? "#999" : "#fff",
               height: 38,
               borderRadius: 20,
               fontWeight: 500,
+              cursor: isOutOfStock ? "not-allowed" : "pointer",
             }}
-            onClick={onAdd}
+            onClick={isOutOfStock ? undefined : onAdd}
           >
-            Add Dish
+            {isOutOfStock ? "Out of Stock" : "Add Dish"}
           </Button>
         ) : (
           <div
@@ -109,21 +116,27 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
               size="small"
               icon={<MinusOutlined />}
               onClick={onDecrement}
+              disabled={isOutOfStock}
               style={{
                 border: "none",
-                backgroundColor: "#D9D9D9",
+                backgroundColor: isOutOfStock ? "#E0E0E0" : "#D9D9D9",
+                cursor: isOutOfStock ? "not-allowed" : "pointer",
               }}
             />
-            <Text strong>{qty}</Text>
+            <Text strong style={{ color: isOutOfStock ? "#999" : "#000" }}>
+              {qty}
+            </Text>
             <Button
               shape="circle"
               size="small"
               icon={<PlusOutlined />}
               onClick={onIncrement}
+              disabled={isOutOfStock}
               style={{
                 border: "none",
-                backgroundColor: "#154A2F",
-                color: "#fff",
+                backgroundColor: isOutOfStock ? "#E0E0E0" : "#154A2F",
+                color: isOutOfStock ? "#999" : "#fff",
+                cursor: isOutOfStock ? "not-allowed" : "pointer",
               }}
             />
           </div>

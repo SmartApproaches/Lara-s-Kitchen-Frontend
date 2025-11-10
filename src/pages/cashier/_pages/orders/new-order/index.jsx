@@ -20,7 +20,6 @@ const NewOrder = () => {
   // cart shape: { [menuId]: { item: <menuItem>, qty: number } }
   const [cart, setCart] = useState({});
 
-  // Drawer open when cart has items
   const drawerOpen = Object.keys(cart).length > 0;
 
   const { data: categoryData } = useGetCashierMenuCategoriesQuery();
@@ -180,7 +179,7 @@ const NewOrder = () => {
           </Row>
 
           {/* pagination */}
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-center">
             <Pagination
               current={currentPage}
               total={total}
