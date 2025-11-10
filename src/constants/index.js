@@ -28,11 +28,16 @@ import drinksIcon from "../assets/icons/drinksIcon.svg";
 import proteinIcon from "../assets/icons/proteinIcon.svg";
 import extrasIcon from "../assets/icons/extrasIcon.svg";
 import jollofRice from "../assets/icons/jollofRice.svg";
+import allOrder from "../assets/icons/mage_dashboard.svg";
+import bowIcon from "../assets/icons/ph_bowl-food-light.svg";
+import carbonDrink from "../assets/icons/carbon_drink-01.svg";
 import potIcon from "../assets/icons/potIcon.svg";
 import freshlyCooked from "../assets/icons/freshlyCooked.svg";
 import playIcon from "../assets/icons/playIcon.svg";
 import fastDelivery from "../assets/icons/fastDelivery.svg";
 import authenticIcon from "../assets/icons/authenticIcon.svg";
+import swallowIcon from "../assets/icons/swallowIcon.svg";
+import grainsIcon from "../assets/icons/grainsIcon.svg";
 import landingSplash from "../assets/images/landingSplash.svg";
 import watermelonbg from "../assets/images/watermelonbg.svg";
 import phones from "../assets/images/iphone.svg";
@@ -92,6 +97,11 @@ export const ICONS = {
   facebookIcon: facebookIcon,
   instagramIcon: instagramIcon,
   ordersBeingPrepared: ordersBeingPrepared,
+  allOrder: allOrder,
+  bowIcon: bowIcon,
+  carbonDrink: carbonDrink,
+  swallowIcon: swallowIcon,
+  grainsIcon: grainsIcon,
 };
 
 export const IMAGES = {

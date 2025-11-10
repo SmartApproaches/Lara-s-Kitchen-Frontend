@@ -23,10 +23,10 @@ const QuickAccess = () => {
         >
           All Orders
         </Button>
-
         <Button
           icon={<img src={ICONS.addIcon} alt="add" className="h-6 w-6" />}
           className={btnClasses}
+          onClick={() => naviagte("/cashier/create-orders")}
         >
           Add New Order
         </Button>
