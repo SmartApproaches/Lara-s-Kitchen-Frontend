@@ -1,12 +1,16 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import RecentOrders from "../dashboard/components/recent-orders";
 import OrderCard from "./order-card";
 import { ICONS } from "../../../../constants";
 import OrderSidePanel from "./order-sidepanel";
 import { Button, Skeleton, Empty, Pagination } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
-import { useGetCashierOrdersQuery } from "../../../../redux/slices/cashier/ordersApiSlice";
-import { useGetDashboardDataQuery } from "../../../../redux/slices/cashier/dashboardApiSlice";
+import MenuStatsCrad from "./statCard";
+import {
+  useGetCashierOrdersQuery,
+  useGetCashierOrderSummaryQuery,
+} from "../../../../redux/slices/cashier/ordersApiSlice";
+import { AutoConversationsIcon, PlusSignIcon } from "hugeicons-react";
+import { useNavigate } from "react-router-dom";
 
 const STATUS_FILTERS = [
   { label: "All Orders", value: "" },
@@ -16,6 +20,7 @@ const STATUS_FILTERS = [
 ];
 
 const Orders = () => {
+  const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
@@ -23,21 +28,22 @@ const Orders = () => {
 
   const filterRef = useRef(null);
 
-  const { data: dashboardData, isLoading } = useGetDashboardDataQuery();
   const { data: ordersApiData, isLoading: ordersLoading } = useGetCashierOrdersQuery({
     page,
     status,
   });
-
+  const { data: orderSummaryData, isLoading, isError } = useGetCashierOrderSummaryQuery();
   const ordersMeta = ordersApiData?.data;
   const ordersList = ordersApiData?.data?.data || [];
-
+  console.log("ordersList", ordersList);
+  const statsData = orderSummaryData?.data;
   const formattedOrders = useMemo(() => {
     return ordersList.map((order) => {
       const images = order.items?.map((item) => item?.menu_item?.media?.url) || [];
 
       return {
         id: order.id,
+        customer: order?.customer,
         status: order.status,
         orderId: order.order_number,
         orderType: order.order_type,
@@ -98,14 +104,84 @@ const Orders = () => {
     link.click();
   };
 
+  const stats = [
+    {
+      icon: ICONS.salesStats,
+      footerIcon: AutoConversationsIcon,
+      title: "Total Sales",
+      value: `${statsData?.total_sales || "0"}`,
+      footer: "28% Growth",
+    },
+    {
+      icon: ICONS.dish,
+      footerIcon: AutoConversationsIcon,
+      title: "Active Orders",
+      value: `${statsData?.active_orders || "0"}`,
+      footer: "50% Done",
+    },
+    {
+      icon: ICONS.completedIcon,
+      footerIcon: AutoConversationsIcon,
+      title: "Completed Orders",
+      value: `${statsData?.completed_orders || "0"}`,
+      footer: "50% Done",
+    },
+    {
+      icon: ICONS.cancelledIcon,
+      footerIcon: AutoConversationsIcon,
+      title: "Cancelled Orders",
+      value: `${statsData?.canceled_orders || "0"}`,
+      footer: "30% Done",
+    },
+  ];
+  const renderStatsCards = () => {
+    if (isLoading) {
+      return Array.from({ length: 3 }).map((_, index) => (
+        <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <Skeleton active paragraph={{ rows: 2 }} />
+        </div>
+      ));
+    }
+
+    if (isError) {
+      return (
+        <div className="col-span-full">
+          <Alert
+            message="Error loading statistics"
+            description="Failed to fetch dashboard statistics. Please try again later."
+            type="error"
+            showIcon
+          />
+        </div>
+      );
+    }
+
+    return stats.map((stat, index) => (
+      <MenuStatsCrad
+        key={index}
+        icon={stat.icon}
+        footerIcon={stat.footerIcon}
+        title={stat.title}
+        value={stat.value}
+        footer={stat.footer}
+      />
+    ));
+  };
   return (
     <div>
-      <h3 className="text-primary text-3xl font-bold">Order List</h3>
-
-      <RecentOrders recentOrders={dashboardData?.data?.recent_orders || []} loading={isLoading} />
-
-      {/* ✅ Filter + Export Row */}
-      {/* ✅ Filter + Export Row */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-primary text-3xl font-bold">Order List</h3>
+        <div
+          className="bg-primary flex cursor-pointer items-center gap-1 rounded-md px-5 py-2 text-white"
+          onClick={() => navigate("/cashier/create-orders")}
+        >
+          <PlusSignIcon className="h-5 w-5" />
+          <span className="font-semibold">Add New Order</span>
+        </div>
+      </div>
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {renderStatsCards()}
+      </div>
       <div className="mt-6 flex items-center justify-between px-2">
         <div className="relative flex items-center gap-3" ref={filterRef}>
           {/* Filter Button */}

@@ -9,9 +9,7 @@ import SuccessModal from "../sucessModal";
 const libraries = ["places"];
 const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
 
-// Popular country codes
-
-const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
+const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawerOpen }) => {
   const [collapseInfo, setCollapseInfo] = useState(true);
   const [orderType, setOrderType] = useState("Dine-In");
   const [autocomplete, setAutocomplete] = useState(null);
@@ -45,6 +43,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
       setOrderData(createOrderData.data);
       setIsSuccessModalOpen(true);
       setCart({}); // Clear cart after successful order
+      setIsDrawerOpen(false); // Close drawer
 
       // Reset form
       setFormData({
@@ -59,13 +58,18 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
         note: "",
       });
     }
-  }, [isSuccess, createOrderData]);
+  }, [isSuccess, createOrderData, setCart, setIsDrawerOpen]);
 
   useEffect(() => {
     if (isError) {
       message.error(error?.data?.message || "Failed to create order");
     }
-  }, [isError]);
+  }, [isError, error]);
+
+  const handleClearCart = () => {
+    setCart({});
+    setIsDrawerOpen(false);
+  };
 
   const handleDeleteItem = (item) => {
     setCart((prev) => {
@@ -120,7 +124,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
       return;
     }
 
-    const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "eat_in";
+    const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "dine_in";
 
     // Validation for delivery
     if (currentOrderType === "delivery") {
@@ -180,6 +184,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
         open={drawerOpen}
         width={420}
         mask={false}
+        destroyOnClose={false}
         closable={false}
         bodyStyle={{
           background: "#FFFFFF",
@@ -194,11 +199,8 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button icon={<DeleteOutlined />} danger type="text" onClick={() => setCart({})} />
-            <button
-              className="text-2xl text-[#0A3A1A] hover:opacity-60"
-              onClick={() => setCart({})}
-            >
+            <Button icon={<DeleteOutlined />} danger type="text" onClick={handleClearCart} />
+            <button className="text-2xl text-[#0A3A1A] hover:opacity-60" onClick={handleClearCart}>
               <Cancel01Icon />
             </button>
           </div>
@@ -336,7 +338,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
         </div>
 
         {/* ORDER ITEMS */}
-        <div className="max-h-[25vh] space-y-3 overflow-y-auto px-4">
+        <div className="space-y-3 overflow-y-auto px-4">
           {cartItemsArray.map(({ item, qty }) => {
             const itemTotal = Number(item.base_price) * qty;
 
@@ -415,7 +417,6 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart }) => {
       </Drawer>
 
       {/* SUCCESS MODAL */}
-
       <SuccessModal
         isSuccessModalOpen={isSuccessModalOpen}
         handleCloseSuccessModal={handleCloseSuccessModal}
