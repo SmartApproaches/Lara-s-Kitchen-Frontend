@@ -8,6 +8,9 @@ export const ordersApiSlice = api.injectEndpoints({
     getOrderById: builder.query({
       query: (id) => `/cashier/orders/${id}`,
     }),
+    getCashierOrderSummary: builder.query({
+      query: () => "/cashier/orders/summary",
+    }),
     createOrder: builder.mutation({
       query: (orderData) => ({
         url: "/cashier/orders",
@@ -37,4 +40,5 @@ export const {
   useCreateOrderMutation,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+  useGetCashierOrderSummaryQuery,
 } = ordersApiSlice;

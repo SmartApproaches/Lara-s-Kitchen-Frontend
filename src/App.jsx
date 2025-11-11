@@ -10,11 +10,6 @@ import LandingPage from "./pages/landingPage/landing";
 import LandingMenu from "./pages/landingPage/menu";
 import ContactUs from "./pages/landingPage/contact";
 
-
-import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
-import Transaction from "./pages/cashier/_pages/transaction/Transaction";
-
-
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -33,6 +28,7 @@ const AdminAddNewFood = lazy(
 const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashboardLayout"));
 const CashierDashboard = lazy(() => import("./pages/cashier/_pages/dashboard/Dashboard"));
 const CashierOrders = lazy(() => import("./pages/cashier/_pages/orders/Orders"));
+const CreateNewOrders = lazy(() => import("./pages/cashier/_pages/orders/new-order"));
 const CashierMenuList = lazy(() => import("./pages/cashier/_pages/menu-list/MenuList"));
 const CashierEditOrder = lazy(() => import("./pages/cashier/_pages/orders/edit-order"));
 const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction/Transaction"));
@@ -73,6 +69,7 @@ const App = () => {
           <Route element={<CashierDashboardLayout />}>
             <Route index path="cashier/dashboard" element={<CashierDashboard />} />
             <Route path="cashier/orders" element={<CashierOrders />} />
+            <Route path="cashier/create-orders" element={<CreateNewOrders />} />
             <Route path="cashier/menu-list" element={<CashierMenuList />} />
             <Route path="cashier/edit-order/:id" element={<CashierEditOrder />} />
             <Route path="cashier/transaction" element={<CashierTransaction />} />
