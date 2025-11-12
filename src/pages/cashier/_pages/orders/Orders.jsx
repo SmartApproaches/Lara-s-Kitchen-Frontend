@@ -35,7 +35,6 @@ const Orders = () => {
   const { data: orderSummaryData, isLoading, isError } = useGetCashierOrderSummaryQuery();
   const ordersMeta = ordersApiData?.data;
   const ordersList = ordersApiData?.data?.data || [];
-  console.log("ordersList", ordersList);
   const statsData = orderSummaryData?.data;
   const formattedOrders = useMemo(() => {
     return ordersList.map((order) => {
