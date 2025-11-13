@@ -31,6 +31,9 @@ export const menuApiSlice = api.injectEndpoints({
     getCashierMenuCategories: builder.query({
       query: () => "/cashier/menus/categories",
     }),
+    getCashierMenuSummary: builder.query({
+      query: () => "/cashier/menus/summary",
+    }),
   }),
 });
 
@@ -38,4 +41,5 @@ export const {
   useGetCashierdMenuQuery,
   useUpdateMenuAvailabilityMutation,
   useGetCashierMenuCategoriesQuery,
+  useGetCashierMenuSummaryQuery,
 } = menuApiSlice;
