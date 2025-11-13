@@ -1,14 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Card, Dropdown, Menu, Skeleton } from "antd";
-import moment from "moment";
 import { Calendar01Icon } from "hugeicons-react";
 import { ICONS } from "../../../../../../constants";
+import { useGetCashierMenuSummaryQuery } from "../../../../../../redux/slices/cashier/menuApiSlice";
 
-const MenuStats = ({ onDateChange, menuData, menuLoading }) => {
-  // ✅ get menu list safely
-  const menus = menuData || [];
+const MenuStats = ({ onDateChange }) => {
+  const { data, isLoading } = useGetCashierMenuSummaryQuery();
 
-  const [openCardIndex, setOpenCardIndex] = useState(null);
   const [selectedLabels, setSelectedLabels] = useState(Array(4).fill("Today"));
 
   const menuItems = [
@@ -19,68 +17,18 @@ const MenuStats = ({ onDateChange, menuData, menuLoading }) => {
     { key: "year", label: "This Year" },
   ];
 
-  // ✅ Date filtering logic
-  const filteredMenus = useMemo(() => {
-    const filter = selectedLabels[openCardIndex];
+  const handleMenuClick = (cardIndex, { key }) => {
+    const item = menuItems.find((m) => m.key === key);
+    if (!item) return;
 
-    if (!filter) return menus;
+    const newLabels = [...selectedLabels];
+    newLabels[cardIndex] = item.label;
+    setSelectedLabels(newLabels);
 
-    switch (filter) {
-      case "This Week":
-        return menus.filter((m) => moment(m.created_at).isSameOrAfter(moment().startOf("week")));
-      case "Last Week":
-        return menus.filter((m) =>
-          moment(m.created_at).isBetween(
-            moment().subtract(1, "weeks").startOf("week"),
-            moment().subtract(1, "weeks").endOf("week"),
-          ),
-        );
-      case "Last Month":
-        return menus.filter((m) =>
-          moment(m.created_at).isSameOrAfter(moment().subtract(1, "month").startOf("month")),
-        );
-      case "This Year":
-        return menus.filter((m) => moment(m.created_at).isSameOrAfter(moment().startOf("year")));
-      default:
-        return menus;
-    }
-  }, [menus, selectedLabels, openCardIndex]);
+    onDateChange && onDateChange(item.key, cardIndex);
+  };
 
-  // ✅ Compute stats using filtered data
-  const stats = useMemo(() => {
-    const getCount = (category, status) =>
-      filteredMenus.filter((m) => m.category?.name === category && m.availability === status)
-        .length;
-
-    return [
-      {
-        title: "Food in stock",
-        count: getCount("Food", "in_stock"),
-        color: "text-[#00BC1A]",
-        icon: ICONS.dish,
-      },
-      {
-        title: "Food out of stock",
-        count: getCount("Food", "out_of_stock"),
-        color: "text-[#FF0000]",
-        icon: ICONS.cancelledIcon,
-      },
-      {
-        title: "Drinks in stock",
-        count: getCount("Drinks", "in_stock"),
-        color: "text-[#00BC1A]",
-        icon: ICONS.drinksInStock,
-      },
-      {
-        title: "Drinks out of stock",
-        count: getCount("Drinks", "out_of_stock"),
-        color: "text-[#FF0000]",
-        icon: ICONS.drinksOutofStock,
-      },
-    ];
-  }, [filteredMenus]);
-
-  if (menuLoading) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {Array(4)
@@ -94,18 +42,34 @@ const MenuStats = ({ onDateChange, menuData, menuLoading }) => {
     );
   }
 
-  // ✅ Dropdown change handler
-  const handleMenuClick = (cardIndex, { key }) => {
-    const item = menuItems.find((m) => m.key === key);
-    if (!item) return;
+  const summary = data?.data || {};
 
-    const newLabels = [...selectedLabels];
-    newLabels[cardIndex] = item.label;
-    setSelectedLabels(newLabels);
-    setOpenCardIndex(cardIndex);
-
-    onDateChange && onDateChange(item.key, cardIndex);
-  };
+  const stats = [
+    {
+      title: "Food in stock",
+      count: summary.food_in_stock || 0,
+      color: "text-[#00BC1A]",
+      icon: ICONS.dish,
+    },
+    {
+      title: "Food out of stock",
+      count: summary.food_out_of_stock || 0,
+      color: "text-[#FF0000]",
+      icon: ICONS.cancelledIcon,
+    },
+    {
+      title: "Drinks in stock",
+      count: summary.drinks_in_stock || 0,
+      color: "text-[#00BC1A]",
+      icon: ICONS.drinksInStock,
+    },
+    {
+      title: "Drinks out of stock",
+      count: summary.drinks_out_of_stock || 0,
+      color: "text-[#FF0000]",
+      icon: ICONS.drinksOutofStock,
+    },
+  ];
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
