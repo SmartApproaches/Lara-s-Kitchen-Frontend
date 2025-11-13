@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, Button, Input, message, Modal, Select } from "antd";
 import { DeleteOutlined, EnvironmentOutlined, CheckCircleFilled } from "@ant-design/icons";
-import { ArrowUp01Icon, Cancel01Icon } from "hugeicons-react";
+import { ArrowUp01Icon, Cancel01Icon, PrinterIcon } from "hugeicons-react";
 import { useCreateOrderMutation } from "../../../../../../../redux/slices/cashier/ordersApiSlice";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { countryCodes } from "../countryCode";
@@ -410,7 +410,12 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
             Place Order
           </Button>
 
-          <Button block size="large" className="rounded-md border bg-white">
+          <Button
+            block
+            size="large"
+            className="rounded-md border bg-white"
+            icon={<PrinterIcon className="h-4 w-4" />}
+          >
             Print receipt
           </Button>
         </div>

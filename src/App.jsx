@@ -37,7 +37,7 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
-
+const DineInMenu = lazy(() => import("./pages/guest/menu"));
 const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -47,7 +47,7 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
 
         <Route path="/login" element={<Login />} />
-
+        <Route path="/dinein-menu" element={<DineInMenu />} />
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
           <Route element={<AdminDashboardLayout />}>
