@@ -1,25 +1,26 @@
+import { useState } from "react";
 import { Button, Tag, Dropdown } from "antd";
 import { Search01Icon, FilterIcon, Cancel01Icon, Upload04Icon } from "hugeicons-react";
-import { useState } from "react";
 
 import { Button as CustomButton } from "../../../../../components";
 
-const CustomersHeader = ({ handleCSVExport }) => {
+const CustomersHeader = ({ handleCSVExport, searchQuery, onSearchChange, onFilterChange }) => {
   const [selectedFilter, setSelectedFilter] = useState(null);
 
   const filterOptions = [
     { key: "highest_order", label: "Highest Order" },
-    { key: "lowest_order", label: "Lowest Order" },
+    { key: "lower_order", label: "Lowest Order" },
     { key: "all", label: "All" },
-  ];  
+  ];
 
-  const handleFilterSelect = ({ key }) => {
-    const selected = filterOptions.find((option) => option.key === key);
-    if (selected) setSelectedFilter(selected.label);
+  const handleFilterSelect = ({ key, label }) => {
+    setSelectedFilter(filterOptions.find(option => option.key === key).label);
+    if (onFilterChange) onFilterChange(key);
   };
 
   const handleClearFilter = () => {
     setSelectedFilter(null);
+    if (onFilterChange) onFilterChange("all");
   };
 
   const filterMenuItems = filterOptions.map((option) => ({
@@ -49,6 +50,8 @@ const CustomersHeader = ({ handleCSVExport }) => {
           <input
             type="text"
             placeholder="Search by name"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
             className="block w-full rounded-4xl bg-[#D2FFD9] py-3 pr-3 pl-6 font-medium text-[#0CA921] placeholder:text-base placeholder:text-[#0CA921] focus:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none md:text-[18px]"
           />
         </div>

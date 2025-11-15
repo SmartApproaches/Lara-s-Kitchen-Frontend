@@ -3,13 +3,24 @@ import { api } from "../../api/rtkQuery";
 export const customersApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getCustomers: builder.query({
-      query: () => "/customers",
+      query: ({ page, filter, search }) => ({
+        url: "/admin/customers/all-customers",
+        params: { page, filter, search },
+      }),
       keepUnusedDataFor: 5,
     }),
     getCustomer: builder.query({
-      query: (id) => `/customers/${id}`,
+      query: (id) => `/admin/customers/customer-details/${id}`,
+    }),
+    getCustomerOrders: builder.query({
+      query: ({ id, page }) => ({
+        url: `/admin/customers/customer-orders/${id}`,
+        params: { page },
+      }),
+      keepUnusedDataFor: 5,
     }),
   }),
 });
 
-export const { useGetCustomersQuery, useGetCustomerQuery } = customersApiSlice;
+export const { useGetCustomersQuery, useGetCustomerQuery, useGetCustomerOrdersQuery } =
+  customersApiSlice;

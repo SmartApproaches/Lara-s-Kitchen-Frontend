@@ -4,91 +4,75 @@ import { ArrowLeft01Icon, ArrowRight01Icon } from "hugeicons-react";
 import CustomersHeader from "./_components/CustomersHeader";
 import CustomersCards from "./_components/CustomersCards";
 import { useCSVExport } from "../../../../hooks/useCSVExport";
-
-const useGetCustomers = () => {
-  const [data, setData] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-  const [isError, setError] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    setError(false);
-
-    const timer = setTimeout(() => {
-      try {
-        setData([
-          {
-            id: 1,
-            name: "Rose James",
-            email: "rose@example.com",
-            orders: 12,
-            phone: "123-456-7890",
-            spend: "£250.00",
-          },
-          {
-            id: 2,
-            name: "Junior Wale",
-            email: "junior@example.com",
-            orders: 5,
-            phone: "987-654-3210",
-            spend: "£90.00",
-          },
-          {
-            id: 3,
-            name: "Amaka Obi",
-            email: "amaka@example.com",
-            orders: 8,
-            phone: "555-666-7777",
-            spend: "£150.00",
-          },
-        ]);
-        setLoading(false);
-      } catch {
-        setError(true);
-        setLoading(false);
-      }
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return { data, isLoading, isError };
-};
+import { useGetCustomersQuery } from "../../../../redux/slices/super-admin/customersApiSlice";
 
 const CustomersPage = () => {
-  const [page, setPage] = useState(1);
-  const pageSize = 5;
-  const { data, isLoading, isError } = useGetCustomers();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [customerFilter, setCustomerFilter] = useState(null);
+
+  const { data, isLoading, isError } = useGetCustomersQuery({
+    page: currentPage,
+    filter: customerFilter,
+    search: debouncedSearch,
+  });
+
   const { exportToCSV } = useCSVExport();
 
-  const totalPages = Math.ceil((data?.length || 0) / pageSize);
+  const customers = data?.data?.data || [];
+  const pagination = {
+    current: data?.data?.current_page || 1,
+    pageSize: data?.data?.per_page || 10,
+    total: data?.data?.total || 0,
+    lastPage: data?.data?.last_page || 1,
+  };
+
+  const handleFilterChange = (status) => {
+    setCustomerFilter(status);
+    setCurrentPage(1);
+  };
 
   const handleCSVExport = () => {
-    if (!data) return;
-    exportToCSV(data, "customers.csv");
+    if (!customers.length) return;
+    exportToCSV(customers, "customers.csv");
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   return (
     <>
-      <CustomersHeader handleCSVExport={handleCSVExport} />
-      <CustomersCards customers={data} isLoading={isLoading} isError={isError} />
+      <CustomersHeader
+        handleCSVExport={handleCSVExport}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onFilterChange={handleFilterChange}
+      />
+      <CustomersCards customers={customers} isLoading={isLoading} isError={isError} />
 
-      {!isLoading && !isError && data && (
+      {!isLoading && !isError && customers.length > 0 && (
         <div className="mt-3 flex items-center justify-between font-semibold text-gray-600">
           <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-            className="disabled:opacity-40"
+            disabled={currentPage === 1 || isLoading}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            className="disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowLeft01Icon strokeWidth={2} />
           </button>
           <span>
-            {page} of {totalPages}
+            {pagination.current} of {pagination.lastPage}
           </span>
           <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-            className="disabled:opacity-40"
+            disabled={currentPage === pagination.lastPage || isLoading}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            className="disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowRight01Icon strokeWidth={2} />
           </button>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, Skeleton, Alert, Avatar, Tag } from "antd";
-import { CallRinging02Icon, Mail01Icon } from "hugeicons-react";
+import { CallRinging02Icon, Mail01Icon, UserIcon } from "hugeicons-react";
 
 import CustomerDetailsDrawer from "./CustomerDetailsDrawer";
 import { IMAGES } from "../../../../../constants";
@@ -23,27 +23,28 @@ const CustomersCards = ({ customers, isLoading, isError }) => {
               style={{ borderRadius: "13px", transitionProperty: "all" }}
               className="transform cursor-pointer rounded-2xl p-4 transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="flex flex-col items-start gap-2 md:gap-4 sm:flex-row sm:items-center">
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center md:gap-4">
                 <Avatar
                   style={{ borderRadius: "13px" }}
                   size={80}
-                  src={cust?.avatar}
+                  src={cust?.profile_picture}
+                  icon={<UserIcon size={40} />}
                   className="flex-shrink-0 rounded-lg"
                 />
 
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-primary truncate text-lg font-bold sm:text-lg md:text-xl">
-                    {cust?.name}
+                  <h2 className="text-primary truncate text-lg font-bold capitalize sm:text-lg md:text-xl">
+                    {cust?.name || "N/A"}
                   </h2>
 
                   <div className="mt-1 flex items-center gap-2 truncate text-base font-medium text-green-600">
                     <Mail01Icon size={18} />
-                    <span className="truncate">{cust?.email}</span>
+                    <span className="truncate">{cust?.email || "N/A"}</span>
                   </div>
 
                   <div className="mt-1 flex items-center gap-2 truncate text-base font-medium text-green-600">
                     <CallRinging02Icon fill="currentColor" size={18} />
-                    <span className="truncate">{cust?.phone}</span>
+                    <span className="truncate">{cust?.phone || "N/A"}</span>
                   </div>
 
                   <Tag
@@ -56,7 +57,7 @@ const CustomersCards = ({ customers, isLoading, isError }) => {
                     }}
                     className="mt-2"
                   >
-                    {cust?.orders} orders
+                    {cust?.total_orders} orders
                   </Tag>
                 </div>
               </div>
