@@ -4,39 +4,34 @@ import { ArrowLeft01Icon, ArrowRight01Icon, Delete01Icon, Edit02Icon } from "hug
 
 import { IMAGES } from "../../../../../constants";
 
-const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete, isDeleting }) => {
-  const [page, setPage] = useState(1);
+const SpecialOfferTable = ({
+  specialOffers,
+  isLoading,
+  isError,
+  onEdit,
+  onDelete,
+  isDeleting,
+  pagination,
+  currentPage,
+  onPageChange,
+}) => {
   const [specialOfferData, setSpecialOfferData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
   const [bulkDeleteModalVisible, setBulkDeleteModalVisible] = useState(false);
-  const pageSize = 5;
-  const totalPages = Math.ceil((specialOfferData?.length || 0) / pageSize);
 
   useEffect(() => {
-    if (specialOffer) {
-      setSpecialOfferData(specialOffer);
+    if (specialOffers) {
+      setSpecialOfferData(specialOffers);
     }
-  }, [specialOffer]);
+  }, [specialOffers]);
 
   const handleRowSelect = (id, checked) => {
     if (checked) {
       setSelectedRows([...selectedRows, id]);
     } else {
       setSelectedRows(selectedRows.filter((rowId) => rowId !== id));
-    }
-  };
-
-  const handleSelectAll = (checked) => {
-    if (checked) {
-      const currentPageData = specialOfferData?.slice((page - 1) * pageSize, page * pageSize);
-      const currentPageIds = currentPageData?.map((item) => item.id) || [];
-      setSelectedRows([...new Set([...selectedRows, ...currentPageIds])]);
-    } else {
-      const currentPageData = specialOfferData?.slice((page - 1) * pageSize, page * pageSize);
-      const currentPageIds = currentPageData?.map((item) => item.id) || [];
-      setSelectedRows(selectedRows.filter((id) => !currentPageIds.includes(id)));
     }
   };
 
@@ -47,22 +42,19 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
   };
 
   const handleDelete = (record) => {
-    console.log("Delete button clicked for:", record);
     setRecordToDelete(record);
     setDeleteModalVisible(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (recordToDelete && onDelete) {
-      console.log("Delete confirmed for:", recordToDelete.id);
-      onDelete(recordToDelete.id);
+      await onDelete(recordToDelete.id);
     }
     setDeleteModalVisible(false);
     setRecordToDelete(null);
   };
 
   const handleCancelDelete = () => {
-    console.log("Delete cancelled");
     setDeleteModalVisible(false);
     setRecordToDelete(null);
   };
@@ -74,84 +66,115 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
     setBulkDeleteModalVisible(true);
   };
 
-  const handleConfirmBulkDelete = () => {
+  const handleConfirmBulkDelete = async () => {
     if (onDelete) {
-      onDelete(selectedRows);
+      await onDelete(selectedRows);
       setSelectedRows([]);
     }
     setBulkDeleteModalVisible(false);
   };
 
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      const allIds = specialOfferData?.map((item) => item?.id) || [];
+      setSelectedRows(allIds);
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
   const handleCancelBulkDelete = () => {
-    console.log("Bulk delete cancelled");
     setBulkDeleteModalVisible(false);
   };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const calculateDuration = (fromDate, toDate) => {
+    if (!fromDate || !toDate) return "N/A";
+    const start = new Date(fromDate);
+    const end = new Date(toDate);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return "1 day";
+    if (diffDays < 30) return `${diffDays} days`;
+
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths === 1) return "1 month";
+    return `${diffMonths} months`;
+  };
+
+  const allIds = specialOfferData?.map((item) => item?.id) || [];
+  const isAllSelected = allIds.length > 0 && allIds.every((id) => selectedRows.includes(id));
+  const isSomeSelected = allIds.some((id) => selectedRows.includes(id)) && !isAllSelected;
 
   const columns = [
     {
       title: (
         <Checkbox
           onChange={(e) => handleSelectAll(e.target.checked)}
-          checked={specialOfferData
-            ?.slice((page - 1) * pageSize, page * pageSize)
-            .every((item) => selectedRows.includes(item.id))}
-          indeterminate={
-            specialOfferData
-              ?.slice((page - 1) * pageSize, page * pageSize)
-              .some((item) => selectedRows.includes(item.id)) &&
-            !specialOfferData
-              ?.slice((page - 1) * pageSize, page * pageSize)
-              .every((item) => selectedRows.includes(item.id))
-          }
+          checked={isAllSelected}
+          indeterminate={isSomeSelected}
         />
       ),
       dataIndex: "select",
+      key: "select",
       width: 60,
+      fixed: "left",
       render: (_, record) => (
         <Checkbox
-          checked={selectedRows.includes(record.id)}
-          onChange={(e) => handleRowSelect(record.id, e.target.checked)}
+          checked={selectedRows.includes(record?.id)}
+          onChange={(e) => handleRowSelect(record?.id, e.target.checked)}
         />
       ),
+    },
+    {
+      title: "OFFER NAME",
+      dataIndex: "offer_name",
+      key: "offer_name",
+      className: "font-medium",
+      render: (text) => <span className="font-semibold text-gray-900">{text || "N/A"}</span>,
     },
     {
       title: "DESCRIPTION",
       dataIndex: "description",
+      key: "description",
       className: "font-medium",
+      render: (text) => <span className="text-gray-700">{text || "N/A"}</span>,
     },
     {
-      title: "PERCENTAGE",
-      dataIndex: "percentage",
+      title: "DURATION",
+      key: "duration",
       className: "font-medium",
-    },
-    {
-      title: "START DATE AND TIME",
-      dataIndex: "startDateTime",
-      className: "font-medium",
-      render: (dateTime) => (
-        <div className="flex items-center gap-2">
-          <span>{dateTime?.date}</span>
-          <span className="text-gray-500">•</span>
-          <span>{dateTime?.time}</span>
-        </div>
+      render: (_, record) => (
+        <span className="font-medium text-gray-900">
+          {calculateDuration(record?.from_date, record?.to_date)}
+        </span>
       ),
     },
     {
-      title: "END DATE AND TIME",
-      dataIndex: "endDateTime",
+      title: "AVAILABLE DATE",
+      dataIndex: "availability_date",
+      key: "availability_date",
       className: "font-medium",
-      render: (dateTime) => (
-        <div className="flex items-center gap-2">
-          <span>{dateTime?.date}</span>
-          <span className="text-gray-500">•</span>
-          <span>{dateTime?.time}</span>
-        </div>
+      render: (dateString) => (
+        <span className="font-medium text-gray-900">{formatDate(dateString)}</span>
       ),
     },
     {
       title: "ACTION",
-      dataIndex: "action",
+      key: "action",
       className: "font-medium",
+      fixed: "right",
+      width: 100,
       render: (_, record) => (
         <div className="flex gap-3">
           <button
@@ -195,8 +218,6 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
       </div>
     );
 
-  const paginatedData = specialOfferData?.slice((page - 1) * pageSize, page * pageSize);
-
   return (
     <div className="mt-8">
       {selectedRows.length > 0 && (
@@ -215,7 +236,7 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
       )}
 
       <div className="overflow-x-auto">
-        {!specialOffer?.length ? (
+        {!specialOffers?.length ? (
           <div className="mt-20 flex flex-col items-center justify-center gap-4 text-center text-lg text-[#1E872C]">
             <img src={IMAGES.emptyState} alt="No Special Offers" className="h-40 w-40" />
             <h3 className="text-xl font-semibold md:text-2xl">Sorry Nothing Here!!!</h3>
@@ -223,31 +244,33 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
           </div>
         ) : (
           <Table
-            dataSource={paginatedData}
+            dataSource={specialOfferData}
             columns={columns}
-            rowKey="id"
+            rowKey={(record) => record.id}
             pagination={false}
-            className="custom-table min-w-[1000px]"
+            className="custom-table"
+            scroll={{ x: 1200 }}
+            bordered
           />
         )}
       </div>
 
-      {specialOffer?.length > 0 && (
+      {specialOffers?.length > 0 && (
         <div className="mt-4 flex items-center justify-between font-semibold text-gray-600">
           <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
+            disabled={currentPage === 1 || isLoading}
+            onClick={() => onPageChange && onPageChange(currentPage - 1)}
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
             <ArrowLeft01Icon strokeWidth={2} size={20} />
           </button>
           <span className="text-base">
-            {page} of {totalPages}
+            Page {currentPage} of {pagination?.last_page || 1}
           </span>
           <button
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
+            disabled={currentPage === pagination?.last_page || isLoading}
+            onClick={() => onPageChange && onPageChange(currentPage + 1)}
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
@@ -273,11 +296,13 @@ const SpecialOfferTable = ({ specialOffer, isLoading, isError, onEdit, onDelete,
           <p>Are you sure you want to delete this special offer?</p>
           {recordToDelete && (
             <div className="mt-3 rounded bg-gray-50 p-3">
-              <p className="font-medium text-gray-900">{recordToDelete.description}</p>
-              <p className="text-sm text-gray-600">{recordToDelete.percentage}</p>
+              <p className="font-medium text-gray-900">{recordToDelete.offer_name}</p>
+              <p className="text-sm text-gray-600">{recordToDelete.description}</p>
               <p className="text-sm text-gray-600">
-                {recordToDelete.startDateTime?.date} {recordToDelete.startDateTime?.time} -{" "}
-                {recordToDelete.endDateTime?.date} {recordToDelete.endDateTime?.time}
+                {formatDate(recordToDelete.from_date)} - {formatDate(recordToDelete.to_date)}
+              </p>
+              <p className="text-sm text-gray-500">
+                Available: {formatDate(recordToDelete.availability_date)}
               </p>
             </div>
           )}
