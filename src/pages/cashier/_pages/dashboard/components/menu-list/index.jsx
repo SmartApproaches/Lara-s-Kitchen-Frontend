@@ -28,9 +28,15 @@ const MenuList = () => {
   const [updatingId, setUpdatingId] = useState(null);
 
   // ✅ Pass `page` param to query properly
-  const { data, isLoading, isError, refetch, isFetching } = useGetCashierDashboardMenuQuery({
-    page: currentPage,
-  });
+  const { data, isLoading, isError, refetch, isFetching } = useGetCashierDashboardMenuQuery(
+    {
+      page: currentPage,
+    },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
 
   const [updateMenuAvailability] = useUpdateMenuAvailabilityMutation();
 
@@ -90,7 +96,7 @@ const MenuList = () => {
   const paginationInfo = data?.data;
 
   // ✅ Loading Skeleton (also used during page switch)
-  if (isLoading || isFetching) {
+  if (isLoading) {
     return (
       <div className="rounded-2xl bg-white px-10 py-8">
         <div className="mb-6 flex items-center justify-between">

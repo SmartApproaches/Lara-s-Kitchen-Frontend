@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   useGetDineInMenusQuery,
   usePlaceDineInOrderMutation,
 } from "../../../redux/slices/cashier/dineIn";
-import { Modal, Badge, Input, message, Skeleton, Pagination } from "antd";
+import { Modal, Badge, Input, message, Skeleton } from "antd";
 import {
   ShoppingCartOutlined,
   ClockCircleOutlined,
@@ -15,11 +15,25 @@ import {
 } from "@ant-design/icons";
 import { IMAGES } from "../../../constants";
 import toast from "react-hot-toast";
+
 const DineInMenu = () => {
   const [page, setPage] = useState(1);
-  const { data: dineInMenu, isLoading } = useGetDineInMenusQuery(page);
-  const menus = dineInMenu?.data?.data || [];
-  const pagination = dineInMenu?.data || {};
+  const [allMenus, setAllMenus] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+
+  const {
+    data: dineInMenu,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useGetDineInMenusQuery(page, {
+    // Enable polling for auto-refresh every 3 seconds
+    pollingInterval: 3000,
+    // Skip polling when user is not on the page
+    skipPollingIfUnfocused: true,
+  });
+
+  const observerTarget = useRef(null);
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [cart, setCart] = useState([]);
@@ -27,6 +41,49 @@ const DineInMenu = () => {
   const [tableNumber, setTableNumber] = useState("");
   const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceDineInOrderMutation();
   const [orderSuccess, setOrderSuccess] = useState(null);
+
+  // Update menus when new data is fetched
+  useEffect(() => {
+    if (dineInMenu?.data?.data) {
+      const newMenus = dineInMenu.data.data;
+      const pagination = dineInMenu.data;
+
+      if (page === 1) {
+        setAllMenus(newMenus);
+      } else {
+        setAllMenus((prev) => {
+          const existingIds = new Set(prev.map((item) => item.id));
+          const uniqueNewMenus = newMenus.filter((item) => !existingIds.has(item.id));
+          return [...prev, ...uniqueNewMenus];
+        });
+      }
+
+      // Check if there are more pages
+      setHasMore(pagination.current_page < pagination.last_page);
+    }
+  }, [dineInMenu, page]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isFetching) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [hasMore, isFetching]);
 
   // Add to Cart
   const addToCart = (item) => {
@@ -54,7 +111,6 @@ const DineInMenu = () => {
 
   const totalPrice = cart.reduce((sum, i) => sum + Number(i.base_price) * i.qty, 0);
 
-  // Place Order
   // Place Order
   const handlePlaceOrder = async () => {
     if (!tableNumber.trim()) {
@@ -121,12 +177,6 @@ const DineInMenu = () => {
     }
   };
 
-  // Handle page change
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   // Skeleton Card Component
   const SkeletonCard = () => (
     <div className="overflow-hidden rounded-xl bg-white shadow-sm">
@@ -147,86 +197,91 @@ const DineInMenu = () => {
 
       {/* Menu Grid */}
       <div className="grid grid-cols-2 gap-3 p-3 sm:grid-cols-3 sm:gap-4 sm:p-6 lg:grid-cols-4">
-        {isLoading ? (
-          // Skeleton Loading
+        {isLoading && page === 1 ? (
+          // Initial Loading Skeletons
           <>
             {[...Array(8)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </>
-        ) : menus.length === 0 ? (
+        ) : allMenus.length === 0 ? (
           <div className="col-span-2 py-20 text-center text-gray-500 sm:col-span-3 lg:col-span-4">
             No menu items available
           </div>
         ) : (
-          menus.map((item) => (
-            <div
-              key={item.id}
-              className={`group flex transform flex-col overflow-hidden rounded-2xl bg-[#F7F7F7] shadow-sm transition-all duration-300 hover:shadow-xl ${
-                item.availability === "out_of_stock"
-                  ? "cursor-not-allowed opacity-50"
-                  : "cursor-pointer hover:-translate-y-1"
-              }`}
-              onClick={() => item.availability !== "out_of_stock" && setSelectedItem(item)}
-            >
-              <div className="relative overflow-hidden">
-                <img
-                  src={item.media?.url}
-                  alt={item.name}
-                  className="h-28 w-full object-cover transition-transform duration-300 group-hover:scale-110 sm:h-36"
-                />
-                {item.availability === "out_of_stock" && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                    <span className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
-                      Out of Stock
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3">
-                <div>
-                  <h3 className="line-clamp-1 text-sm font-bold text-[#1F5226] sm:text-base">
-                    {item.name}
-                  </h3>
-                  <p className="mt-0.5 text-[10px] text-gray-500 sm:text-xs">
-                    {item.category?.name}
-                  </p>
-                </div>
-                <div className="mt-2 flex items-center justify-between">
-                  <p className="text-base font-bold text-[#1F5226] sm:text-lg">
-                    £{item.base_price}
-                  </p>
-                  {item.availability !== "out_of_stock" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addToCart(item);
-                      }}
-                      className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1F5226] text-white shadow-md transition-all hover:bg-[#2E6B38] hover:shadow-lg active:scale-95 sm:h-8 sm:w-8"
-                    >
-                      <PlusOutlined className="text-xs" />
-                    </button>
+          <>
+            {allMenus.map((item) => (
+              <div
+                key={item.id}
+                className={`group flex transform flex-col overflow-hidden rounded-2xl bg-[#F7F7F7] shadow-sm transition-all duration-300 hover:shadow-xl ${
+                  item.availability === "out_of_stock"
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer hover:-translate-y-1"
+                }`}
+                onClick={() => item.availability !== "out_of_stock" && setSelectedItem(item)}
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={item.media?.url}
+                    alt={item.name}
+                    className="h-28 w-full object-cover transition-transform duration-300 group-hover:scale-110 sm:h-36"
+                  />
+                  {item.availability === "out_of_stock" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+                      <span className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                        Out of Stock
+                      </span>
+                    </div>
                   )}
                 </div>
+                <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3">
+                  <div>
+                    <h3 className="line-clamp-1 text-sm font-bold text-[#1F5226] sm:text-base">
+                      {item.name}
+                    </h3>
+                    <p className="mt-0.5 text-[10px] text-gray-500 sm:text-xs">
+                      {item.category?.name}
+                    </p>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <p className="text-base font-bold text-[#1F5226] sm:text-lg">
+                      £{item.base_price}
+                    </p>
+                    {item.availability !== "out_of_stock" && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addToCart(item);
+                        }}
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1F5226] text-white shadow-md transition-all hover:bg-[#2E6B38] hover:shadow-lg active:scale-95 sm:h-8 sm:w-8"
+                      >
+                        <PlusOutlined className="text-xs" />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </>
         )}
       </div>
 
-      {/* Pagination */}
-      {!isLoading && menus.length > 0 && (
-        <div className="flex justify-center px-4 pb-6">
-          <div className="rounded-xl bg-white p-4 shadow-md">
-            <Pagination
-              current={pagination.current_page || 1}
-              total={pagination.total || 0}
-              pageSize={pagination.per_page || 12}
-              onChange={handlePageChange}
-              showSizeChanger={false}
-              className="custom-pagination"
-            />
-          </div>
+      {/* Loading indicator for infinite scroll */}
+      {isFetching && page > 1 && (
+        <div className="grid grid-cols-2 gap-3 px-3 pb-6 sm:grid-cols-3 sm:gap-4 sm:px-6 lg:grid-cols-4">
+          {[...Array(4)].map((_, i) => (
+            <SkeletonCard key={`loading-${i}`} />
+          ))}
+        </div>
+      )}
+
+      {/* Intersection Observer Target */}
+      {hasMore && <div ref={observerTarget} className="h-10" />}
+
+      {/* End of results message */}
+      {!hasMore && allMenus.length > 0 && (
+        <div className="pb-6 text-center text-sm text-gray-500">
+          You've reached the end of the menu
         </div>
       )}
 
@@ -341,7 +396,7 @@ const DineInMenu = () => {
         </button>
       </Modal>
 
-      {/* Improved Food Details Modal */}
+      {/* Food Details Modal */}
       <Modal
         open={!!selectedItem}
         footer={null}
@@ -358,17 +413,16 @@ const DineInMenu = () => {
       >
         {selectedItem && (
           <div className="relative">
-            {/* 🖼️ Hero Image */}
+            {/* Hero Image */}
             <div className="relative h-52 overflow-hidden sm:h-64">
               <img
                 src={selectedItem.media?.url}
                 alt={selectedItem.name}
                 className="h-full w-full object-cover"
               />
-              {/* subtle overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent" />
 
-              {/* 💰 Price Badge */}
+              {/* Price Badge */}
               <div className="absolute top-4 right-4 rounded-full bg-white/95 px-3 py-1.5 shadow-md backdrop-blur-sm">
                 <p className="text-base font-semibold text-[#1F5226] sm:text-lg">
                   £{selectedItem.base_price}
@@ -376,7 +430,7 @@ const DineInMenu = () => {
               </div>
             </div>
 
-            {/* 🧾 Content */}
+            {/* Content */}
             <div className="relative z-10 -mt-4 rounded-t-3xl bg-white p-5 shadow-inner sm:p-6">
               {/* Title & Category */}
               <div className="mb-3">
@@ -505,22 +559,6 @@ const DineInMenu = () => {
           </div>
         )}
       </Modal>
-
-      <style jsx>{`
-        .custom-pagination :global(.ant-pagination-item-active) {
-          background: linear-gradient(135deg, #1f5226, #2e6b38);
-          border-color: #1f5226;
-        }
-        .custom-pagination :global(.ant-pagination-item-active a) {
-          color: white;
-        }
-        .custom-pagination :global(.ant-pagination-item:hover) {
-          border-color: #1f5226;
-        }
-        .custom-pagination :global(.ant-pagination-item:hover a) {
-          color: #1f5226;
-        }
-      `}</style>
     </div>
   );
 };
