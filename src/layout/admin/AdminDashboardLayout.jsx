@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import {
   DashboardSquare02Icon,
   UserGroupIcon,
@@ -6,8 +7,8 @@ import {
   UserShield01Icon,
   CookBookIcon,
   Note05Icon,
+  TravelBagIcon,
 } from "hugeicons-react";
-import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
 
@@ -42,6 +43,11 @@ const AdminDashboardLayout = () => {
       icon: CookBookIcon,
       label: "Catalogue",
       path: "/admin/catalogue",
+    },
+    {
+      icon: TravelBagIcon,
+      label: "Business Suite",
+      path: "/admin/business-suite",
     },
   ];
 
