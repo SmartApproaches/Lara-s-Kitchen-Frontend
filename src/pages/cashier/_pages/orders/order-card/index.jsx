@@ -2,19 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Card, Tag, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const statusColors = {
-  pending: "#FFD89C",
-  completed: "#32CD32",
-  cancelled: "#FF4D4F",
-  accepted: "#00BC1A",
+// ✅ Default Status Config (You can add more here if you want custom color/label)
+const STATUS_MAP = {
+  pending: { label: "Order Pending", color: "#FFD89C" },
+  completed: { label: "Order Completed", color: "#32CD32" },
+  cancelled: { label: "Order Cancelled", color: "#FF4D4F" },
+  accepted: { label: "Order Accepted", color: "#00BC1A" },
+  ready: { label: "Order Ready", color: "#FFA500" },
 };
 
-const statusLabels = {
-  pending: "Order Pending",
-  completed: "Order Completed",
-  cancelled: "Order Cancelled",
-  accepted: "Order Accepted",
-};
+// ✅ Fallback color for unknown statuses
+const DEFAULT_STATUS_COLOR = "#D3D3D3"; // grey
+const DEFAULT_LABEL_PREFIX = "Order";
 
 const OrderCard = ({
   id,
@@ -34,15 +33,19 @@ const OrderCard = ({
 }) => {
   const [currentMainImage, setCurrentMainImage] = useState(images?.[0] || null);
 
-  // ✅ Update image on data change
   useEffect(() => {
     if (images?.length > 0) {
       setCurrentMainImage(images[0]);
     }
   }, [images]);
 
-  // ✅ Time is already formatted (e.g., "Oct 27, 2025 • 8:26am")
   const formattedTime = time || "—";
+
+  // ✅ Automatically handle any new unknown status
+  const statusInfo = STATUS_MAP[status] || {
+    label: `${DEFAULT_LABEL_PREFIX} ${status?.charAt(0).toUpperCase() + status?.slice(1)}`,
+    color: DEFAULT_STATUS_COLOR,
+  };
 
   return (
     <Card
@@ -52,7 +55,7 @@ const OrderCard = ({
       }`}
       bodyStyle={{ padding: "1rem" }}
     >
-      {/* ✅ Main Image + Thumbnails */}
+      {/* MAIN IMAGE + STATUS */}
       <div className="relative flex items-center justify-center gap-3 rounded-2xl !bg-[#1F5226]">
         <div className="relative flex w-3/4 items-center justify-center px-4 py-6">
           {currentMainImage ? (
@@ -68,23 +71,22 @@ const OrderCard = ({
             </div>
           )}
 
-          {/* ✅ Status Badge */}
           <div className="absolute top-2 left-2">
             <Tag
-              color={statusColors[status]}
-              className="rounded-full border-none px-3 py-1 text-xs font-medium text-black"
+              color={statusInfo.color}
+              className="!rounded-full border-none px-3 py-1 text-xs font-medium text-black"
               style={{
-                backgroundColor: statusColors[status],
+                backgroundColor: statusInfo.color,
                 color: "#000",
                 border: "none",
               }}
             >
-              {statusLabels[status]}
+              {statusInfo.label}
             </Tag>
           </div>
         </div>
 
-        {/* ✅ Small Thumbnails */}
+        {/* SMALL THUMBNAILS */}
         <div className="flex w-1/4 flex-col items-center space-y-1 py-2">
           {images.slice(1, 4).map((img, idx) => (
             <div
@@ -98,6 +100,7 @@ const OrderCard = ({
               <img src={img} className="h-full w-full rounded-md object-cover" alt="sub" />
             </div>
           ))}
+
           {extraItems > 0 && (
             <div className="rounded-md bg-green-700 px-1 py-1 text-[8px] font-semibold text-white">
               +{extraItems} more
@@ -106,7 +109,7 @@ const OrderCard = ({
         </div>
       </div>
 
-      {/* ✅ Order Details */}
+      {/* DETAILS */}
       <div className="mt-4">
         <div className="flex items-center justify-between text-sm">
           <p className="font-semibold text-gray-800">{orderId}</p>
@@ -123,10 +126,11 @@ const OrderCard = ({
         <p className="mt-2 line-clamp-2 text-sm text-gray-600">{description}</p>
       </div>
 
-      {/* ✅ Price + Actions */}
+      {/* PRICE + ACTIONS */}
       <div className="mt-4 flex items-center justify-between">
         <div>
           <p className="text-lg font-bold">£{Number(price || 0).toFixed(2)}</p>
+
           {paid && (
             <Tag
               color="green"
@@ -137,6 +141,7 @@ const OrderCard = ({
             </Tag>
           )}
         </div>
+
         <div className="flex gap-2">
           <Button
             size="small"
