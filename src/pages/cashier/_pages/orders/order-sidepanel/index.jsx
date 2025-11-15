@@ -186,14 +186,7 @@ const OrderSidePanel = ({ order, onClose }) => {
         centered
         width={400}
       >
-        <ReceiptPreview
-          order={order}
-          onPrint={() => {
-            // delay ensures AntD Modal finishes rendering before print
-            setTimeout(() => handlePrint(), 100);
-          }}
-          printRef={printRef}
-        />
+        <ReceiptPreview order={order} />
       </Modal>
     </>
   );

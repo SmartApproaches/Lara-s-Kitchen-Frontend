@@ -20,16 +20,25 @@ const Orders = () => {
     data: orderStats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useGetKitchenDashBoardDataQuery();
+  } = useGetKitchenDashBoardDataQuery({
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
   const {
     data: ordersData,
     isLoading: isLoadingOrders,
     isError: isErrorOrders,
-  } = useGetDasOrderToPrepareQuery({
-    page: currentPage,
-    status: activeTab,
-  });
+  } = useGetDasOrderToPrepareQuery(
+    {
+      page: currentPage,
+      status: activeTab,
+    },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
 
   const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
 

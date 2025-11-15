@@ -9,7 +9,7 @@ const ReceiptPreview = ({ order }) => {
   const orderItems = order?.items || [];
   const subtotal = orderItems.reduce((sum, i) => sum + Number(i.subtotal || 0), 0);
   const total = subtotal;
-  const customerInfo = order?.customer;
+  const customerInfo = order?.customer || order?.guest;
 
   const handlePrintReceipt = () => {
     const printContents = document.getElementById("receipt-content").innerHTML;
@@ -79,7 +79,7 @@ const ReceiptPreview = ({ order }) => {
       <div className="mb-3 text-left text-xs">
         <div className="flex justify-between">
           <span className="font-medium">Order ID</span>
-          <span>{order?.orderId || "N/A"}</span>
+          <span>{order?.orderId || order?.order_number}</span>
         </div>
         {order?.orderType === "dine_in" && (
           <div className="flex justify-between">

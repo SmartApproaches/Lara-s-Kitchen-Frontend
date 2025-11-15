@@ -17,13 +17,22 @@ const Dashboard = () => {
     data: orderStats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useGetKitchenDashBoardDataQuery();
+  } = useGetKitchenDashBoardDataQuery({
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: pendingOrdersData,
     isLoading: isLoadingPendingOrders,
     isError: isErrorPendingOrders,
-  } = useGetDasOrderToPrepareQuery({ page: currentPage });
+  } = useGetDasOrderToPrepareQuery(
+    { page: currentPage },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
   const [updateOrderStatus, { isLoading: isUpdatingStatus }] = useUpdateOrderStatusMutation();
 
   const pendingOrders = pendingOrdersData?.data?.data || [];

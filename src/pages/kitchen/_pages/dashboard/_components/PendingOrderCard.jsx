@@ -6,13 +6,12 @@ import PendingOrderDrawer from "./PendingOrderDrawer";
 
 const PendingOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onCancel }) => {
   dayjs.extend(relativeTime);
-
   const [selectedOrder, setSelectedOrder] = useState(null);
   const status = order?.status?.toLowerCase();
   const isPending = status === "pending";
   const isPreparing = status === "preparing";
   const isReady = status === "ready";
-
+  const orderType = order?.order_type === "DINE_IN" ? "DINE IN" : order?.order_type;
   const handleCardClick = () => {
     setSelectedOrder(order);
   };
@@ -68,7 +67,7 @@ const PendingOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onCancel })
               color="green"
               className="rounded-full border-none bg-[#157F3B] px-3 py-1 text-white"
             >
-              {order?.order_type}
+              {orderType}
             </Tag>
           </div>
         </div>
