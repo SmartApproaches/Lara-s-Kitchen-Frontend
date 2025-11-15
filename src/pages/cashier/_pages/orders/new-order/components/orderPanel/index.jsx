@@ -273,7 +273,9 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
 
               {orderType === "Dine-In" && (
                 <div>
-                  <p className="mb-1 text-sm text-gray-500">Table Number:</p>
+                  <p className="mb-1 text-sm text-gray-500">
+                    Table Number: <span className="text-red-500">*</span>
+                  </p>
                   <Input
                     value={formData.table_number}
                     onChange={(e) => handleInputChange("table_number", e.target.value)}
@@ -410,14 +412,14 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
             Place Order
           </Button>
 
-          <Button
+          {/* <Button
             block
             size="large"
             className="rounded-md border bg-white"
             icon={<PrinterIcon className="h-4 w-4" />}
           >
             Print receipt
-          </Button>
+          </Button> */}
         </div>
       </Drawer>
 

@@ -7,7 +7,17 @@ const TransactionTable = () => {
   const [page, setPage] = useState(1);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const { data: transactionData, isLoading, isError } = useGetCashierTransactionsQuery({ page });
+  const {
+    data: transactionData,
+    isLoading,
+    isError,
+  } = useGetCashierTransactionsQuery(
+    { page },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
 
   // Format price to £
   const formatPrice = (price) =>

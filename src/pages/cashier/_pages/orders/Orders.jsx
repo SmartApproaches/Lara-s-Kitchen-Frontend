@@ -28,11 +28,24 @@ const Orders = () => {
 
   const filterRef = useRef(null);
 
-  const { data: ordersApiData, isLoading: ordersLoading } = useGetCashierOrdersQuery({
-    page,
-    status,
+  const { data: ordersApiData, isLoading: ordersLoading } = useGetCashierOrdersQuery(
+    {
+      page,
+      status,
+    },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
+  const {
+    data: orderSummaryData,
+    isLoading,
+    isError,
+  } = useGetCashierOrderSummaryQuery({
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
   });
-  const { data: orderSummaryData, isLoading, isError } = useGetCashierOrderSummaryQuery();
   const ordersMeta = ordersApiData?.data;
   const ordersList = ordersApiData?.data?.data || [];
   const statsData = orderSummaryData?.data;

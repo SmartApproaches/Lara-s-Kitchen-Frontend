@@ -2,22 +2,65 @@ import React from "react";
 import { Button } from "antd";
 import { PrinterIcon } from "hugeicons-react";
 import { IMAGES } from "../../../../../constants";
-const ReceiptPreview = ({ order, onPrint }) => {
+import { formatPhone } from "../../../../../utils/formatPhone";
+import { formattedDate } from "../../../../../utils/formateDate";
+import { formattedTime } from "../../../../../utils/formatTime";
+const ReceiptPreview = ({ order }) => {
   const orderItems = order?.items || [];
   const subtotal = orderItems.reduce((sum, i) => sum + Number(i.subtotal || 0), 0);
   const total = subtotal;
-  const change = total * 0.2; // example change logic — adjust as needed
+  const customerInfo = order?.customer;
 
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const formattedTime = currentDate.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const handlePrintReceipt = () => {
+    const printContents = document.getElementById("receipt-content").innerHTML;
+    const printWindow = window.open("", "", "width=600,height=800");
+
+    printWindow.document.write(`
+<html>
+  <head>
+    <title>&nbsp;</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      @page {
+        size: auto;
+        margin: 10mm;
+      }
+
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        text-align: center;
+      }
+
+      /* Ensures the receipt is centered on printed page */
+      #print-wrapper {
+        width: 100%;
+        max-width: 350px; /* thermal printer size */
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="print-wrapper">
+      ${printContents}
+    </div>
+  </body>
+</html>
+
+  `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    // Wait for Tailwind to load to avoid blank page
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
 
   return (
     <div
@@ -35,24 +78,48 @@ const ReceiptPreview = ({ order, onPrint }) => {
       {/* Info Section */}
       <div className="mb-3 text-left text-xs">
         <div className="flex justify-between">
-          <span className="font-medium">Date</span>
-          <span>{formattedDate}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-medium">Time</span>
-          <span>{formattedTime}</span>
-        </div>
-
-        <div className="mt-2 border-t border-dotted border-gray-300 pt-1" />
-        <div className="flex justify-between">
           <span className="font-medium">Order ID</span>
           <span>{order?.orderId || "N/A"}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="font-medium">Table No.</span>
-          <span>{order?.table || "Table 4"}</span>
+        {order?.orderType === "dine_in" && (
+          <div className="flex justify-between">
+            <span className="font-medium">Table No.</span>
+            <span>{order?.table || "-"}</span>
+          </div>
+        )}
+
+        {order?.orderType !== "dine_in" && (
+          <>
+            <div className="mt-2 border-t border-dashed border-gray-300 pt-1" />
+            <div className="flex justify-between">
+              <div className="flex flex-col justify-between">
+                <span className="font-medium">Name</span>
+                <span>{customerInfo?.name}</span>
+              </div>
+              <div className="flex flex-col justify-between">
+                <span className="font-medium">Phone Number</span>
+                <span>{formatPhone(customerInfo?.phone)}</span>
+              </div>
+            </div>
+            <div className="mt-2 flex flex-col justify-between border-t border-dashed border-gray-300 pt-1">
+              <span className="font-medium">Address</span>
+              <span>{customerInfo?.address?.formatted_address}</span>
+            </div>
+          </>
+        )}
+
+        <div className="mt-2 flex justify-between border-t border-dashed border-gray-300 pt-1">
+          <div className="flex flex-col justify-between">
+            <span className="font-medium">Date</span>
+            <span>{formattedDate}</span>
+          </div>
+          <div className="flex flex-col justify-between">
+            <span className="font-medium">Time</span>
+            <span>{formattedTime}</span>
+          </div>
         </div>
-        <div className="mt-2 border-t border-dotted border-gray-300 pt-1" />
+
+        <div className="mt-2 border-t border-dashed border-gray-300 pt-1" />
       </div>
 
       {/* Items */}
@@ -76,10 +143,6 @@ const ReceiptPreview = ({ order, onPrint }) => {
           <span>Total</span>
           <span>£{total.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between font-semibold">
-          <span>Change</span>
-          <span>£{change.toFixed(2)}</span>
-        </div>
       </div>
 
       {/* Print Button */}
@@ -88,7 +151,7 @@ const ReceiptPreview = ({ order, onPrint }) => {
           type="primary"
           icon={<PrinterIcon className="h-4 w-4" />}
           className="h-10 w-full rounded-lg !bg-[#164D2F] text-white hover:bg-[#1c5e3a]"
-          onClick={onPrint}
+          onClick={handlePrintReceipt}
         >
           Print Receipt
         </Button>

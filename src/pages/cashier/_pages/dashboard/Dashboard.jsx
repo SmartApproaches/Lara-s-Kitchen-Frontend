@@ -12,7 +12,14 @@ import { Skeleton } from "antd";
 const Dashboard = () => {
   const user = useSelector((state) => state.login?.userLogin);
   const name = user?.name.split(" ")[0] || "User";
-  const { data: dashboardData, isLoading, isError } = useGetDashboardDataQuery();
+  const {
+    data: dashboardData,
+    isLoading,
+    isError,
+  } = useGetDashboardDataQuery({
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
   const statsData = dashboardData?.data;
   const stats = [

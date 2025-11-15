@@ -11,7 +11,10 @@ const Transaction = () => {
     data: statsData,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useGetTransactionSummaryQuery();
+  } = useGetTransactionSummaryQuery({
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+  });
 
   // Helper for amount formatting
   const formatAmount = (amount = 0) => {

@@ -6,12 +6,14 @@ const statusColors = {
   pending: "#FFD89C",
   completed: "#32CD32",
   cancelled: "#FF4D4F",
+  accepted: "#00BC1A",
 };
 
 const statusLabels = {
   pending: "Order Pending",
   completed: "Order Completed",
   cancelled: "Order Cancelled",
+  accepted: "Order Accepted",
 };
 
 const OrderCard = ({

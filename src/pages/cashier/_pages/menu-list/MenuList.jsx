@@ -35,12 +35,18 @@ const MenuList = () => {
     isLoading: menuLoading,
     isFetching: menuFetching,
     refetch,
-  } = useGetCashierdMenuQuery({
-    page,
-    per_page: limit,
-    ...(searchTerm && { search: searchTerm }),
-    ...(activeCategoryId && { category_id: activeCategoryId }),
-  });
+  } = useGetCashierdMenuQuery(
+    {
+      page,
+      per_page: limit,
+      ...(searchTerm && { search: searchTerm }),
+      ...(activeCategoryId && { category_id: activeCategoryId }),
+    },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
 
   const [updateMenuAvailability] = useUpdateMenuAvailabilityMutation();
 
@@ -82,7 +88,7 @@ const MenuList = () => {
       {/* ✅ Date Filter Handler Added */}
       <MenuStats
         menuData={menuItems}
-        menuLoading={menuLoading || menuFetching}
+        menuLoading={menuLoading}
         onDateChange={(filterKey) => handleFilterChange(filterKey)}
       />
 
@@ -145,7 +151,7 @@ const MenuList = () => {
 
       {/* Menu Cards */}
       <div className="mt-10 rounded-xl bg-[#D6FADB] p-6">
-        {menuLoading || menuFetching ? (
+        {menuLoading ? (
           <MenuCard items={Array(6).fill({})} menuLoading isSkeleton />
         ) : (
           <MenuCard items={menuItems} onToggle={handleToggle} updatingId={updatingId} />
