@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   DashboardSquare02Icon,
   UserGroupIcon,
@@ -11,8 +12,25 @@ import {
 } from "hugeicons-react";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
+import { getCategories, getSubCategories } from "../../redux/slices/super-admin/categoriesSlice";
 
 const AdminDashboardLayout = () => {
+  const dispatch = useDispatch();
+  const category = useSelector((state) => state?.categories?.category);
+  const categories = useMemo(() => category?.data || [], [category]);
+
+  useEffect(() => {
+    if (!categories.length) {
+      dispatch(getCategories());
+    }
+  }, [dispatch, categories.length]);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      categories.forEach((cat) => dispatch(getSubCategories(cat?.id)));
+    }
+  }, [dispatch, categories]);
+
   const adminSidebarItems = [
     {
       icon: DashboardSquare02Icon,

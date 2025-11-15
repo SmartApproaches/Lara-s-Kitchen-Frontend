@@ -28,11 +28,16 @@ import drinksIcon from "../assets/icons/drinksIcon.svg";
 import proteinIcon from "../assets/icons/proteinIcon.svg";
 import extrasIcon from "../assets/icons/extrasIcon.svg";
 import jollofRice from "../assets/icons/jollofRice.svg";
+import allOrder from "../assets/icons/mage_dashboard.svg";
+import bowIcon from "../assets/icons/ph_bowl-food-light.svg";
+import carbonDrink from "../assets/icons/carbon_drink-01.svg";
 import potIcon from "../assets/icons/potIcon.svg";
 import freshlyCooked from "../assets/icons/freshlyCooked.svg";
 import playIcon from "../assets/icons/playIcon.svg";
 import fastDelivery from "../assets/icons/fastDelivery.svg";
 import authenticIcon from "../assets/icons/authenticIcon.svg";
+import swallowIcon from "../assets/icons/swallowIcon.svg";
+import grainsIcon from "../assets/icons/grainsIcon.svg";
 import landingSplash from "../assets/images/landingSplash.svg";
 import watermelonbg from "../assets/images/watermelonbg.svg";
 import phones from "../assets/images/iphone.svg";
@@ -47,6 +52,7 @@ import ourLounge from "../assets/images/ourLounge.png";
 import logo from "../assets/images/logo.svg";
 import xIcon from "../assets/icons/xIcon.svg";
 import locationIcon from "../assets/icons/locationIcon.svg";
+import ordersBeingPrepared from "../assets/icons/ordersBeingPre.svg";
 import callIcon from "../assets/icons/callIcon.svg";
 import mailIcon from "../assets/icons/mailIcon.svg";
 import facebookIcon from "../assets/icons/facebookIcon.svg";
@@ -58,6 +64,7 @@ import menuTrasperent from "../assets/images/menuTrasperent.svg";
 import menuMobilePolygon from "../assets/images/menuMobilePolygon.svg";
 import suiteClockIcon from "../assets/icons/suiteClockIcon.png";
 import suiteDeliveryIcon from "../assets/icons/suiteDeliveryIcon.png";
+import sucessImage from "../assets/images/success-j709HH5aq9.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -94,6 +101,12 @@ export const ICONS = {
   instagramIcon: instagramIcon,
   suiteClockIcon: suiteClockIcon,
   suiteDeliveryIcon: suiteDeliveryIcon,
+  ordersBeingPrepared: ordersBeingPrepared,
+  allOrder: allOrder,
+  bowIcon: bowIcon,
+  carbonDrink: carbonDrink,
+  swallowIcon: swallowIcon,
+  grainsIcon: grainsIcon,
 };
 
 export const IMAGES = {
@@ -123,4 +136,5 @@ export const IMAGES = {
   menuPolyGon: menuPolyGon,
   menuTrasperent: menuTrasperent,
   menuMobilePolygon: menuMobilePolygon,
+  sucessImage: sucessImage,
 };

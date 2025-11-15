@@ -7,11 +7,11 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
   return (
     <Card
       className={`rounded-xl border border-gray-100 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:drop-shadow-md ${
-        title === "Orders to prepare"
+        title === "Total Orders"
           ? "!bg-[#D6FADB]"
           : title === "Completed Orders"
             ? "!bg-[#B4FFC0]"
-            : "!bg-[#FFE6E6]"
+            : "!bg-[#FFFAE6]"
       }`}
     >
       <div className="flex min-w-0 flex-col gap-3 sm:gap-4">
@@ -24,8 +24,8 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
             className={`shrink-0 rounded-lg p-2 sm:rounded-[10px] sm:p-3 ${
               title === "Completed Orders"
                 ? "bg-[#90FD9F]"
-                : title === "Cancelled Order"
-                  ? "bg-[#FFD2D8]"
+                : title === "Orders being prepared"
+                  ? "bg-[#FFE7D2]"
                   : "bg-[#B4FFC0]"
             }`}
           >
@@ -44,11 +44,11 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
           <div className="min-w-0 flex-1 overflow-hidden">
             <h3
               className={`text-2xl font-bold break-words sm:text-3xl lg:text-4xl ${
-                title === "Orders to prepare"
+                title === "Total Orders"
                   ? "text-primary"
                   : title === "Completed Orders"
                     ? "text-primary"
-                    : "text-[#D40707]"
+                    : "text-[#F5AB0A]"
               }`}
             >
               {value}
@@ -56,7 +56,7 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
             {footer && (
               <div
                 className={`mt-1.5 inline-flex max-w-full items-center gap-1 rounded-xl px-2 py-1 sm:mt-2 sm:rounded-[16px] sm:px-3 ${
-                  title === "Orders to prepare"
+                  title === "Total Orders"
                     ? "bg-[#B4FFC0] text-[#43794B]"
                     : title === "Completed Orders"
                       ? "bg-[#90FD9F] text-[#43794B]"

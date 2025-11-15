@@ -1,192 +1,155 @@
 import React, { useState } from "react";
-import { AutoConversationsIcon, Cancel01Icon, CheckmarkCircle01Icon } from "hugeicons-react";
-import { Alert, Skeleton } from "antd";
-
+import { Alert, Pagination, Skeleton } from "antd";
+import {
+  useGetKitchenDashBoardDataQuery,
+  useGetDasOrderToPrepareQuery,
+  useUpdateOrderStatusMutation,
+} from "../../../../redux/slices/kitchen/kitchenDashboardApiSlice";
 import StatCard from "../dashboard/_components/StatCard";
 import OrdersHeader from "./_components/OrdersHeader";
 import PendingOrderCard from "../dashboard/_components/PendingOrderCard";
 import { ICONS } from "../../../../constants";
+import toast from "react-hot-toast";
+import { AutoConversationsIcon, CheckmarkCircle01Icon } from "hugeicons-react";
 
 const Orders = () => {
   const [activeTab, setActiveTab] = useState("pending");
-  const { data: orderStats, isLoading: isLoadingStats, isError: isErrorStats } = {};
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleDateChange = (datevalue) => {
-    console.log("Selected Date Range:", datevalue);
-  };
+  const {
+    data: orderStats,
+    isLoading: isLoadingStats,
+    isError: isErrorStats,
+  } = useGetKitchenDashBoardDataQuery();
+
+  const {
+    data: ordersData,
+    isLoading: isLoadingOrders,
+    isError: isErrorOrders,
+  } = useGetDasOrderToPrepareQuery({
+    page: currentPage,
+    status: activeTab,
+  });
+
+  const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
+
+  const orders = ordersData?.data?.data || [];
+  const pagination = ordersData?.data;
 
   const statsConfig = [
     {
       icon: ICONS.dish,
-      title: "Orders to prepare",
-      value: "150",
-      footer: "12 pending",
+      title: "Total Orders",
+      value: orderStats?.data?.total_orders || 0,
+      footer: `${orderStats?.data?.pending_orders || 0} pending`,
     },
     {
       icon: CheckmarkCircle01Icon,
       footerIcon: AutoConversationsIcon,
       title: "Completed Orders",
-      value: "20",
-      footer: "20% Growth",
+      value: orderStats?.data?.completed_orders || 0,
     },
     {
-      icon: Cancel01Icon,
+      icon: ICONS.ordersBeingPrepared,
       footerIcon: AutoConversationsIcon,
-      title: "Cancelled Order",
-      value: "10",
-      footer: "30% Done",
+      title: "Orders being prepared",
+      value: orderStats?.data?.orders_preparing || 0,
     },
   ];
 
-  const pendingOrders = [
-    {
-      id: "N2345678",
-      type: "Pickup",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Pending",
-    },
-    {
-      id: "N2345678",
-      type: "Delivery",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Pending",
-    },
-  ];
-
-  const preparingOrders = [
-    {
-      id: "N2345678",
-      type: "Delivery",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Preparing",
-    },
-    {
-      id: "N2345678",
-      type: "Dine in",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Preparing",
-    },
-  ];
-
-  const readyOrders = [
-    {
-      id: "N2345678",
-      type: "Dine in",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Ready",
-    },
-    {
-      id: "N2345678",
-      type: "Pickup",
-      customer: "Adewale Adeola",
-      items: "1 Plate of Amala, Jollof Rice, Spaghetti, Semo",
-      timestamp: "3 mins ago",
-      status: "Ready",
-    },
-  ];
-
-  const handleMarkAsPreparing = (order) => {
-    console.log("Mark as preparing:", order.id);
+  const handleUpdateStatus = async (orderId, status) => {
+    try {
+      await updateOrderStatus({ orderId, status }).unwrap();
+      toast.success(`Order updated to ${status}`);
+    } catch {
+      toast.error("Failed to update status ❌");
+    }
   };
 
-  const handleMarkAsReady = (order) => {
-    console.log("Mark as ready:", order.id);
-  };
-
-  const renderStatsCards = () => {
-    if (isLoadingStats) {
-      return Array.from({ length: 3 }).map((_, index) => (
-        <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <Skeleton active paragraph={{ rows: 2 }} />
+  const renderOrders = () => {
+    if (isLoadingOrders) {
+      return Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="rounded-xl border bg-white p-4 shadow">
+          <Skeleton active />
         </div>
       ));
     }
 
-    if (isErrorStats) {
-      return (
-        <div className="col-span-full">
-          <Alert
-            message="Error loading statistics"
-            description="Failed to fetch dashboard statistics. Please try again later."
-            type="error"
-            showIcon
-          />
-        </div>
-      );
-    }
+    if (orders.length === 0)
+      return <p className="py-6 text-center text-gray-400">No orders found</p>;
 
-    return statsConfig.map((stat, index) => (
-      <StatCard
-        key={index}
-        icon={stat.icon}
-        footerIcon={stat.footerIcon}
-        title={stat.title}
-        value={stat.value}
-        footer={stat.footer}
+    return orders.map((order) => (
+      <PendingOrderCard
+        key={order.id}
+        order={{ ...order, order_type: order.order_type?.toUpperCase() }}
+        disablePreparing={order.status !== "pending"}
+        disableReady={order.status !== "preparing"}
+        onMarkAsPreparing={() => handleUpdateStatus(order.id, "preparing")}
+        onMarkAsReady={() => handleUpdateStatus(order.id, "ready")}
+        isUpdating={isUpdating}
       />
     ));
   };
 
-  const tabs = [
-    { id: "pending", label: "Pending", orders: pendingOrders },
-    { id: "preparing", label: "Preparing", orders: preparingOrders },
-    { id: "ready", label: "Ready", orders: readyOrders },
-  ];
-
   return (
-    <div className="min-w-0">
-      <OrdersHeader onDateChange={handleDateChange} />
+    <div className="w-full">
+      <OrdersHeader />
 
-      <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {renderStatsCards()}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {statsConfig.map((s, i) => (
+          <StatCard key={i} {...s} />
+        ))}
       </div>
 
-      <div className="mb-6">
-        <h2 className="mb-4 text-xl font-semibold text-gray-500">Orders to Prepare</h2>
-
-        <div className="mb-6 flex gap-2 overflow-x-auto rounded-full bg-[#D6FADB] p-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`min-w-0 flex-1 shrink-0 rounded-full px-4 py-3 text-sm font-semibold transition-all sm:px-6 sm:text-base ${
-                activeTab === tab.id
-                  ? "bg-white text-gray-900 shadow-sm"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {tabs.map((tab) => (
-            <div key={tab.id} className="min-w-0">
-              <div className="space-y-4">
-                {tab.orders.map((order, index) => (
-                  <PendingOrderCard
-                    key={`${tab.id}-${index}`}
-                    order={order}
-                    onMarkAsPreparing={handleMarkAsPreparing}
-                    onMarkAsReady={handleMarkAsReady}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ✅ Status Filter Tabs */}
+      <div className="mb-6 flex gap-2 rounded-full bg-[#D6FADB] p-2">
+        {[
+          { id: "pending", label: "Pending" },
+          { id: "preparing", label: "Preparing" },
+          { id: "ready", label: "Ready" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => {
+              setActiveTab(tab.id);
+              setCurrentPage(1); // ✅ Reset page when switching tab
+            }}
+            className={`flex-1 rounded-full px-5 py-2 font-semibold transition ${
+              activeTab === tab.id ? "bg-white" : "text-gray-600"
+            } `}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">{renderOrders()}</div>
+
+      {/* ✅ Pagination */}
+      {pagination?.total > pagination?.per_page && (
+        <div className="mt-6 flex justify-center">
+          <Pagination
+            current={pagination.current_page}
+            total={pagination.total}
+            pageSize={pagination.per_page}
+            onChange={(page) => setCurrentPage(page)}
+            showSizeChanger={false}
+            className="custom-pagination"
+          />
+
+          <style>
+            {`
+              .custom-pagination .ant-pagination-item-active {
+                background-color: #1F5226 !important;
+                border-color: #1F5226 !important;
+              }
+              .custom-pagination .ant-pagination-item-active a {
+                color: #fff !important;
+              }
+            `}
+          </style>
+        </div>
+      )}
     </div>
   );
 };

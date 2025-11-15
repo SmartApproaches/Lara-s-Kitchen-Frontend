@@ -1,67 +1,82 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import CatalogueHeader from "./_components/CatalogueHeader";
 import SearchAndButton from "./_components/SearchAndButton";
 import CatalogueTable from "./_components/CatalogueTable";
-import { useDeleteCatalogueItemMutation } from "../../../../redux/slices/super-admin/catalogueApiSlice";
-
-const useCatalogueApi = () => {
-  const [data, setData] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-  const [isError, setError] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    setError(false);
-    const timer = setTimeout(() => {
-      try {
-        setData([
-          {
-            id: "1",
-            image: "https://via.placeholder.com/80x80.png?text=Amala",
-            name: "Amala with Ewedu",
-            category: "Dine In",
-            price: "£12.00",
-            description: "Delicious Amala served with Ewedu soup and assorted meats.",
-            availability: "Available",
-          },
-          {
-            id: "2",
-            image: "https://via.placeholder.com/80x80.png?text=Semo",
-            name: "Semo with Egusi",
-            category: "Online",
-            price: "£15.00",
-            description: "Smooth Semo paired with thick Egusi soup, spicy and tasty.",
-            availability: "Out of Stock",
-          },
-          {
-            id: "3",
-            image: "https://via.placeholder.com/80x80.png?text=Rice",
-            name: "Jollof Rice",
-            category: "Pick Up",
-            price: "£10.00",
-            description: "Classic Nigerian Jollof rice served with chicken and plantain.",
-            availability: "Available",
-          },
-        ]);
-        setLoading(false);
-      } catch {
-        setError(true);
-        setLoading(false);
-      }
-    }, 1600);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  return { data, isLoading, isError };
-};
+import {
+  useDeleteCatalogueItemMutation,
+  useGetCatalogueQuery,
+} from "../../../../redux/slices/super-admin/catalogueApiSlice";
 
 const Catalogue = () => {
-  const { data: catalogue, isLoading, isError } = useCatalogueApi();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const {
+    data: catalogue,
+    isLoading,
+    isError,
+  } = useGetCatalogueQuery({
+    page: currentPage,
+    search: debouncedSearch,
+  });
+
   const [deleteCatalogueItem, { isLoading: isDeleting, error: deleteError }] =
     useDeleteCatalogueItemMutation();
+
+  const catalogueData = useMemo(() => {
+    const rawData = catalogue?.data?.data || [];
+    return rawData.map((item) => ({
+      id: item?.id,
+      name: item?.name,
+      category: item?.category?.name || "N/A",
+      price: `₦${parseFloat(item?.base_price || 0).toFixed(2)}`,
+      description: item?.description || "No description",
+      image: item?.media?.url || "",
+      availability: item?.availability === "in_stock" ? "In Stock" : "Out of Stock",
+    }));
+  }, [catalogue]);
+
+  const pagination = {
+    current: catalogue?.data?.current_page || 1,
+    pageSize: catalogue?.data?.per_page || 10,
+    total: catalogue?.data?.total || 0,
+    lastPage: catalogue?.data?.last_page || 1,
+  };
+
+  const handleDeleteCatalogueItem = async (itemIds) => {
+    try {
+      const idsToDelete = Array.isArray(itemIds) ? itemIds : [itemIds];
+
+      for (const id of idsToDelete) {
+        await deleteCatalogueItem(id).unwrap();
+      }
+
+      toast.success(
+        idsToDelete.length > 1
+          ? `${idsToDelete.length} catalogue items deleted successfully!`
+          : "Catalogue item deleted successfully!",
+      );
+    } catch (error) {
+      const errorMessage =
+        typeof error?.data?.message === "string"
+          ? error.data.message
+          : "Failed to delete catalogue item.";
+
+      toast.error(errorMessage);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (deleteError) {
@@ -69,27 +84,18 @@ const Catalogue = () => {
     }
   }, [deleteError]);
 
-  const handleDeleteCatalogueItem = async (itemIds) => {
-    try {
-      const idsToDelete = Array.isArray(itemIds) ? itemIds : [itemIds];
-      await Promise.all(idsToDelete.map((id) => deleteCatalogueItem(id).unwrap()));
-      toast.success(
-        idsToDelete.length > 1
-          ? `${idsToDelete.length} catalogue items deleted successfully!`
-          : "Catalogue item deleted successfully!",
-      );
-    } catch {}
-  };
-
   return (
     <>
       <CatalogueHeader />
-      <SearchAndButton />
+      <SearchAndButton searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       <CatalogueTable
-        catalogue={catalogue}
+        catalogue={catalogueData}
         isLoading={isLoading}
         isDeleting={isDeleting}
         isError={isError}
+        pagination={pagination}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
         onDelete={handleDeleteCatalogueItem}
       />
     </>

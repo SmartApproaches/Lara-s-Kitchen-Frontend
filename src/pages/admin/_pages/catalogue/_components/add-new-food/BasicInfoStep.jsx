@@ -1,22 +1,60 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Select } from "antd";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 const { Option } = Select;
 
-const BasicInfoStep = ({ control, errors }) => {
+const BasicInfoStep = ({ control, errors, setValue }) => {
+  const category = useSelector((state) => state?.categories?.category?.data);
+  const categoryLoading = useSelector((state) => state?.categories?.categoryLoading);
+  const subCategoryLoading = useSelector((state) => state?.categories?.subCategoryLoading);
+  const subCategory = useSelector((state) => state?.categories?.subCategory);
+
+  const selectedCategoryId = useWatch({
+    control,
+    name: "category",
+  });
+
+  const categoryOptions = useMemo(() => {
+    if (!category) return [];
+
+    if (Array.isArray(category)) {
+      return category;
+    }
+
+    return [];
+  }, [category]);
+
+  const filteredSubCategories = useMemo(() => {
+    if (!subCategory || !selectedCategoryId) return [];
+
+    let allSubCategories = [];
+
+    if (typeof subCategory === "object" && !Array.isArray(subCategory)) {
+      Object.values(subCategory).forEach((categoryGroup) => {
+        if (categoryGroup?.data && Array.isArray(categoryGroup.data)) {
+          allSubCategories = [...allSubCategories, ...categoryGroup.data];
+        }
+      });
+    }
+
+    return allSubCategories.filter(
+      (sub) =>
+        sub?.category_id === selectedCategoryId ||
+        sub?.category_id === parseInt(selectedCategoryId) ||
+        sub?.category_id === String(selectedCategoryId),
+    );
+  }, [subCategory, selectedCategoryId]);
+
   return (
     <div className="space-y-6">
-      <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
-        <h3 className="text-lg md:text-xl text-[#232323] font-medium">
-          Basic Information
-        </h3>
+      <div className="space-y-6 rounded-lg bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-medium text-[#232323] md:text-xl">Basic Information</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="gap-y-2 flex flex-col">
-            <label className="font-normal text-base text-gray-800">
-              Item Name
-            </label>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-y-2">
+            <label className="text-base font-normal text-gray-800">Item Name</label>
             <Controller
               name="itemName"
               control={control}
@@ -25,23 +63,19 @@ const BasicInfoStep = ({ control, errors }) => {
                   {...field}
                   type="text"
                   placeholder="Enter name"
-                  className={`w-full text-base px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent ${
+                  className={`focus:ring-accent w-full rounded-md border px-3 py-2 text-base focus:ring-2 focus:outline-none ${
                     errors.itemName ? "border-red-500" : "border-gray-300"
                   }`}
                 />
               )}
             />
             {errors.itemName && (
-              <span className="text-red-500 text-sm">
-                {errors.itemName.message}
-              </span>
+              <span className="text-sm text-red-500">{errors.itemName.message}</span>
             )}
           </div>
 
-          <div className="gap-y-2 flex flex-col">
-            <label className="font-normal text-base text-gray-800">
-              Category
-            </label>
+          <div className="flex flex-col gap-y-2">
+            <label className="text-base font-normal text-gray-800">Category</label>
             <Controller
               name="category"
               control={control}
@@ -51,26 +85,101 @@ const BasicInfoStep = ({ control, errors }) => {
                   placeholder="Choose Category"
                   className="w-full"
                   size="large"
+                  loading={categoryLoading}
                   status={errors.category ? "error" : ""}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    if (setValue) {
+                      setValue("subcategoryId", "");
+                    }
+                  }}
                 >
-                  <Option value="food">Food</Option>
-                  <Option value="alcoholic">Alcoholic</Option>
-                  <Option value="non-alcoholic">Non-Alcoholic</Option>
+                  {categoryOptions.map((cat) => (
+                    <Option key={cat?.id} value={cat?.id}>
+                      {cat?.name || "Unnamed Category"}
+                    </Option>
+                  ))}
                 </Select>
               )}
             />
             {errors.category && (
-              <span className="text-red-500 text-sm">
-                {errors.category.message}
-              </span>
+              <span className="text-sm text-red-500">{errors.category.message}</span>
             )}
           </div>
         </div>
 
-        <div className="gap-y-2 flex flex-col">
-          <label className="font-normal text-base text-gray-800">
-            Description (Optional)
-          </label>
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">Sub Category</label>
+          <Controller
+            name="subcategoryId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                placeholder="Select a Category"
+                className="w-full"
+                size="large"
+                loading={subCategoryLoading}
+                disabled={!selectedCategoryId || filteredSubCategories.length === 0}
+                status={errors.subcategoryId ? "error" : ""}
+              >
+                {filteredSubCategories.map((subCat) => (
+                  <Option key={subCat?.id} value={subCat?.id}>
+                    {subCat?.name || "Unnamed Subcategory"}
+                  </Option>
+                ))}
+              </Select>
+            )}
+          />
+          {errors.subcategoryId && (
+            <span className="text-sm text-red-500">{errors.subcategoryId.message}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">Type of Meal</label>
+          <Controller
+            name="typeOfMeal"
+            control={control}
+            render={({ field }) => (
+              <div className="relative inline-flex w-full rounded-lg border border-gray-300 bg-gray-100 p-1">
+                <div
+                  className={`absolute inset-y-1 right-1/2 left-1 rounded-md bg-white shadow-sm transition-all duration-300 ease-in-out ${
+                    field.value === "special" ? "translate-x-full" : "translate-x-0"
+                  }`}
+                  style={{ width: "calc(50% - 0.25rem)" }}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => field.onChange("normal")}
+                  className={`relative z-10 flex-1 rounded-md px-4 py-3 text-base font-medium transition-colors duration-300 ${
+                    field.value === "normal" ? "text-gray-900" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Normal Meal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => field.onChange("special")}
+                  className={`relative z-10 flex-1 rounded-md px-4 py-3 text-base font-medium transition-colors duration-300 ${
+                    field.value === "special"
+                      ? "text-gray-900"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Special Offer
+                </button>
+              </div>
+            )}
+          />
+          {errors.typeOfMeal && (
+            <span className="text-sm text-red-500">{errors.typeOfMeal.message}</span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-y-2">
+          <label className="text-base font-normal text-gray-800">Description (Optional)</label>
           <Controller
             name="description"
             control={control}
@@ -79,100 +188,10 @@ const BasicInfoStep = ({ control, errors }) => {
                 {...field}
                 placeholder="Enter Description"
                 rows={4}
-                className="w-full text-base px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent resize-vertical"
+                className="focus:ring-accent resize-vertical w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:ring-2 focus:outline-none"
               />
             )}
           />
-        </div>
-      </div>
-
-      <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
-        <h5 className="text-lg md:text-xl text-[#232323] font-medium mt-6">
-          Pricing and Availability
-        </h5>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="gap-y-2 flex flex-col">
-            <label className="font-normal text-base text-gray-800">
-              Base Price
-            </label>
-            <Controller
-              name="basePrice"
-              control={control}
-              render={({ field }) => (
-                <div className="relative">
-                  <span className="absolute left-3 top-2 text-gray-500">£</span>
-                  <input
-                    {...field}
-                    type="number"
-                    placeholder="Enter Price"
-                    min="0"
-                    step="0.01"
-                    className={`w-full text-base pl-8 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.basePrice ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                </div>
-              )}
-            />
-            {errors.basePrice && (
-              <span className="text-red-500 text-sm">
-                {errors.basePrice.message}
-              </span>
-            )}
-          </div>
-
-          <div className="gap-y-2 flex flex-col">
-            <label className="font-normal text-base text-gray-800">
-              Discount / Promo (Optional)
-            </label>
-            <Controller
-              name="discount"
-              control={control}
-              render={({ field }) => (
-                <div className="relative">
-                  <input
-                    {...field}
-                    type="number"
-                    placeholder="Enter Amount"
-                    min="0"
-                    max="100"
-                    className="w-full text-base px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="absolute right-3 top-2 text-gray-500">
-                    %
-                  </span>
-                </div>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="gap-y-2 flex flex-col">
-          <label className="font-normal text-base text-gray-800">
-            Stock Availability
-          </label>
-          <Controller
-            name="stockAvailability"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                placeholder="Choose Availability"
-                className="w-full"
-                size="large"
-                status={errors.stockAvailability ? "error" : ""}
-              >
-                <Option value="in-stock">In Stock</Option>
-                <Option value="out-of-stock">Out of Stock</Option>
-              </Select>
-            )}
-          />
-          {errors.stockAvailability && (
-            <span className="text-red-500 text-sm">
-              {errors.stockAvailability.message}
-            </span>
-          )}
         </div>
       </div>
     </div>

@@ -38,6 +38,7 @@ const AdminAddNewFood = lazy(
 const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashboardLayout"));
 const CashierDashboard = lazy(() => import("./pages/cashier/_pages/dashboard/Dashboard"));
 const CashierOrders = lazy(() => import("./pages/cashier/_pages/orders/Orders"));
+const CreateNewOrders = lazy(() => import("./pages/cashier/_pages/orders/new-order"));
 const CashierMenuList = lazy(() => import("./pages/cashier/_pages/menu-list/MenuList"));
 const CashierEditOrder = lazy(() => import("./pages/cashier/_pages/orders/edit-order"));
 const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction/Transaction"));
@@ -46,7 +47,7 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
-
+const DineInMenu = lazy(() => import("./pages/guest/menu"));
 const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -56,7 +57,7 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
 
         <Route path="/login" element={<Login />} />
-
+        <Route path="/dinein-menu" element={<DineInMenu />} />
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
           <Route element={<AdminDashboardLayout />}>
@@ -87,6 +88,7 @@ const App = () => {
           <Route element={<CashierDashboardLayout />}>
             <Route index path="cashier/dashboard" element={<CashierDashboard />} />
             <Route path="cashier/orders" element={<CashierOrders />} />
+            <Route path="cashier/create-orders" element={<CreateNewOrders />} />
             <Route path="cashier/menu-list" element={<CashierMenuList />} />
             <Route path="cashier/edit-order/:id" element={<CashierEditOrder />} />
             <Route path="cashier/transaction" element={<CashierTransaction />} />

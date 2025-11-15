@@ -84,7 +84,7 @@ createRoot(document.getElementById("root")).render(
                 },
                 Pagination: {
                   colorText: "rgb(7,0,49)",
-                  itemActiveBg: "rgb(21,0,139)",
+                  itemActiveBg: "#1f5226",
                   colorPrimary: "rgb(255,255,255)",
                 },
                 Checkbox: {

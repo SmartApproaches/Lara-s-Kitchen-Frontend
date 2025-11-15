@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dropdown, Button, DatePicker } from "antd";
 import { Calendar01Icon } from "hugeicons-react";
+const { RangePicker } = DatePicker;
 
 const DashboardHeader = ({ userName, onDateChange }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -18,14 +19,15 @@ const DashboardHeader = ({ userName, onDateChange }) => {
     const item = menuItems.find((m) => m.key === key);
     if (item) {
       setSelectedLabel(item.label);
-      if (onDateChange) onDateChange(item.key);
+      if (onDateChange) onDateChange({ type: "preset", value: key });
     }
   };
 
-  const handleCalendarChange = (date, dateString) => {
-    if (date) {
-      setSelectedLabel(dateString);
-      if (onDateChange) onDateChange(dateString);
+  const handleCalendarChange = (dates, dateStrings) => {
+    if (dates && dateStrings.length === 2) {
+      const [from, to] = dateStrings;
+      setSelectedLabel(`${from} → ${to}`);
+      if (onDateChange) onDateChange({ type: "custom", from, to });
     }
     setOpenCalendar(false);
   };
@@ -67,8 +69,8 @@ const DashboardHeader = ({ userName, onDateChange }) => {
           />
 
           {openCalendar && (
-            <div className="absolute right-0 z-50 mt-2 rounded-lg shadow-lg">
-              <DatePicker
+            <div className="absolute right-0 z-50 mt-2 rounded-lg bg-white p-2 shadow-lg">
+              <RangePicker
                 open
                 onChange={handleCalendarChange}
                 onOpenChange={(open) => !open && setOpenCalendar(false)}

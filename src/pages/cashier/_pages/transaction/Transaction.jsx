@@ -1,37 +1,55 @@
 import React, { useState } from "react";
 import TransStatsCard from "./components/transStats";
 import { ICONS } from "../../../../constants";
-import { Dropdown, Button, DatePicker } from "antd";
-import { Calendar01Icon } from "hugeicons-react";
-import { AutoConversationsIcon } from "hugeicons-react";
+import { Dropdown, Button, DatePicker, Skeleton, Alert } from "antd";
+import { Calendar01Icon, AutoConversationsIcon } from "hugeicons-react";
 import TransactionTable from "./components/TransactionTable";
-const stats = [
-  {
-    icon: ICONS.salesStats,
-    footerIcon: AutoConversationsIcon,
-    title: "Total Transactions",
-    value: "2,500",
-    footer: "28% Growth",
-  },
-  {
-    icon: ICONS.completedIcon,
-    footerIcon: AutoConversationsIcon,
-    title: "Successful Transactions",
-    value: "2,500",
-    footer: "50% Done",
-  },
-  {
-    icon: ICONS.cancelledIcon,
-    footerIcon: AutoConversationsIcon,
-    title: "Failed Transactions",
-    value: "12,450",
-    footer: "30% Done",
-  },
-];
+import { useGetTransactionSummaryQuery } from "../../../../redux/slices/cashier/transactionApiSlice";
+
 const Transaction = () => {
-  const { data: statsData, isLoading: isLoadingStats, isError: isErrorStats } = {};
+  const {
+    data: statsData,
+    isLoading: isLoadingStats,
+    isError: isErrorStats,
+  } = useGetTransactionSummaryQuery();
+
+  // Helper for amount formatting
+  const formatAmount = (amount = 0) => {
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: "GBP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const stats = [
+    {
+      icon: ICONS.salesStats,
+      footerIcon: AutoConversationsIcon,
+      title: "Total Transactions",
+      value: formatAmount(statsData?.data?.total_transactions?.amount || 0),
+      footer: `${statsData?.data?.total_transactions?.count || 0} Total`,
+    },
+    {
+      icon: ICONS.completedIcon,
+      footerIcon: AutoConversationsIcon,
+      title: "Successful Transactions",
+      value: formatAmount(statsData?.data?.successful_transactions?.amount || 0),
+      footer: `${statsData?.data?.successful_transactions?.count || 0} Success`,
+    },
+    {
+      icon: ICONS.cancelledIcon,
+      footerIcon: AutoConversationsIcon,
+      title: "Failed Transactions",
+      value: formatAmount(statsData?.data?.failed_transactions?.amount || 0),
+      footer: `${statsData?.data?.failed_transactions?.count || 0} Failed`,
+    },
+  ];
+
   const [openCalendar, setOpenCalendar] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("This Year");
+
   const menuItems = [
     { key: "today", label: "Today" },
     { key: "yesterday", label: "Yesterday" },
@@ -42,19 +60,14 @@ const Transaction = () => {
 
   const handleMenuClick = ({ key }) => {
     const item = menuItems.find((m) => m.key === key);
-    if (item) {
-      setSelectedLabel(item.label);
-      if (onDateChange) onDateChange(item.key);
-    }
+    if (item) setSelectedLabel(item.label);
   };
 
   const handleCalendarChange = (date, dateString) => {
-    if (date) {
-      setSelectedLabel(dateString);
-      if (onDateChange) onDateChange(dateString);
-    }
+    if (date) setSelectedLabel(dateString);
     setOpenCalendar(false);
   };
+
   const renderStatsCards = () => {
     if (isLoadingStats) {
       return Array.from({ length: 3 }).map((_, index) => (
@@ -88,6 +101,7 @@ const Transaction = () => {
       />
     ));
   };
+
   return (
     <div>
       <div className="flex justify-between">
@@ -120,7 +134,6 @@ const Transaction = () => {
               icon={<Calendar01Icon size={20} />}
               onClick={() => setOpenCalendar((prev) => !prev)}
             />
-
             {openCalendar && (
               <div className="absolute right-0 z-50 mt-2 rounded-lg shadow-lg">
                 <DatePicker
@@ -133,6 +146,7 @@ const Transaction = () => {
           </div>
         </div>
       </div>
+
       <div className="mt-5">
         <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {renderStatsCards()}
