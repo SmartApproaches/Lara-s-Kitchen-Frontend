@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { PlusSignIcon, Search02Icon } from "hugeicons-react";
 
-import SpecialOfferModal from "./SpecialOfferModal";
 import { Button } from "../../../../../components";
 
-const SearchAndButton = ({ onCreateOffer }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const SearchAndButton = ({ onCreateOffer, onSearchChange }) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleAddOffer = (offerData) => {
     if (onCreateOffer) {
       onCreateOffer(offerData);
     }
-    setModalVisible(false);
+  };
+
+  const handleSearchInput = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (onSearchChange) {
+      onSearchChange(value);
+    }
   };
 
   return (
@@ -24,6 +30,8 @@ const SearchAndButton = ({ onCreateOffer }) => {
           <input
             type="text"
             placeholder="Search by name"
+            value={searchTerm}
+            onChange={handleSearchInput}
             className="block w-full rounded-full bg-green-100 py-3 pr-12 pl-6 font-medium text-green-700 placeholder:text-base placeholder:text-green-700 focus:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none md:text-lg"
           />
         </div>
@@ -32,17 +40,11 @@ const SearchAndButton = ({ onCreateOffer }) => {
           variant="primary"
           size="lg"
           leftIcon={<PlusSignIcon size={18} />}
-          onClick={() => setModalVisible(true)}
+          onClick={() => handleAddOffer(true)}
         >
           Special Offer
         </Button>
       </div>
-
-      <SpecialOfferModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSubmit={handleAddOffer}
-      />
     </>
   );
 };
