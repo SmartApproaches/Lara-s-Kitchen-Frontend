@@ -20,21 +20,27 @@ const DineInMenu = () => {
   const [page, setPage] = useState(1);
   const [allMenus, setAllMenus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [loadedPages, setLoadedPages] = useState(new Set([1]));
 
+  // Query for current page
   const {
     data: dineInMenu,
     isLoading,
     isFetching,
-    refetch,
   } = useGetDineInMenusQuery(page, {
-    // Enable polling for auto-refresh every 3 seconds
     pollingInterval: 3000,
-    // Skip polling when user is not on the page
     skipPollingIfUnfocused: true,
+    refetchOnMountOrArgChange: true,
+  });
+
+  // Always poll page 1 in the background for real-time updates
+  const { data: page1Data } = useGetDineInMenusQuery(1, {
+    pollingInterval: 3000,
+    skipPollingIfUnfocused: true,
+    skip: page === 1, // Skip if we're already on page 1
   });
 
   const observerTarget = useRef(null);
-
   const [selectedItem, setSelectedItem] = useState(null);
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -42,26 +48,61 @@ const DineInMenu = () => {
   const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceDineInOrderMutation();
   const [orderSuccess, setOrderSuccess] = useState(null);
 
-  // Update menus when new data is fetched
+  // Update page 1 data in real-time (background polling)
+  useEffect(() => {
+    if (page1Data?.data?.data && page > 1) {
+      const page1Items = page1Data.data.data;
+
+      setAllMenus((prev) => {
+        // Create a map of all current items by ID
+        const itemsMap = new Map(prev.map((item) => [item.id, item]));
+
+        // Update page 1 items
+        page1Items.forEach((item) => {
+          itemsMap.set(item.id, item);
+        });
+
+        // Convert back to array, maintaining order (page 1 items first)
+        const page1Ids = new Set(page1Items.map((i) => i.id));
+        const updatedPage1 = page1Items;
+        const otherPages = prev.filter((item) => !page1Ids.has(item.id));
+
+        return [...updatedPage1, ...otherPages];
+      });
+    }
+  }, [page1Data, page]);
+
+  // Update menus when new data is fetched (current page)
   useEffect(() => {
     if (dineInMenu?.data?.data) {
       const newMenus = dineInMenu.data.data;
       const pagination = dineInMenu.data;
 
-      if (page === 1) {
-        setAllMenus(newMenus);
-      } else {
-        setAllMenus((prev) => {
-          const existingIds = new Set(prev.map((item) => item.id));
-          const uniqueNewMenus = newMenus.filter((item) => !existingIds.has(item.id));
-          return [...prev, ...uniqueNewMenus];
-        });
-      }
+      setAllMenus((prev) => {
+        if (pagination.current_page === 1) {
+          // For page 1, replace all page 1 items
+          setLoadedPages(new Set([1]));
+          return newMenus;
+        } else {
+          // For other pages, merge intelligently
+          const itemsMap = new Map(prev.map((item) => [item.id, item]));
 
-      // Check if there are more pages
+          // Add/update new items
+          newMenus.forEach((item) => {
+            itemsMap.set(item.id, item);
+          });
+
+          // Track loaded pages
+          setLoadedPages((prevPages) => new Set([...prevPages, pagination.current_page]));
+
+          // Convert map back to array
+          return Array.from(itemsMap.values());
+        }
+      });
+
       setHasMore(pagination.current_page < pagination.last_page);
     }
-  }, [dineInMenu, page]);
+  }, [dineInMenu]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -84,6 +125,32 @@ const DineInMenu = () => {
       }
     };
   }, [hasMore, isFetching]);
+
+  // Image component with error handling - NO spinner on re-render
+  const MenuImage = ({ src, alt, className }) => {
+    const [imgSrc, setImgSrc] = useState(src);
+    const [hasError, setHasError] = useState(false);
+    const isInitialLoad = useRef(true);
+
+    useEffect(() => {
+      // Only update if the src actually changed to a different URL
+      if (src !== imgSrc) {
+        setImgSrc(src);
+        setHasError(false);
+      }
+      isInitialLoad.current = false;
+    }, [src]);
+
+    const handleError = () => {
+      setHasError(true);
+      // Fallback to placeholder image
+      setImgSrc("https://via.placeholder.com/400x300/1F5226/FFFFFF?text=No+Image");
+    };
+
+    return (
+      <img src={imgSrc} alt={alt} className={className} onError={handleError} loading="lazy" />
+    );
+  };
 
   // Add to Cart
   const addToCart = (item) => {
@@ -221,7 +288,7 @@ const DineInMenu = () => {
                 onClick={() => item.availability !== "out_of_stock" && setSelectedItem(item)}
               >
                 <div className="relative overflow-hidden">
-                  <img
+                  <MenuImage
                     src={item.media?.url}
                     alt={item.name}
                     className="h-28 w-full object-cover transition-transform duration-300 group-hover:scale-110 sm:h-36"
@@ -331,7 +398,7 @@ const DineInMenu = () => {
               key={item.id}
               className="flex items-center gap-2.5 rounded-xl bg-white p-2.5 shadow-sm sm:gap-3 sm:p-3"
             >
-              <img
+              <MenuImage
                 src={item.media?.url}
                 alt={item.name}
                 className="h-14 w-14 rounded-lg object-cover sm:h-16 sm:w-16"
@@ -415,7 +482,7 @@ const DineInMenu = () => {
           <div className="relative">
             {/* Hero Image */}
             <div className="relative h-52 overflow-hidden sm:h-64">
-              <img
+              <MenuImage
                 src={selectedItem.media?.url}
                 alt={selectedItem.name}
                 className="h-full w-full object-cover"
