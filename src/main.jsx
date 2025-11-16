@@ -114,6 +114,16 @@ createRoot(document.getElementById("root")).render(
                   contentPadding: "16px 4px 32px 16px!important",
                   headerPadding: "16px 16px",
                 },
+                Radio: {
+                  colorPrimary: "#00BC1A",
+                  colorBorder: "rgb(208,213,221)",
+                  colorText: "#444444",
+                  fontSize: 16,
+                  controlInteractiveSize: 20,
+                  borderRadiusSM: 6,
+                  paddingXS: 12,
+                  algorithm: true,
+                }
               },
             }}
           >

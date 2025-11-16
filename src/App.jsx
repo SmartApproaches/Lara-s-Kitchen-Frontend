@@ -10,6 +10,9 @@ import LandingPage from "./pages/landingPage/landing";
 import LandingMenu from "./pages/landingPage/menu";
 import ContactUs from "./pages/landingPage/contact";
 
+import MenuList from "./pages/cashier/_pages/menu-list/MenuList";
+import Transaction from "./pages/cashier/_pages/transaction/Transaction";
+
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
 // Super Admin Dashboard
@@ -20,6 +23,13 @@ const AdminCustomers = lazy(() => import("./pages/admin/_pages/customers/Custome
 const AdminPermission = lazy(() => import("./pages/admin/_pages/permission/Permission"));
 const AdminSpecialOffer = lazy(() => import("./pages/admin/_pages/special-offer/SpecialOffer"));
 const AdminCatalogue = lazy(() => import("./pages/admin/_pages/catalogue/Catalogue"));
+const AdminBusinessSuite = lazy(() => import("./pages/admin/_pages/business-suite/BusinessSuite"));
+const AdminBusinessSuiteOrderAvailability = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/OrderAvailability"),
+);
+const AdminBusinessSuiteDeliveryFee = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/DeliveryFee"),
+);
 const AdminAddNewFood = lazy(
   () => import("./pages/admin/_pages/catalogue/_components/add-new-food/AddNewFood"),
 );
@@ -60,6 +70,15 @@ const App = () => {
             <Route
               path="admin/catalogue/add-new-food/:catalogueId?"
               element={<AdminAddNewFood />}
+            />
+            <Route path="admin/business-suite" element={<AdminBusinessSuite />} />
+            <Route
+              path="admin/business-suite/order-availability"
+              element={<AdminBusinessSuiteOrderAvailability />}
+            />
+            <Route
+              path="admin/business-suite/delivery-fee"
+              element={<AdminBusinessSuiteDeliveryFee />}
             />
           </Route>
         </Route>

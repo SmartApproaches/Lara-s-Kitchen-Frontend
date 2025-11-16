@@ -62,6 +62,8 @@ import mobilePolyGon from "../assets/images/mobilePolyGon.svg";
 import menuPolyGon from "../assets/images/menuPolyGon.svg";
 import menuTrasperent from "../assets/images/menuTrasperent.svg";
 import menuMobilePolygon from "../assets/images/menuMobilePolygon.svg";
+import suiteClockIcon from "../assets/icons/suiteClockIcon.png";
+import suiteDeliveryIcon from "../assets/icons/suiteDeliveryIcon.png";
 import sucessImage from "../assets/images/success-j709HH5aq9.svg";
 
 export const ICONS = {
@@ -97,6 +99,8 @@ export const ICONS = {
   mailIcon: mailIcon,
   facebookIcon: facebookIcon,
   instagramIcon: instagramIcon,
+  suiteClockIcon: suiteClockIcon,
+  suiteDeliveryIcon: suiteDeliveryIcon,
   ordersBeingPrepared: ordersBeingPrepared,
   allOrder: allOrder,
   bowIcon: bowIcon,

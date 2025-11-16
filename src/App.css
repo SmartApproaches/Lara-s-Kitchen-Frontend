@@ -140,3 +140,8 @@
     font-size: 11px;
   }
 }
+
+.ant-radio-wrapper > span:not(.ant-radio) {
+  flex: 1;
+  width: 100%;
+}
