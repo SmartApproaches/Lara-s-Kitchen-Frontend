@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, DatePicker, Radio, Pagination, Spin } from "antd";
+import { Modal, Input, DatePicker, Radio, Pagination, Spin, Form } from "antd";
 import { ArrowLeft02Icon, Search01Icon } from "hugeicons-react";
 import dayjs from "dayjs";
 
@@ -8,6 +8,9 @@ import { customWarningToast } from "../../../../../utils/toast";
 import { useGetSpecialOffersMenuQuery } from "../../../../../redux/slices/super-admin/specialOfferApiSlice";
 
 const { TextArea } = Input;
+
+const OFFER_NAME_MAX_LENGTH = 21;
+const DESCRIPTION_MAX_LENGTH = 28;
 
 const SpecialOfferModal = ({
   visible,
@@ -259,6 +262,8 @@ const SpecialOfferModal = ({
               placeholder="Enter Offer Name"
               size="large"
               value={offerName}
+              maxLength={OFFER_NAME_MAX_LENGTH}
+              showCount
               onChange={(e) => setOfferName(e.target.value)}
               className="text-base"
               style={{ backgroundColor: "#f5f5f5", border: "none" }}
@@ -271,6 +276,8 @@ const SpecialOfferModal = ({
               placeholder="Enter Description"
               rows={3}
               value={description}
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              showCount
               onChange={(e) => setDescription(e.target.value)}
               className="resize-none text-base"
               style={{ backgroundColor: "#f5f5f5", border: "none" }}
