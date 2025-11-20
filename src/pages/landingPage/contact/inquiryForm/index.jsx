@@ -21,7 +21,7 @@ const InquiryForm = () => {
     <div className="flex min-h-screen items-center bg-white px-4">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 py-28 md:grid-cols-2">
         {/* Left side - Form */}
-        <div className="animate-slide-in-left">
+        {/* <div className="animate-slide-in-left">
           <h2 className="text-primary animate-fade-in-down mb-6 text-3xl font-bold">
             Inquiry Form
           </h2>
@@ -57,7 +57,7 @@ const InquiryForm = () => {
               </Button>
             </Form.Item>
           </Form>
-        </div>
+        </div> */}
 
         {/* Right side - Contact Info */}
         <div className="bg-primary animate-slide-in-right flex flex-col justify-center rounded-2xl p-8 text-white">
@@ -70,11 +70,11 @@ const InquiryForm = () => {
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Call02Icon className="text-lg" />
-              <span className="text-2xl">+9385083307680</span>
+              <span className="text-2xl">07454822494, +441915434197</span>
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Mail01Icon className="text-lg" />
-              <span className="text-2xl">Lara’skitchen@gmail.com</span>
+              <span className="text-2xl">admin@laraskichen.org</span>
             </div>
           </div>
 

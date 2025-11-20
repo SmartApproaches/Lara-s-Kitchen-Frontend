@@ -9,11 +9,12 @@ import {
   AppleIcon,
   Facebook01Icon,
   GoogleIcon,
+  TiktokIcon,
 } from "hugeicons-react";
 
 const Footer = () => {
   return (
-    <footer className="relative bg-white overflow-hidden">
+    <footer className="relative overflow-hidden bg-white">
       {/* <div className="absolute right-0 top-0 bottom-0 w-1/2">
         <img
           src="/path-to-green-bg.png"
@@ -22,25 +23,19 @@ const Footer = () => {
         />
       </div> */}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-12">
           <div className="flex justify-center lg:justify-start">
-            <img
-              src="/logo.svg"
-              alt="Abuja Spot & Bar Logo"
-              className="h-20 md:h-36 w-auto"
-            />
+            <img src="/logo.svg" alt="Abuja Spot & Bar Logo" className="h-20 w-auto md:h-36" />
           </div>
 
           <div className="text-center lg:text-left">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Useful Links
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">Useful Links</h3>
             <ul className="space-y-3">
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center lg:justify-start text-gray-600 hover:text-primary transition-colors"
+                  className="hover:text-primary flex items-center justify-center text-gray-600 transition-colors lg:justify-start"
                 >
                   Menu
                 </a>
@@ -48,7 +43,7 @@ const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="flex items-center justify-center lg:justify-start text-gray-600 hover:text-primary transition-colors"
+                  className="hover:text-primary flex items-center justify-center text-gray-600 transition-colors lg:justify-start"
                 >
                   Contact us
                 </a>
@@ -57,11 +52,9 @@ const Footer = () => {
           </div>
 
           <div className="text-center lg:text-left">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Get In Touch
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-800">Get In Touch</h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-center lg:justify-start text-gray-600">
+              <div className="flex items-center justify-center text-gray-600 lg:justify-start">
                 <Location01Icon size={18} className="mr-2 flex-shrink-0" />
                 <span>
                   11- 12 Tavistock place
@@ -69,34 +62,45 @@ const Footer = () => {
                   Sr1tpb
                 </span>
               </div>
-              <div className="flex items-center justify-center lg:justify-start text-gray-600">
+              <div className="flex items-center justify-center text-gray-600 lg:justify-start">
                 <Call02Icon size={18} className="mr-2" />
-                <span>07454822494</span>
+                <span>07454822494, +441915434197</span>
               </div>
-              <div className="flex items-center justify-center lg:justify-start text-gray-600">
+              <div className="flex items-center justify-center text-gray-600 lg:justify-start">
                 <Mail01Icon size={18} className="mr-2" />
                 <span>admin@lareskitchen.org</span>
               </div>
             </div>
 
-            <div className="flex justify-center lg:justify-start space-x-3 mt-6">
-              <a
+            <div className="mt-6 flex justify-center space-x-3 lg:justify-start">
+              {/* Facebook */}
+              {/* <a
                 href="#"
-                className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-green-800 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-primary flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-green-800"
               >
                 <Facebook01Icon size={20} />
-              </a>
+              </a> */}
+
+              {/* Instagram */}
               <a
-                href="#"
-                className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-green-800 transition-colors"
+                href="https://www.instagram.com/larakitchen_abulaspot/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-primary flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-green-800"
               >
                 <InstagramIcon size={20} />
               </a>
+
+              {/* TikTok */}
               <a
-                href="#"
-                className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-green-800 transition-colors"
+                href="https://www.tiktok.com/@abula.spot?_t=ZN-90XtHy0CnQc&_r=1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-primary flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-green-800"
               >
-                <NewTwitterIcon size={20} />
+                <TiktokIcon size={20} />
               </a>
             </div>
           </div>
@@ -140,10 +144,8 @@ const Footer = () => {
           </div>
         </div> */}
 
-        <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-          <p className="text-base text-gray-600">
-            App and Website Developed by Smart Approaches
-          </p>
+        <div className="mt-8 border-t border-gray-200 pt-6 text-center">
+          <p className="text-base text-gray-600">App and Website Developed by Smart Approaches</p>
         </div>
       </div>
     </footer>
