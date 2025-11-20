@@ -8,6 +8,7 @@ import {
   InstagramIcon,
   NewTwitterIcon,
   Facebook01Icon,
+  TiktokIcon,
 } from "hugeicons-react";
 
 const { TextArea } = Input;
@@ -80,14 +81,24 @@ const InquiryForm = () => {
 
           {/* Social Icons */}
           <div className="animate-slide-in-bottom mt-8 flex justify-center space-x-6">
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
+            {/* <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
               <Facebook01Icon />
-            </a>
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
+            </a> */}
+            <a
+              href="https://www.instagram.com/larakitchen_abulaspot/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
+            >
               <InstagramIcon />
             </a>
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
-              <NewTwitterIcon />
+            <a
+              href="https://www.tiktok.com/@abula.spot?_t=ZN-90XtHy0CnQc&_r=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
+            >
+              <TiktokIcon />
             </a>
           </div>
         </div>
