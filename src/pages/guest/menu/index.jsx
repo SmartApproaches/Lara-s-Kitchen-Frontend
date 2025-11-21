@@ -20,6 +20,7 @@ const DineInMenu = () => {
   const [page, setPage] = useState(1);
   const [allMenus, setAllMenus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const imageCache = new Map();
   const [loadedPages, setLoadedPages] = useState(new Set([1]));
 
   // Query for current page
@@ -126,31 +127,42 @@ const DineInMenu = () => {
     };
   }, [hasMore, isFetching]);
 
-  // Image component with error handling - NO spinner on re-render
-  const MenuImage = ({ src, alt, className }) => {
-    const [imgSrc, setImgSrc] = useState(src);
-    const [hasError, setHasError] = useState(false);
-    const isInitialLoad = useRef(true);
+  // Optimized Image component - COMPLETELY prevents blinking
+  const MenuImage = React.memo(({ src, alt, className }) => {
+    const placeholder = "https://via.placeholder.com/400x300/1F5226/FFFFFF?text=No+Image";
+
+    const [displaySrc, setDisplaySrc] = useState(imageCache.get(src) || placeholder);
 
     useEffect(() => {
-      // Only update if the src actually changed to a different URL
-      if (src !== imgSrc) {
-        setImgSrc(src);
-        setHasError(false);
+      if (!src) {
+        setDisplaySrc(placeholder);
+        return;
       }
-      isInitialLoad.current = false;
+
+      // If we already cached this image, use it instantly
+      if (imageCache.has(src)) {
+        setDisplaySrc(src);
+        return;
+      }
+
+      // Load image once ONLY
+      const img = new Image();
+      img.src = src;
+
+      img.onload = () => {
+        imageCache.set(src, true); // cache loaded
+        setDisplaySrc(src);
+      };
+
+      img.onerror = () => {
+        setDisplaySrc(placeholder);
+      };
     }, [src]);
 
-    const handleError = () => {
-      setHasError(true);
-      // Fallback to placeholder image
-      setImgSrc("https://via.placeholder.com/400x300/1F5226/FFFFFF?text=No+Image");
-    };
-
     return (
-      <img src={imgSrc} alt={alt} className={className} onError={handleError} loading="lazy" />
+      <img src={displaySrc} alt={alt} className={className} loading="lazy" style={{ opacity: 1 }} />
     );
-  };
+  });
 
   // Add to Cart
   const addToCart = (item) => {

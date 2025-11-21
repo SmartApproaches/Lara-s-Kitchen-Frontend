@@ -8,6 +8,7 @@ import {
   InstagramIcon,
   NewTwitterIcon,
   Facebook01Icon,
+  TiktokIcon,
 } from "hugeicons-react";
 
 const { TextArea } = Input;
@@ -21,7 +22,7 @@ const InquiryForm = () => {
     <div className="flex min-h-screen items-center bg-white px-4">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 py-28 md:grid-cols-2">
         {/* Left side - Form */}
-        <div className="animate-slide-in-left">
+        {/* <div className="animate-slide-in-left">
           <h2 className="text-primary animate-fade-in-down mb-6 text-3xl font-bold">
             Inquiry Form
           </h2>
@@ -57,7 +58,7 @@ const InquiryForm = () => {
               </Button>
             </Form.Item>
           </Form>
-        </div>
+        </div> */}
 
         {/* Right side - Contact Info */}
         <div className="bg-primary animate-slide-in-right flex flex-col justify-center rounded-2xl p-8 text-white">
@@ -70,24 +71,34 @@ const InquiryForm = () => {
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Call02Icon className="text-lg" />
-              <span className="text-2xl">+9385083307680</span>
+              <span className="text-2xl">07454822494, +441915434197</span>
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Mail01Icon className="text-lg" />
-              <span className="text-2xl">Lara’skitchen@gmail.com</span>
+              <span className="text-2xl">admin@laraskichen.org</span>
             </div>
           </div>
 
           {/* Social Icons */}
           <div className="animate-slide-in-bottom mt-8 flex justify-center space-x-6">
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
+            {/* <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
               <Facebook01Icon />
-            </a>
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
+            </a> */}
+            <a
+              href="https://www.instagram.com/larakitchen_abulaspot/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
+            >
               <InstagramIcon />
             </a>
-            <a href="#" className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100">
-              <NewTwitterIcon />
+            <a
+              href="https://www.tiktok.com/@abula.spot?_t=ZN-90XtHy0CnQc&_r=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
+            >
+              <TiktokIcon />
             </a>
           </div>
         </div>

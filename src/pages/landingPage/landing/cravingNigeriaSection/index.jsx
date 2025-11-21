@@ -24,9 +24,17 @@ const CravingNigeriaFood = () => {
 
           {/* Phones Image */}
           <div className="animate-slide-in-bottom relative mt-10 sm:mt-12">
-            <img
+            {/* <img
               src={IMAGES.phones}
               alt="phones preview"
+              className="mx-auto -mt-6 w-full max-w-3xl sm:-mt-10"
+            /> */}
+            <video
+              src="./cravingVideo.mp4"
+              autoPlay
+              loop
+              muted
+              controls
               className="mx-auto -mt-6 w-full max-w-3xl sm:-mt-10"
             />
           </div>

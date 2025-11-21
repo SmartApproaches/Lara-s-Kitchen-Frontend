@@ -23,7 +23,7 @@ const LandingPage = () => {
       <MostPopularDishes />
       <WhatSetsUsApart />
       <RelaxSection />
-      <UpcomingEventSection />
+      {/* <UpcomingEventSection /> */}
       <TestimonialSection />
       <Footer />
     </div>
