@@ -53,13 +53,13 @@ const RecentOrders = ({ orders }) => {
             <List.Item className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <img
-                  src={item?.menu_item?.media?.url || "/api/placeholder/40/40"}
+                  src={item?.menu_item?.media?.url}
                   alt={item?.menu_item?.name}
                   className="h-10 w-10 rounded-full object-cover"
                 />
                 <div>
                   <p className="font-semibold text-gray-900">{item?.menu_item?.name}</p>
-                  <p className="text-sm font-bold text-green-600">₦{item?.subtotal}</p>
+                  <p className="text-sm font-bold text-green-600">£{item?.subtotal}</p>
                 </div>
               </div>
               <div className="text-right">

@@ -19,7 +19,7 @@ export const catalogueApiSlice = api.injectEndpoints({
     editCatalogueItem: builder.mutation({
       query: ({ id, data }) => ({
         url: `/admin/catalogue/update-menu/${id}`,
-        method: "PUT",
+        method: "PATCH",
         body: data,
       }),
       invalidatesTags: ["Catalogue"],
