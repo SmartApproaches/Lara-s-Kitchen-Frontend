@@ -16,6 +16,7 @@ const DineInMenu = () => {
   const [page, setPage] = useState(1);
   const [allMenus, setAllMenus] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [note, setNote] = useState("");
   const imageCache = new Map();
   const [loadedPages, setLoadedPages] = useState(new Set([1]));
 
@@ -196,7 +197,7 @@ const DineInMenu = () => {
     const orderBody = {
       order_type: "dine_in",
       table_number: tableNumber,
-      note: "",
+      note: note,
       items: cart.map((item) => ({
         menu_item_id: item.id,
         size: item.selectedSize, // ✅ REQUIRED BY BACKEND
@@ -208,6 +209,7 @@ const DineInMenu = () => {
       const res = await placeOrder(orderBody).unwrap();
       setOrderSuccess(res.data);
       setCart([]);
+      setNote("");
       setIsCartOpen(false);
       setTableNumber("");
       toast.success("Order placed successfully!", {
@@ -275,6 +277,8 @@ const DineInMenu = () => {
         cart={cart}
         updateQty={updateQty}
         removeItem={removeItem}
+        note={note}
+        setNote={setNote}
         totalPrice={totalPrice}
         tableNumber={tableNumber}
         setTableNumber={setTableNumber}

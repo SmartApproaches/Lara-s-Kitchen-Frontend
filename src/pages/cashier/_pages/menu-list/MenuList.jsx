@@ -49,8 +49,17 @@ const MenuList = () => {
   );
 
   const [updateMenuAvailability] = useUpdateMenuAvailabilityMutation();
+  const rawMenuItems = localMenuData || menuData?.data?.data || [];
 
-  const menuItems = localMenuData || menuData?.data?.data || [];
+  const menuItems = rawMenuItems.map((item) => {
+    const largeSize = item?.sizes?.find((s) => s?.name?.toLowerCase() === "large");
+
+    return {
+      ...item,
+      displayPrice: parseFloat(largeSize?.price) || 0, // ✅ LARGE price
+      displaySize: largeSize?.name || "large", // ✅ LARGE name
+    };
+  });
 
   const handleToggle = async (id, checked) => {
     setUpdatingId(id);

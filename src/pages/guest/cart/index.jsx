@@ -2,6 +2,9 @@ import { Input, Modal } from "antd";
 import React from "react";
 import { MinusOutlined, PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import MenuImage from "../components/MenuImage";
+
+const { TextArea } = Input;
+
 const CartModal = ({
   isCartOpen,
   setIsCartOpen,
@@ -11,6 +14,8 @@ const CartModal = ({
   totalPrice,
   tableNumber,
   setTableNumber,
+  note,
+  setNote,
   handlePlaceOrder,
   isPlacingOrder,
 }) => {
@@ -38,6 +43,7 @@ const CartModal = ({
               alt={item.name}
               className="h-14 w-14 rounded-lg object-cover sm:h-16 sm:w-16"
             />
+
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-[#1F5226] sm:text-base">
                 {item.name}
@@ -45,26 +51,28 @@ const CartModal = ({
               <p className="text-xs text-gray-500">
                 Size: {item.selectedSize} • £{item.base_price} each
               </p>
-
-              <p className="text-xs text-gray-500 sm:text-sm">£{item.base_price} each</p>
             </div>
+
             <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => updateQty(item.id, -1)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 transition hover:bg-gray-200 active:scale-95"
+                className="h-7 w-7 rounded-lg bg-gray-100"
               >
                 <MinusOutlined className="text-xs" />
               </button>
-              <span className="w-6 text-center text-sm font-semibold sm:w-7">{item.qty}</span>
+
+              <span className="w-6 text-center text-sm font-semibold">{item.qty}</span>
+
               <button
                 onClick={() => updateQty(item.id, 1)}
-                className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 transition hover:bg-gray-200 active:scale-95"
+                className="h-7 w-7 rounded-lg bg-gray-100"
               >
                 <PlusOutlined className="text-xs" />
               </button>
+
               <button
                 onClick={() => removeItem(item.id)}
-                className="ml-1 flex h-7 w-7 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-50 active:scale-95"
+                className="ml-1 h-7 w-7 rounded-lg text-red-500 hover:bg-red-50"
               >
                 <DeleteOutlined className="text-xs" />
               </button>
@@ -80,23 +88,36 @@ const CartModal = ({
         </div>
       </div>
 
+      {/* ✅ TABLE NUMBER */}
       <div className="mt-3">
-        <label className="mb-1.5 block text-xs font-semibold text-[#1F5226] sm:text-sm">
-          Table Number *
-        </label>
+        <label className="mb-1.5 block text-xs font-semibold text-[#1F5226]">Table Number *</label>
         <Input
           placeholder="Enter table number"
           value={tableNumber}
           onChange={(e) => setTableNumber(e.target.value)}
-          className="h-11 rounded-xl border-2 border-[#1F5226]/20 transition focus:border-[#1F5226]"
+          className="h-11 rounded-xl"
           size="large"
+        />
+      </div>
+
+      {/* ✅ NOTE TEXTAREA (NEW) */}
+      <div className="mt-3">
+        <label className="mb-1.5 block text-xs font-semibold text-[#1F5226]">
+          Special Note (Optional)
+        </label>
+        <TextArea
+          rows={3}
+          placeholder="Any special instruction for the kitchen..."
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className="rounded-xl"
         />
       </div>
 
       <button
         onClick={handlePlaceOrder}
         disabled={isPlacingOrder}
-        className="mt-4 w-full rounded-xl bg-gradient-to-r from-[#1F5226] to-[#2E6B38] py-3.5 font-bold text-white shadow-lg transition-all hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 w-full rounded-xl bg-gradient-to-r from-[#1F5226] to-[#2E6B38] py-3.5 font-bold text-white"
       >
         {isPlacingOrder ? "Placing Order..." : `Place Order • £${totalPrice.toFixed(2)}`}
       </button>

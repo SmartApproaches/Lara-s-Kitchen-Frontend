@@ -5,7 +5,8 @@ import { ICONS } from "../../../../../../../constants";
 const { Text } = Typography;
 
 const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
-  const price = parseFloat(item.base_price || 0).toFixed(2);
+  const price = parseFloat(item.displayPrice || 0).toFixed(2);
+  const sizeName = item.displaySize || "large";
   const catergory = item?.subcategory?.name;
   const isOutOfStock = item?.availability === "out_of_stock";
   return (
@@ -61,9 +62,15 @@ const MenuSingleCard = ({ item, qty = 0, onAdd, onIncrement, onDecrement }) => {
       </div>
 
       <div className="flex items-center !justify-between">
-        <Text strong style={{ fontSize: 14, color: isOutOfStock ? "#999" : "#000" }}>
-          £{price}
-        </Text>
+        <div className="flex flex-col">
+          <Text strong style={{ fontSize: 14, color: isOutOfStock ? "#999" : "#000" }}>
+            £{price}
+          </Text>
+          <Text style={{ fontSize: 10, color: "#9CA3AF" }} className="capitalize">
+            Size: {sizeName}
+          </Text>
+        </div>
+
         <div className="flex items-center gap-1 rounded-full bg-[#EEFFF1] px-2 py-1">
           <img
             src={
