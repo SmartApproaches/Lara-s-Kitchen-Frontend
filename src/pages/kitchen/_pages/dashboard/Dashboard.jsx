@@ -22,6 +22,8 @@ const Dashboard = () => {
     skipPollingIfUnfocused: true,
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [dateFilter, setDateFilter] = useState(null);
+
   const {
     data: pendingOrdersData,
     isLoading: isLoadingPendingOrders,

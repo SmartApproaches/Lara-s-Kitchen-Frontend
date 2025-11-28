@@ -48,7 +48,14 @@ const MenuCard = ({ items, onToggle, updatingId, isSkeleton }) => {
                 {isSkeleton ? (
                   <Skeleton.Input active size="small" style={{ width: 50 }} />
                 ) : (
-                  <span className="font-semibold text-green-700">£{item.base_price}</span>
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-green-700">
+                      £{item.displayPrice?.toFixed(2)}
+                    </span>
+                    <span className="text-xs text-gray-500 capitalize">
+                      Size: {item.displaySize}
+                    </span>
+                  </div>
                 )}
 
                 {!isSkeleton && (

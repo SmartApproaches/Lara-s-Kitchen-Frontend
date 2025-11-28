@@ -1,5 +1,7 @@
 import React from "react";
 import { IMAGES } from "../../../../constants";
+import Lottie from "react-lottie-player";
+import cravingAnimation from "../../../../../public/phoneAnimation.json";
 
 const CravingNigeriaFood = () => {
   return (
@@ -22,20 +24,13 @@ const CravingNigeriaFood = () => {
             <img src={IMAGES.PlayStoreApple} alt="playstore & apple download" className="w-full" />
           </div>
 
-          {/* Phones Image */}
-          <div className="animate-slide-in-bottom relative mt-10 sm:mt-12">
-            {/* <img
-              src={IMAGES.phones}
-              alt="phones preview"
-              className="mx-auto -mt-6 w-full max-w-3xl sm:-mt-10"
-            /> */}
-            <video
-              src="./cravingVideo.mp4"
-              autoPlay
+          {/* Lottie Animation */}
+          <div className="animate-slide-in-bottom relative -mt-64">
+            <Lottie
               loop
-              muted
-              controls
-              className="mx-auto -mt-6 w-full max-w-3xl sm:-mt-10"
+              play
+              animationData={cravingAnimation}
+              className="mx-auto w-full max-w-3xl"
             />
           </div>
         </div>

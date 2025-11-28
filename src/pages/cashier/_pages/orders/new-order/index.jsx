@@ -99,49 +99,58 @@ const NewOrder = () => {
 
   // CART HELPERS...
   const addToCart = (menuItem) => {
+    const defaultSize = menuItem?.sizes?.[0]?.name || "large";
+
+    const defaultPrice = Number(menuItem?.sizes?.[0]?.price || menuItem.base_price || 0);
+
     setCart((prev) => ({
       ...prev,
-      [menuItem.id]: { item: menuItem, qty: 1 },
+      [menuItem.id]: {
+        item: menuItem,
+        qty: 1,
+        size: defaultSize,
+        price: defaultPrice,
+      },
     }));
+
     setIsDrawerOpen(true);
   };
-
   const incrementQty = (menuId) => {
-    setCart((prev) => {
-      const entry = prev[menuId];
-      if (!entry) return prev;
-      return { ...prev, [menuId]: { ...entry, qty: entry.qty + 1 } };
-    });
+    setCart((prev) => ({
+      ...prev,
+      [menuId]: {
+        ...prev[menuId],
+        qty: prev[menuId].qty + 1,
+      },
+    }));
   };
 
   const decrementQty = (menuId) => {
     setCart((prev) => {
-      const entry = prev[menuId];
-      if (!entry) return prev;
-      const newQty = entry.qty - 1;
       const copy = { ...prev };
-      if (newQty <= 0) {
-        delete copy[menuId];
-        if (Object.keys(copy).length === 0) {
-          setIsDrawerOpen(false);
-        }
-        return copy;
-      }
-      copy[menuId] = { ...entry, qty: newQty };
+      if (copy[menuId].qty <= 1) delete copy[menuId];
+      else copy[menuId].qty -= 1;
       return copy;
     });
   };
 
   const cartItemsArray = Object.values(cart);
-  const subTotal = cartItemsArray.reduce(
-    (s, c) => s + parseFloat(c.item.base_price || 0) * c.qty,
-    0,
-  );
+  const subTotal = cartItemsArray.reduce((sum, cart) => sum + Number(cart.price) * cart.qty, 0);
 
   const currentPage = menuData?.data?.current_page || 1;
   const perPage = menuData?.data?.per_page || limit;
   const total = menuData?.data?.total || 0;
-  const menuList = menuData?.data?.data || [];
+  const rawMenuList = menuData?.data?.data || [];
+
+  const menuList = rawMenuList.map((item) => {
+    const largeSize = item?.sizes?.find((s) => s?.name?.toLowerCase() === "large");
+
+    return {
+      ...item,
+      displayPrice: parseFloat(largeSize?.price || item.base_price || 0), // ✅ Large as base
+      displaySize: largeSize?.name || "large", // ✅ Show size
+    };
+  });
 
   return (
     <div className={`min-h-screen p-6 ${isDrawerOpen ? "w-[75%]" : "w-full"}`}>

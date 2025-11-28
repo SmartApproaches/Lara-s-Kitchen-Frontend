@@ -8,7 +8,19 @@ export const dashboardApiSlice = api.injectEndpoints({
     getCashierDashboardMenu: builder.query({
       query: ({ page = 1 }) => `/cashier/dashboard/menus?page=${page}`,
     }),
+    registerDeviceCashier: builder.mutation({
+      query: (deviceData) => ({
+        url: "/cashier/device/register",
+        method: "POST",
+        body: deviceData,
+      }),
+      invalidatesTags: ["CashierDashboard"],
+    }),
   }),
 });
 
-export const { useGetDashboardDataQuery, useGetCashierDashboardMenuQuery } = dashboardApiSlice;
+export const {
+  useGetDashboardDataQuery,
+  useGetCashierDashboardMenuQuery,
+  useRegisterDeviceCashierMutation,
+} = dashboardApiSlice;

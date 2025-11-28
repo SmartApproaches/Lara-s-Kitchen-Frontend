@@ -37,20 +37,25 @@ const MenuList = () => {
       skipPollingIfUnfocused: true,
     },
   );
-
+  console.log("menu data", data);
   const [updateMenuAvailability] = useUpdateMenuAvailabilityMutation();
 
   // ✅ Format and filter data
   useEffect(() => {
     if (data?.data?.data) {
-      const formatted = data.data.data.map((item) => ({
-        id: item.id,
-        name: item.name,
-        desc: item.description,
-        price: parseFloat(item.base_price) || 0,
-        image: item.media?.url,
-        available: item.availability === "in_stock",
-      }));
+      const formatted = data.data.data.map((item) => {
+        const largeSize = item.sizes?.find((s) => s.name?.toLowerCase() === "large");
+
+        return {
+          id: item.id,
+          name: item.name,
+          desc: item.description,
+          price: parseFloat(largeSize?.price) || 0, // ✅ large is now base price
+          sizeName: largeSize?.name || "large", // ✅ show size name
+          image: item.media?.url,
+          available: item.availability === "in_stock",
+        };
+      });
 
       if (filterKey === "2") {
         setFilteredItems(formatted.filter((i) => i.available));
@@ -179,7 +184,11 @@ const MenuList = () => {
               </div>
 
               <div className="mt-2 flex items-center justify-between">
-                <span className="font-semibold text-green-700">£{item.price.toFixed(2)}</span>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-green-700">£{item.price.toFixed(2)}</span>
+                  <span className="text-xs text-gray-500 capitalize">Size: {item.sizeName}</span>
+                </div>
+
                 <Switch
                   loading={updatingId === item.id}
                   checked={item.available}

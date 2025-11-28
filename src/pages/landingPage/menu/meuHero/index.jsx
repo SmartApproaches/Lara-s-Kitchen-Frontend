@@ -16,7 +16,7 @@ const MenuHero = () => {
         <div className="animate-slide-in-right absolute top-20 right-10 hidden md:block 2xl:right-24">
           <img src={ICONS.jollofRice} alt="jollof rice" className="md:w-lg 2xl:w-2xl" />
         </div>
-        <div className="animate-slide-in-right absolute top-28 right-20 flex hidden h-24 w-24 items-center justify-center rounded-full bg-[#EF9825] p-4 md:block 2xl:right-48">
+        <div className="animate-slide-in-right absolute top-28 right-20 hidden h-24 w-24 items-center justify-center rounded-full bg-[#EF9825] p-4 md:block 2xl:right-48">
           <p className="text-primary text-center text-base leading-tight font-bold">
             Available Now
           </p>

@@ -155,24 +155,24 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                 style={{
                   borderRadius: "12px",
                   backgroundColor:
-                    orderData.order_type === "DELIVERY"
+                    orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                       ? "#00BC1A"
-                      : orderData.order_type === "PICKUP"
+                      : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                         ? "#F5AB0A"
                         : "#1F5226",
                   color:
-                    orderData.order_type === "DELIVERY"
+                    orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                       ? "#FFFFFF"
-                      : orderData.order_type === "PICKUP"
+                      : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                         ? "#1F5226"
                         : "#FFFFFF",
                 }}
               >
                 {/* If you prefer table number or T4 style */}
                 <span className="text-lg font-semibold text-white">
-                  {orderData.order_type === "DELIVERY"
+                  {orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                     ? "DL"
-                    : orderData.order_type === "PICKUP"
+                    : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                       ? "PK"
                       : `T${orderData.table_number}`}
                 </span>
@@ -339,68 +339,67 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
 
             <div className="p-6">
               {/* Hide everything when READY */}
-              {!isReady ? (
-                <div className="space-y-3">
-                  {/* Preparing Button */}
 
-                  <Button
-                    size="large"
-                    block
-                    disabled={!isPending}
-                    className={`flex-1 rounded-lg font-semibold ${
-                      isPreparing
-                        ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
-                        : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isPending) onMarkAsPreparing(orderData);
-                    }}
-                  >
-                    {isPreparing ? "Preparing" : "Mark as Preparing"}
-                  </Button>
+              <div className="space-y-3">
+                {/* Preparing Button */}
 
-                  {/* Ready Button */}
-                  <Button
-                    size="large"
-                    block
-                    disabled={!isPending && !isPreparing}
-                    className={`flex-1 rounded-lg font-semibold !text-white ${
-                      !isPending && !isPreparing
-                        ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
-                        : "!bg-[#1F5226] hover:!bg-[#0d5729]"
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isPending || isPreparing) onMarkAsReady(orderData);
-                    }}
-                  >
-                    Mark as Ready
-                  </Button>
-
-                  {/* Cancel Button: ✅ Only active if Pending */}
-                  <Button
-                    size="large"
-                    block
-                    onClick={handleCancel}
-                    danger
-                    ghost
-                    className="rounded-lg font-semibold"
-                    style={{ height: "48px" }}
-                  >
-                    Cancel Order
-                  </Button>
-                </div>
-              ) : (
                 <Button
-                  icon={<PrinterIcon className="h-4 w-4" />}
+                  size="large"
                   block
-                  className="border border-gray-300 py-2 text-sm hover:bg-gray-50"
-                  onClick={() => setShowReceiptModal(true)}
+                  disabled={!isPending}
+                  className={`flex-1 rounded-lg font-semibold ${
+                    isPreparing
+                      ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
+                      : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isPending) onMarkAsPreparing(orderData);
+                  }}
                 >
-                  Print Receipt
+                  {isPreparing ? "Preparing" : "Mark as Preparing"}
                 </Button>
-              )}
+
+                {/* Ready Button */}
+                <Button
+                  size="large"
+                  block
+                  disabled={!isPending && !isPreparing}
+                  className={`flex-1 rounded-lg font-semibold !text-white ${
+                    !isPending && !isPreparing
+                      ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
+                      : "!bg-[#1F5226] hover:!bg-[#0d5729]"
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isPending || isPreparing) onMarkAsReady(orderData);
+                  }}
+                >
+                  Mark as Ready
+                </Button>
+
+                {/* Cancel Button: ✅ Only active if Pending */}
+                <Button
+                  size="large"
+                  block
+                  onClick={handleCancel}
+                  danger
+                  ghost
+                  className="rounded-lg font-semibold"
+                  style={{ height: "48px" }}
+                >
+                  Cancel Order
+                </Button>
+              </div>
+
+              <Button
+                icon={<PrinterIcon className="h-4 w-4" />}
+                block
+                className="mt-5 border border-gray-300 py-2 text-sm hover:bg-gray-50"
+                onClick={() => setShowReceiptModal(true)}
+              >
+                Print Receipt
+              </Button>
             </div>
           </div>
         ) : (

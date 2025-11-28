@@ -144,9 +144,10 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
     // Prepare order payload
     const orderPayload = {
       order_type: currentOrderType,
-      items: cartItemsArray.map(({ item, qty }) => ({
+      items: cartItemsArray.map(({ item, qty, size }) => ({
         menu_item_id: item.id,
         quantity: qty,
+        size: size,
       })),
       guest_name: formData.guest_name,
       guest_phone: fullPhoneNumber,
@@ -341,8 +342,8 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
 
         {/* ORDER ITEMS */}
         <div className="space-y-3 overflow-y-auto px-4">
-          {cartItemsArray.map(({ item, qty }) => {
-            const itemTotal = Number(item.base_price) * qty;
+          {/* {cartItemsArray.map(({ item, qty }) => {
+            const itemTotal = Number(item.price) * qty;
 
             return (
               <div
@@ -362,7 +363,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
                   <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <p className="text-sm font-semibold text-[#00BC1A]">
-                        £{Number(item.base_price).toFixed(2)}
+                        £{Number(item.price).toFixed(2)} ({item.size})
                       </p>
                       <span className="text-[#979797]">{qty}×</span>
                     </div>
@@ -379,6 +380,74 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
                         onClick={() => handleDeleteItem(item)}
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })} */}
+          {cartItemsArray.map(({ item, qty, size, price }) => {
+            const itemTotal = Number(price) * qty;
+
+            return (
+              <div
+                key={item.id}
+                className="flex items-center gap-3 rounded-xl border p-3 shadow-sm"
+              >
+                <img
+                  src={item.media?.url}
+                  className="h-14 w-14 rounded-md object-cover"
+                  alt={item.name}
+                />
+
+                <div className="flex-1">
+                  {/* NAME + DESCRIPTION */}
+                  <p className="text-base font-bold text-[#1F5226]">{item.name}</p>
+                  <p className="text-sm text-gray-700">{item.description}</p>
+
+                  {/* SIZE DROPDOWN (TAILWIND ONLY) */}
+                  {item?.sizes?.length > 0 && (
+                    <select
+                      value={size}
+                      onChange={(e) => {
+                        const selected = e.target.value;
+                        const selectedSizeObj = item.sizes.find((s) => s.name === selected);
+
+                        setCart((prev) => ({
+                          ...prev,
+                          [item.id]: {
+                            ...prev[item.id],
+                            size: selected,
+                            price: Number(selectedSizeObj?.price || item.base_price),
+                          },
+                        }));
+                      }}
+                      className="mt-2 w-full cursor-pointer rounded-xl border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 shadow-sm transition-all outline-none focus:border-[#00BC1A] focus:ring-2 focus:ring-[#00BC1A]/30"
+                    >
+                      {item.sizes.map((s) => (
+                        <option key={s.name} value={s.name}>
+                          {s.name} — £{Number(s.price).toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                  {/* PRICE + QTY + SIZE -> SAME LINE */}
+                  <div className="mt-3 flex items-center justify-between">
+                    {/* LEFT SIDE */}
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-semibold text-[#00BC1A]">
+                        £{Number(price).toFixed(2)}
+                      </p>
+
+                      <span className="text-xs text-gray-500">({size})</span>
+
+                      <span className="text-xs text-gray-500">{qty}×</span>
+                    </div>
+
+                    {/* RIGHT SIDE TOTAL */}
+                    <span className="text-base font-bold text-[#00BC1A]">
+                      £{itemTotal.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>

@@ -34,12 +34,12 @@ const HerSection = () => {
 
         {/* Hero heading */}
         <div className="animate-fade-in-up absolute top-1/4 left-6 md:left-20 md:max-w-xl 2xl:max-w-6xl">
-          <h2 className="text-primary max-w-[20rem] text-2xl leading-snug font-bold md:max-w-full md:text-5xl 2xl:text-[6rem]">
+          <h2 className="text-primary max-w-[20rem] text-2xl leading-snug font-bold md:max-w-full md:text-5xl 2xl:text-[5rem]">
             A True Taste of Nigeria,
             <span className="text-[#FFC107]"> Just for You</span>
           </h2>
 
-          <p className="mt-2 text-sm text-[#0C4113] md:text-xl 2xl:text-6xl">
+          <p className="mt-2 max-w-[50rem] text-sm text-[#0C4113] md:text-xl 2xl:mt-10 2xl:text-6xl">
             We bring you the most delicious Nigerian dishes, served fresh in our restaurant or
             delivered straight to the comfort of your home.
           </p>

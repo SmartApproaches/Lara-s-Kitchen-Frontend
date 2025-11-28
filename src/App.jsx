@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
+import "./Notifications.css";
 import "./animations/animations.css";
 import PageLoader from "./components/ui/loader/PageLoader";
 import Login from "./pages/auth/login/Login";
@@ -47,6 +48,7 @@ const CashierTransaction = lazy(() => import("./pages/cashier/_pages/transaction
 const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashboardLayout"));
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
+const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrders"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
 const App = () => {
   return (
@@ -100,6 +102,7 @@ const App = () => {
           <Route element={<KitchenDashboardLayout />}>
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
             <Route path="kitchen/orders" element={<KitchenOrders />} />
+            <Route path="kitchen/special-orders" element={<KitchenSpecialOrder />} />
           </Route>
         </Route>
       </Routes>
