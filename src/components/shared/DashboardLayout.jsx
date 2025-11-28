@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Search01Icon,
@@ -9,17 +9,25 @@ import {
   Logout02Icon,
   UserStatusIcon,
 } from "hugeicons-react";
-
+import { addNotification } from "../../redux/slices/notification/notificationsSlice";
+import { listenToForegroundMessages, requestNotificationPermission } from "../../utils/firebase";
 import logo from "../../assets/images/logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/features/auth/loginSlice";
 import { useDispatch, useSelector } from "react-redux";
+import NotificationsDropdown from "../../pages/kitchen/_pages/orders/_components/pushNotification/notificationDropdown";
+
+import { useRegisterDeviceMutation } from "../../redux/slices/kitchen/kitchenDashboardApiSlice";
+import { useRegisterDeviceCashierMutation } from "../../redux/slices/cashier/dashboardApiSlice";
+import { getBrowserDeviceId } from "../../utils/device";
 
 const DashboardLayout = ({ sidebarItems = [], children }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const user = useSelector((state) => state.login?.userLogin);
 
@@ -31,8 +39,67 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
     dispatch(logoutUser());
   };
 
+  const [registerKitchenDevice] = useRegisterDeviceMutation();
+  const [registerCashierDevice] = useRegisterDeviceCashierMutation();
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const setupNotifications = async () => {
+      try {
+        // Register the service worker
+        if ("serviceWorker" in navigator) {
+          const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+        }
+
+        // Request permission + FCM token
+        const fcmToken = await requestNotificationPermission(
+          "BHcPnvAa06uFSGuxn46bamNFTCQ3UyJAs3EnoQtQ17qyLaCJtcupSYbgf4fv0BWQYnQQCEe8P88gVx5OjV48Tl4",
+        );
+
+        if (!fcmToken) {
+          return;
+        }
+
+        // Get stable browser device ID
+        const deviceId = getBrowserDeviceId();
+        // Send to backend based on role
+        if (user?.role?.role === "kitchen") {
+          await registerKitchenDevice({
+            fcm_token: fcmToken,
+            device_id: deviceId,
+            platform: "web",
+          }).unwrap();
+        } else if (user?.role?.role === "cashier") {
+          await registerCashierDevice({
+            fcm_token: fcmToken,
+            device_id: deviceId,
+            platform: "web",
+          }).unwrap();
+        } else {
+        }
+      } catch (error) {}
+    };
+
+    setupNotifications();
+
+    // Foreground notifications
+    const unsubscribe = listenToForegroundMessages((payload) => {
+      dispatch(
+        addNotification({
+          title: payload.notification?.title,
+          body: payload.notification?.body,
+          data: payload.data,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+    });
+
+    return () => unsubscribe && unsubscribe();
+  }, [user, dispatch]);
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* Sidebar overlay */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black opacity-50 md:hidden"
@@ -40,6 +107,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
         />
       )}
 
+      {/* SIDEBAR */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-68 transform flex-col bg-white shadow-lg transition-transform duration-300 ease-in-out md:static ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -61,11 +129,13 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
           </div>
         </div>
 
+        {/* MENU */}
         <nav className="mt-6 flex-1 overflow-y-auto px-3">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
             const isActive =
               location.pathname === item.path || location.pathname.startsWith(item.path + "/");
+
             return (
               <button
                 key={index}
@@ -73,7 +143,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                   isActive
                     ? "bg-primary text-white shadow-sm"
                     : "text-secondary cursor-pointer hover:bg-gray-50 hover:text-gray-900"
-                } `}
+                }`}
                 onClick={() => navigate(item.path)}
               >
                 <Icon size={22} className="mr-3" />
@@ -92,10 +162,13 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
         </nav>
       </aside>
 
+      {/* MAIN CONTENT */}
       <div className="flex h-screen min-w-0 flex-1 flex-col">
+        {/* Top Navbar */}
         <header className="z-30 flex-shrink-0 border-b border-gray-200 bg-white shadow-sm">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex h-20 items-center justify-between gap-x-4">
+              {/* Sidebar toggle + Search */}
               <div className="flex flex-1 items-center">
                 <button
                   onClick={() => setIsSidebarOpen(true)}
@@ -116,11 +189,24 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                 </div>
               </div>
 
+              {/* Notifications + User */}
               <div className="flex items-center space-x-3">
-                <button className="text-primary bg-accent relative rounded-full p-2 hover:text-green-500">
-                  <Notification01Icon size={22} />
-                  <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
-                </button>
+                <div className="relative">
+                  <button
+                    className="text-primary bg-accent relative rounded-full p-2 hover:text-green-500"
+                    onClick={() => setShowNotifications((s) => !s)}
+                  >
+                    <Notification01Icon size={22} />
+                    <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
+                  </button>
+
+                  {showNotifications && (
+                    <NotificationsDropdown
+                      isOpen={showNotifications}
+                      onClose={() => setShowNotifications(false)}
+                    />
+                  )}
+                </div>
 
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
@@ -129,7 +215,9 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                   <div className="hidden sm:block">
                     <div className="text-secondary text-base font-semibold capitalize">
                       {user?.role
-                        ? user.role?.role?.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+                        ? user.role?.role
+                            ?.replace(/_/g, " ")
+                            .replace(/\b\w/g, (c) => c.toUpperCase())
                         : "N/A"}
                     </div>
                     <div className="text-secondary text-sm font-medium">{user?.email || "N/A"}</div>
@@ -140,6 +228,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
           </div>
         </header>
 
+        {/* MAIN CONTENT */}
         <main className="flex-1 overflow-y-auto bg-[#e5ffe9]">
           <div className="animate-slide-in-bottom mt-0 p-6 sm:p-8 md:mt-5 lg:p-10">
             {children || (

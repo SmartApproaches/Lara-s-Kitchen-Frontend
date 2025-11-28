@@ -155,24 +155,24 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                 style={{
                   borderRadius: "12px",
                   backgroundColor:
-                    orderData.order_type === "DELIVERY"
+                    orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                       ? "#00BC1A"
-                      : orderData.order_type === "PICKUP"
+                      : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                         ? "#F5AB0A"
                         : "#1F5226",
                   color:
-                    orderData.order_type === "DELIVERY"
+                    orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                       ? "#FFFFFF"
-                      : orderData.order_type === "PICKUP"
+                      : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                         ? "#1F5226"
                         : "#FFFFFF",
                 }}
               >
                 {/* If you prefer table number or T4 style */}
                 <span className="text-lg font-semibold text-white">
-                  {orderData.order_type === "DELIVERY"
+                  {orderData.order_type === "DELIVERY" || orderData.order_type === "delivery"
                     ? "DL"
-                    : orderData.order_type === "PICKUP"
+                    : orderData.order_type === "PICKUP" || orderData.order_type === "pickup"
                       ? "PK"
                       : `T${orderData.table_number}`}
                 </span>
