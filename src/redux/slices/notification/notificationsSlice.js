@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   items: [], // { id, title, body, data, read, createdAt }
-  soundEnabled: true,
+  soundEnabled: false,
 };
 
 const notificationsSlice = createSlice({
@@ -24,6 +24,7 @@ const notificationsSlice = createSlice({
             body: payload.body || "",
             data: payload.data || {},
             read: false,
+            _isNew: true,
             createdAt: payload.createdAt || new Date().toISOString(),
           },
         };
@@ -43,10 +44,22 @@ const notificationsSlice = createSlice({
     toggleSound(state) {
       state.soundEnabled = !state.soundEnabled;
     },
+    clearNewFlags: (state) => {
+      state.items = state.items.map((item) => ({
+        ...item,
+        _isNew: false,
+      }));
+    },
   },
 });
 
-export const { addNotification, markAsRead, markAllRead, clearNotifications, toggleSound } =
-  notificationsSlice.actions;
+export const {
+  addNotification,
+  markAsRead,
+  markAllRead,
+  clearNotifications,
+  toggleSound,
+  clearNewFlags,
+} = notificationsSlice.actions;
 
 export default notificationsSlice;

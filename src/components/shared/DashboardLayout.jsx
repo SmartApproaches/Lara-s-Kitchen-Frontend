@@ -16,7 +16,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/features/auth/loginSlice";
 import { useDispatch, useSelector } from "react-redux";
 import NotificationsDropdown from "../../pages/kitchen/_pages/orders/_components/pushNotification/notificationDropdown";
-
+import ToastNotificationContainer from "../../pages/kitchen/_pages/orders/_components/pushNotification/notificationDropdown/Toast/ToastNotificationContainer";
 import { useRegisterDeviceMutation } from "../../redux/slices/kitchen/kitchenDashboardApiSlice";
 import { useRegisterDeviceCashierMutation } from "../../redux/slices/cashier/dashboardApiSlice";
 import { getBrowserDeviceId } from "../../utils/device";
@@ -28,9 +28,10 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
 
   const user = useSelector((state) => state.login?.userLogin);
-
+  const notifications = useSelector((state) => state.notifications?.items || []);
   const defaultSidebarItems = [{ icon: DashboardSquare02Icon, label: "Dashboard", active: true }];
 
   const menuItems = sidebarItems.length > 0 ? sidebarItems : defaultSidebarItems;
@@ -41,6 +42,24 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
 
   const [registerKitchenDevice] = useRegisterDeviceMutation();
   const [registerCashierDevice] = useRegisterDeviceCashierMutation();
+
+  // Track notification count to trigger shake animation
+  useEffect(() => {
+    // Check if there's a new notification with the _isNew flag
+    const hasNewNotification = notifications.some((n) => n._isNew);
+
+    if (hasNewNotification) {
+      setIsShaking(true);
+
+      // Remove shake class after animation completes (800ms)
+      const timer = setTimeout(() => {
+        setIsShaking(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [notifications]);
+
   useEffect(() => {
     if (!user?.id) return;
 
@@ -75,9 +94,10 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
             device_id: deviceId,
             platform: "web",
           }).unwrap();
-        } else {
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Notification setup error:", error);
+      }
     };
 
     setupNotifications();
@@ -90,16 +110,19 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
           body: payload.notification?.body,
           data: payload.data,
           createdAt: new Date().toISOString(),
+          _isNew: true, // <-- flag for animation
         }),
       );
     });
 
     return () => unsubscribe && unsubscribe();
-  }, [user, dispatch]);
+  }, [user, dispatch, registerKitchenDevice, registerCashierDevice]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar overlay */}
+      <ToastNotificationContainer />
+
       {isSidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black opacity-50 md:hidden"
@@ -193,11 +216,15 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <button
-                    className="text-primary bg-accent relative rounded-full p-2 hover:text-green-500"
+                    className={`text-primary bg-accent relative rounded-full p-2 transition-all hover:text-green-500 ${
+                      isShaking ? "notification-icon-shake" : ""
+                    }`}
                     onClick={() => setShowNotifications((s) => !s)}
                   >
                     <Notification01Icon size={22} />
-                    <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
+                    {notifications.filter((n) => !n.read).length > 0 && (
+                      <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
+                    )}
                   </button>
 
                   {showNotifications && (
