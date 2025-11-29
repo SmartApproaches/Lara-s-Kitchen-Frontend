@@ -25,7 +25,7 @@ const CravingNigeriaFood = () => {
           </div>
 
           {/* Lottie Animation */}
-          <div className="animate-slide-in-bottom relative -mt-64">
+          <div className="animate-slide-in-bottom relative -mt-20 md:-mt-64">
             <Lottie
               loop
               play

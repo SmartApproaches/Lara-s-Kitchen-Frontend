@@ -63,6 +63,9 @@ import menuPolyGon from "../assets/images/menuPolyGon.svg";
 import menuTrasperent from "../assets/images/menuTrasperent.svg";
 import menuMobilePolygon from "../assets/images/menuMobilePolygon.svg";
 import sucessImage from "../assets/images/success-j709HH5aq9.svg";
+import Testimonial1 from "../assets/images/Testimonial1.png";
+import Testimonial3 from "../assets/images/Testimonial3.png";
+import Testimonial2 from "../assets/images/Testimonial2.png";
 
 export const ICONS = {
   descent: descentIcon,
@@ -133,4 +136,7 @@ export const IMAGES = {
   menuTrasperent: menuTrasperent,
   menuMobilePolygon: menuMobilePolygon,
   sucessImage: sucessImage,
+  Testimonial1: Testimonial1,
+  Testimonial2: Testimonial2,
+  Testimonial3: Testimonial3,
 };
