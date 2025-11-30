@@ -10,9 +10,9 @@ const DashboardHeader = ({ userName, onDateChange }) => {
   const menuItems = [
     { key: "today", label: "Today" },
     { key: "yesterday", label: "Yesterday" },
-    { key: "lastWeek", label: "Last Week" },
-    { key: "lastMonth", label: "Last 30 days" },
-    { key: "lastYear", label: "Last 1 Year" },
+    { key: "last_week", label: "Last Week" },
+    { key: "last_30_days", label: "Last 30 Days" },
+    { key: "last_1_year", label: "Last 1 Year" },
   ];
 
   const handleMenuClick = ({ key }) => {
@@ -72,6 +72,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
             <div className="absolute right-0 z-50 mt-2 rounded-lg bg-white p-2 shadow-lg">
               <RangePicker
                 open
+                format="YYYY-MM-DD"
                 onChange={handleCalendarChange}
                 onOpenChange={(open) => !open && setOpenCalendar(false)}
               />

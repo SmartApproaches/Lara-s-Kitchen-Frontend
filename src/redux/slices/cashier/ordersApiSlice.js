@@ -31,6 +31,13 @@ export const ordersApiSlice = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    cashierUpdateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/cashier/orders/${orderId}/update-order-status`,
+        method: "PATCH",
+        body: { status },
+      }),
+    }),
   }),
 });
 
@@ -41,4 +48,5 @@ export const {
   useUpdateOrderMutation,
   useDeleteOrderMutation,
   useGetCashierOrderSummaryQuery,
+  useCashierUpdateOrderStatusMutation,
 } = ordersApiSlice;
