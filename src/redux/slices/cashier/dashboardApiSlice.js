@@ -3,8 +3,17 @@ import { api } from "../../api/rtkQuery";
 export const dashboardApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardData: builder.query({
-      query: () => "/cashier/dashboard",
+      query: ({ from, to, period, page = 1 } = {}) => ({
+        url: "/cashier/dashboard",
+        params: {
+          from,
+          to,
+          period,
+          page,
+        },
+      }),
     }),
+
     getCashierDashboardMenu: builder.query({
       query: ({ page = 1 }) => `/cashier/dashboard/menus?page=${page}`,
     }),

@@ -1,22 +1,16 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { ArrowUp01Icon, PrinterIcon, Delete02Icon, PencilEdit02Icon } from "hugeicons-react";
 import { Drawer, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import ReceiptPreview from "../receipt";
-import { useReactToPrint } from "react-to-print";
-
-const orderSteps = ["Order received", "In Kitchen", "Order ready", "Paid", "Received"];
-
+import toast from "react-hot-toast";
+import { useCashierUpdateOrderStatusMutation } from "../../../../../redux/slices/cashier/ordersApiSlice";
 const OrderSidePanel = ({ order, onClose }) => {
   const navigate = useNavigate();
-  const printRef = useRef();
   const [isCustomerInfoExpanded, setIsCustomerInfoExpanded] = useState(true);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
-
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    onAfterPrint: () => setShowReceiptModal(false),
-  });
+  const [updateOrderStatus, { isLoading: isUpdatingStatus }] =
+    useCashierUpdateOrderStatusMutation();
 
   const orderItems = order?.items || [];
   const customerData = {
@@ -24,7 +18,6 @@ const OrderSidePanel = ({ order, onClose }) => {
     phone: order?.customer?.phone || "-",
     email: order?.customer?.email || "-",
   };
-
   const tabs = [
     { key: "Dine-In", label: "Dine-In", apiValue: "dine_in" },
     { key: "Pickup", label: "Pickup", apiValue: "pickup" },
@@ -38,6 +31,20 @@ const OrderSidePanel = ({ order, onClose }) => {
   const handleEdit = () => {
     onClose();
     navigate(`/cashier/edit-order/${order?.id}`);
+  };
+
+  const handleMarkAsPickedUp = async () => {
+    try {
+      const res = await updateOrderStatus({
+        orderId: order?.id,
+        status: "picked_up",
+      }).unwrap();
+
+      toast.success(res?.message || "Order marked as picked up");
+      onClose(); // optional: close drawer after success
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update order status");
+    }
   };
 
   return (
@@ -177,6 +184,18 @@ const OrderSidePanel = ({ order, onClose }) => {
             Print Receipt
           </Button>
         </div>
+        {order?.orderType === "pickup" && order?.status !== "picked_up" && (
+          <div className="mt-2 px-4">
+            <Button
+              block
+              loading={isUpdatingStatus}
+              className="!bg-[#1F5226] py-2 text-sm !text-white hover:!bg-[#164017]"
+              onClick={handleMarkAsPickedUp}
+            >
+              Mark as Picked Up
+            </Button>
+          </div>
+        )}
       </Drawer>
       {/* PRINT RECEIPT MODAL */}
       <Modal

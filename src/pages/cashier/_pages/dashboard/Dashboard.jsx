@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardHeader from "../../../admin/_pages/dashboard/_components/DashboardHeader";
 import StatsCrad from "./components/statCard";
 import { ICONS } from "../../../../constants";
@@ -12,11 +12,14 @@ import { Skeleton } from "antd";
 const Dashboard = () => {
   const user = useSelector((state) => state.login?.userLogin);
   const name = user?.name.split(" ")[0] || "User";
+  const [filters, setFilters] = useState({
+    period: "last_1_year", // default
+  });
   const {
     data: dashboardData,
     isLoading,
     isError,
-  } = useGetDashboardDataQuery({
+  } = useGetDashboardDataQuery(filters, {
     pollingInterval: 3000,
     skipPollingIfUnfocused: true,
   });
@@ -52,8 +55,19 @@ const Dashboard = () => {
       footer: "30% Done",
     },
   ];
-  const handleDateChange = (datevalue) => {
-    console.log("Selected Date Range:", datevalue);
+  const handleDateChange = (dateValue) => {
+    if (dateValue.type === "preset") {
+      setFilters({
+        period: dateValue.value,
+      });
+    }
+
+    if (dateValue.type === "custom") {
+      setFilters({
+        from: dateValue.from,
+        to: dateValue.to,
+      });
+    }
   };
 
   const renderStatsCards = () => {
