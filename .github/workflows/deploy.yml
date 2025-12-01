@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main # Deploy to smartapproaches.online
+      - prod # Deploy to smartapproaches.org
 
 jobs:
   deploy-test:
@@ -43,4 +44,42 @@ jobs:
           server: 66.29.132.115
           username: ibkisaac@smartapproaches.online
           password: BAEtU8PY0HkV
+          local-dir: dist/
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-latest
+    environment: ENV_PROD
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Check and show VITE_API_BASE_URL
+        run: |
+          if [ -z "${{ secrets.VITE_API_BASE_URL }}" ]; then
+            echo "VITE_API_BASE_URL is not set!"
+            exit 1
+          else
+            echo "VITE_API_BASE_URL is set to: ${{ secrets.VITE_API_BASE_URL }}"
+          fi
+
+      - name: Install dependencies and build the project
+        run: |
+          echo "Injecting VITE_API_BASE_URL into .env..."
+          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
+          echo "Built .env contents:"
+          cat .env
+
+          echo "Cleaning node_modules and lock file..."
+          rm -rf node_modules package-lock.json
+
+          npm install
+          npm run build
+
+      - name: Deploy to FTP server (smartapproaches.org)
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: 66.29.132.115
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}       
           local-dir: dist/
