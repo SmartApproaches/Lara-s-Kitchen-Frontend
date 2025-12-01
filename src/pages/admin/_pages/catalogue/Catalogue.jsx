@@ -32,7 +32,7 @@ const Catalogue = () => {
       id: item?.id,
       name: item?.name,
       category: item?.category?.name || "N/A",
-      price: `₦${parseFloat(item?.base_price || 0).toFixed(2)}`,
+      price: `₦${parseFloat(item?.sizes?.map((size) => size.price)[0] || 0).toFixed(2)}`,
       description: item?.description || "No description",
       image: item?.media?.url || "",
       availability: item?.availability === "in_stock" ? "In Stock" : "Out of Stock",
