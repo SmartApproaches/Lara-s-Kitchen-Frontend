@@ -21,7 +21,7 @@ const NotificationsDropdown = ({ isOpen, onClose }) => {
 
   // Load audio
   useEffect(() => {
-    const audio = new Audio("/notification.wav");
+    const audio = new Audio("/laras_kitchen_notification.wav");
     audio.preload = "auto";
     audioRef.current = audio;
     audio.load();

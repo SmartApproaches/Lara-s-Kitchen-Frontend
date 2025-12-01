@@ -13,7 +13,7 @@ const ToastNotificationContainer = () => {
 
   // Load toast audio
   useEffect(() => {
-    const audio = new Audio("/notification.wav");
+    const audio = new Audio("/laras_kitchen_notification.wav");
     audio.preload = "auto";
     audio.load();
     audioRef.current = audio;

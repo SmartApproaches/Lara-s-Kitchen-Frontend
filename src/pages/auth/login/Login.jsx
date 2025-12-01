@@ -87,28 +87,31 @@ const LoginForm = () => {
       <img
         src={WomanEatingImage}
         alt="Character"
-        className="animate-slide-in-left absolute -bottom-20 -left-5 hidden h-[50rem] w-[50rem] max-w-4xl lg:block"
+        className="animate-slide-in-left fixed -bottom-28 -left-5 hidden h-[35rem] w-[35rem] max-w-4xl lg:block xl:h-[50rem] xl:w-[50rem]"
       />
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 lg:justify-end lg:px-10">
-        <div className="min-h-[50vh] w-full max-w-3xl overflow-y-auto rounded-[12px] bg-white p-8 shadow-2xl md:p-12 lg:min-h-[90vh] lg:rounded-[68px] lg:p-12">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 sm:px-6 lg:justify-end lg:px-10 xl:px-16">
+        <div className="w-full max-w-md overflow-y-auto my-4 rounded-[12px] bg-white p-6 shadow-2xl sm:max-w-lg sm:p-8 md:max-w-xl md:p-10 lg:min-h-[90vh] lg:max-w-2xl lg:rounded-[68px] lg:p-12 xl:max-w-2xl">
           <div className="mb-6 flex justify-center">
             <img
               ref={logoRef}
               onClick={() => navigate("/")}
               src="/logo.svg"
               alt="Brand Logo"
-              className="animate-zoom-in hover-shake h-auto w-32 transition-all duration-200 md:w-36 lg:w-40 xl:w-46"
+              className="animate-zoom-in hover-shake h-auto w-24 transition-all duration-200 sm:w-28 md:w-32 lg:w-36 xl:w-40"
             />
           </div>
 
-          <h2 className="text-primary mb-6 text-xl font-bold md:text-2xl lg:text-4xl">
+          <h2 className="text-primary mb-4 text-lg font-bold sm:mb-6 sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl">
             Welcome Back
           </h2>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5 md:space-y-6">
             <div>
-              <label htmlFor="username" className="mb-2 block text-base font-medium text-gray-900">
+              <label
+                htmlFor="username"
+                className="mb-1.5 block text-sm font-medium text-gray-900 sm:mb-2 sm:text-base"
+              >
                 Username
               </label>
               <input
@@ -116,7 +119,7 @@ const LoginForm = () => {
                 type="text"
                 id="username"
                 placeholder="Email address"
-                className={`w-full rounded-xl border-2 bg-[#F7F7F7] px-4 py-3 font-medium transition-colors focus:outline-none ${
+                className={`w-full rounded-xl border-2 bg-[#F7F7F7] px-3 py-2.5 text-sm font-medium transition-colors focus:outline-none sm:px-4 sm:py-3 sm:text-base ${
                   errors.username
                     ? "border-red-300 focus:border-red-500"
                     : "border-gray-200 focus:border-green-500"
@@ -127,7 +130,10 @@ const LoginForm = () => {
               )}
             </div>
             <div>
-              <label htmlFor="password" className="mb-2 block text-base font-medium text-gray-900">
+              <label
+                htmlFor="password"
+                className="mb-1.5 block text-sm font-medium text-gray-900 sm:mb-2 sm:text-base"
+              >
                 Password
               </label>
               <div className="relative">
