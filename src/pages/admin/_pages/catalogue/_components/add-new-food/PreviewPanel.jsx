@@ -32,10 +32,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
   }, [uploadedImage]);
 
   const hasData = formData?.itemName || uploadedImage;
-
-  const finalPrice = formData?.basePrice
-    ? (formData.basePrice - (formData.basePrice * (formData?.discount || 0)) / 100).toFixed(2)
-    : "12.00";
+  const basePrice = formData?.menu_sizes?.map((size) => size.price) || [];
 
   const hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -274,7 +271,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
               </div>
 
               <div className="relative flex justify-center">
-                <div className="flex w-40 items-center justify-center overflow-hidden rounded-full md:h-[15rem] md:w-[15rem] lg:h-96 lg:w-96 xl:w-[15rem] xl:h-[15rem]">
+                <div className="flex w-40 items-center justify-center overflow-hidden rounded-full md:h-[15rem] md:w-[15rem] lg:h-96 lg:w-96 xl:h-[15rem] xl:w-[15rem]">
                   <Image
                     src={previewUrl || IMAGES.foodFive}
                     alt="Food preview"
@@ -285,13 +282,13 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
             </div>
           </div>
 
-          <div className="relative mt-24">
+          <div className="relative mt-16">
             <div className="bg-w relative p-3 sm:p-4">
               <h3 className="text-lg font-semibold text-gray-800 capitalize sm:text-xl">
                 {formData?.itemName || "Not specified"}
               </h3>
               <span className="mb-2 block text-lg font-bold text-green-600 sm:text-xl">
-                £{finalPrice}
+                £{basePrice[0] || "0.00"}
               </span>
 
               <div className="my-3 flex items-center justify-between gap-2 text-sm font-semibold text-gray-500 sm:gap-4">

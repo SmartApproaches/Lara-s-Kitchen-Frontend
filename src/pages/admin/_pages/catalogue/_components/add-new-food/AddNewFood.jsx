@@ -31,18 +31,19 @@ const schema = yup.object().shape({
     .string()
     .nullable()
     .transform((value, originalValue) => (String(originalValue).trim() === "" ? null : value)),
-  basePrice: yup
-    .number()
-    .typeError("Base price must be a number")
-    .required("Base price is required")
-    .min(0, "Price must be positive"),
-  discount: yup
-    .number()
-    .typeError("Discount must be a number")
-    .min(0, "Discount must be positive")
-    .max(100, "Discount cannot exceed 100%")
-    .nullable()
-    .transform((value, originalValue) => (String(originalValue).trim() === "" ? null : value)),
+  menu_sizes: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Size is required"),
+        price: yup
+          .number()
+          .typeError("Price must be a number")
+          .required("Price is required")
+          .min(0, "Price must be positive"),
+      }),
+    )
+    .min(1, "At least one size with price is required"),
   stockAvailability: yup.string().required("Stock availability is required"),
   calorieSize: yup
     .number()
@@ -74,22 +75,30 @@ const step1Schema = yup.object().shape({
     .typeError("Preparation time must be a number")
     .required("Preparation time is required")
     .min(1, "Preparation time must be at least 1 minute"),
-  basePrice: yup
-    .number()
-    .typeError("Base price must be a number")
-    .required("Base price is required")
-    .min(0, "Price must be positive"),
-  discount: yup
-    .number()
-    .typeError("Discount must be a number")
-    .min(0, "Discount must be positive")
-    .max(100, "Discount cannot exceed 100%")
-    .nullable()
-    .transform((value, originalValue) => (String(originalValue).trim() === "" ? null : value)),
+  menu_sizes: yup
+    .array()
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Size is required"),
+        price: yup
+          .number()
+          .typeError("Price must be a number")
+          .required("Price is required")
+          .min(0, "Price must be positive"),
+      }),
+    )
+    .min(1, "At least one size with price is required"),
   stockAvailability: yup.string().required("Stock availability is required"),
 });
 
-const ImageUploadAndCustomizationsStep = ({ control, uploadedImage, setUploadedImage, errors }) => {
+const ImageUploadAndCustomizationsStep = ({
+  control,
+  setValue,
+  watch,
+  uploadedImage,
+  setUploadedImage,
+  errors,
+}) => {
   return (
     <div className="space-y-8">
       <ImageUploadStep
@@ -97,7 +106,7 @@ const ImageUploadAndCustomizationsStep = ({ control, uploadedImage, setUploadedI
         uploadedImage={uploadedImage}
         setUploadedImage={setUploadedImage}
       />
-      <CustomizationsStep control={control} errors={errors} />
+      <CustomizationsStep setValue={setValue} watch={watch} control={control} errors={errors} />
     </div>
   );
 };
@@ -130,8 +139,7 @@ const AddNewFood = () => {
       subcategoryId: "",
       typeOfMeal: "normal",
       description: "",
-      basePrice: "",
-      discount: "",
+      menu_sizes: [{ name: "large", price: "" }],
       stockAvailability: "",
       calorieSize: 0,
       preparationTime: 15,
@@ -161,9 +169,11 @@ const AddNewFood = () => {
         category: catalogueItem?.category_id || "",
         subcategoryId: catalogueItem?.subcategory_id || "",
         description: catalogueItem?.description || "",
-        basePrice: catalogueItem?.base_price || "",
+        menu_sizes: catalogueItem?.sizes.map((size) => ({
+          name: size?.name || "",
+          price: size?.price || "",
+        })),
         typeOfMeal: catalogueItem?.menu_type || "normal",
-        discount: catalogueItem?.discount_price || null,
         stockAvailability: catalogueItem?.availability || "",
         calorieSize: catalogueItem?.calorie_size || 0,
         preparationTime: catalogueItem?.preparation_time
@@ -185,7 +195,18 @@ const AddNewFood = () => {
     const formData = new FormData();
     let hasChanges = false;
 
+    const processedMenuSizes = data.menu_sizes.map((item) => ({
+      name: item.name,
+      price: Number(item.price),
+    }));
+
     if (isEditMode && catalogueItem) {
+      const originalMenuSizes =
+        catalogueItem.sizes?.map((size) => ({
+          name: size?.name || "",
+          price: Number(size?.price) || 0,
+        })) || [];
+
       if (data.itemName !== catalogueItem.name) {
         formData.append("menu_name", data.itemName);
         hasChanges = true;
@@ -202,27 +223,20 @@ const AddNewFood = () => {
         formData.append("menu_type", data.typeOfMeal);
         hasChanges = true;
       }
-      if (data.description !== (catalogueItem.description || "")) {
+
+      const currentDescription = data.description || "";
+      const originalDescription = catalogueItem.description || "";
+      if (currentDescription !== originalDescription) {
         formData.append("menu_description", data.description || "");
         hasChanges = true;
       }
-      if (data.basePrice !== catalogueItem.base_price) {
-        formData.append("base_price", data.basePrice);
-        hasChanges = true;
-      }
-      const currentDiscount = data.discount ? Number(data.discount) : null;
-      const originalDiscount = catalogueItem.discount_price
-        ? Number(catalogueItem.discount_price)
-        : null;
-      if (currentDiscount !== originalDiscount) {
-        formData.append("discount_price", data.discount || "");
-        hasChanges = true;
-      }
-      if (data.stockAvailability !== catalogueItem.availability) {
+
+      if (String(data.stockAvailability) !== String(catalogueItem.availability)) {
         formData.append("availability", data.stockAvailability);
         hasChanges = true;
       }
-      if ((data.calorieSize || 0) !== (catalogueItem.calorie_size || 0)) {
+
+      if (Number(data.calorieSize || 0) !== Number(catalogueItem.calorie_size || 0)) {
         formData.append("calorie_size", data.calorieSize || 0);
         hasChanges = true;
       }
@@ -230,13 +244,18 @@ const AddNewFood = () => {
       const originalPrepTime = catalogueItem.preparation_time
         ? parseInt(catalogueItem.preparation_time.replace(/\D/g, ""))
         : null;
-      if (data.preparationTime !== originalPrepTime) {
+      if (Number(data.preparationTime) !== Number(originalPrepTime)) {
         formData.append("preparation_time", `${data.preparationTime}m`);
         hasChanges = true;
       }
 
       if (uploadedImage && uploadedImage instanceof File) {
         formData.append("file", uploadedImage);
+        hasChanges = true;
+      }
+
+      if (JSON.stringify(processedMenuSizes) !== JSON.stringify(originalMenuSizes)) {
+        formData.append("menu_sizes", JSON.stringify(processedMenuSizes));
         hasChanges = true;
       }
 
@@ -254,11 +273,7 @@ const AddNewFood = () => {
         formData.append("menu_description", data.description);
       }
 
-      formData.append("base_price", data.basePrice);
-
-      if (data?.discount) {
-        formData.append("discount_price", data.discount);
-      }
+      formData.append("menu_sizes", JSON.stringify(processedMenuSizes));
 
       formData.append("availability", data.stockAvailability);
       formData.append("calorie_size", data.calorieSize || 0);
@@ -301,6 +316,7 @@ const AddNewFood = () => {
       content: (
         <ImageUploadAndCustomizationsStep
           control={control}
+          setValue={setValue}
           watch={watch}
           uploadedImage={uploadedImage}
           setUploadedImage={setUploadedImage}
@@ -375,10 +391,12 @@ const AddNewFood = () => {
           itemName: catalogueItem?.name || "",
           category: catalogueItem?.category_id || "",
           subcategoryId: catalogueItem?.subcategory_id || "",
-          typeOfMeal: catalogueItem?.type_of_meal || "normal",
+          typeOfMeal: catalogueItem?.menu_type || "normal",
           description: catalogueItem?.description || "",
-          basePrice: catalogueItem?.base_price || "",
-          discount: catalogueItem?.discount_price || "",
+          menu_sizes: catalogueItem?.menu_sizes.map((size) => ({
+            name: size?.name || "",
+            price: size?.price || "",
+          })),
           stockAvailability: catalogueItem?.availability || "",
           calorieSize: catalogueItem?.calorie_size || "",
           preparationTime: catalogueItem?.preparation_time
