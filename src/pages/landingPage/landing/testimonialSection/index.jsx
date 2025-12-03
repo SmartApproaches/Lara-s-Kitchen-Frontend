@@ -7,21 +7,21 @@ const testimonials = [
   {
     id: 1,
     name: "Ola O.",
-    location: "Spain",
+    location: "Sunderland",
     image: IMAGES.Testimonial1,
     text: "I have always wanted to experience authentic Nigerian food and visiting Lara’s Kitchen during my stay in the UK, was the highlight of my trip. The lounge had such a warm vibe, and the pounded yam with egusi was amazing.",
   },
   {
     id: 2,
     name: "John D.",
-    location: "USA",
+    location: "Newcastle",
     image: IMAGES.Testimonial3,
     text: "The atmosphere was amazing and the food took me back home. I’ll definitely visit again!",
   },
   {
     id: 3,
     name: "Aisha K.",
-    location: "Nigeria",
+    location: "Durham",
     image: IMAGES.Testimonial2,
     text: "Lara’s Kitchen is a culinary gem! The jollof rice is to die for, and the ambiance is so inviting.",
   },
@@ -65,10 +65,10 @@ const TestimonialSection = () => {
 
                       <image
                         href={t.image}
-                        width="120%"
-                        height="120%"
-                        x="-10%"
-                        y="8%"
+                        width="110%"
+                        height="110%"
+                        x="-5%"
+                        y="15%" // ✅ MOVE IMAGE UP SO HEAD IS VISIBLE
                         preserveAspectRatio="xMidYMid slice"
                         clipPath={`url(#blobClip-${t.id})`}
                       />

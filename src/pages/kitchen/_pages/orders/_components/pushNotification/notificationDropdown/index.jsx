@@ -5,7 +5,12 @@ import {
   toggleSound,
   clearNewFlags,
 } from "../../../../../../../redux/slices/notification/notificationsSlice";
-
+import {
+  initNotificationAudio,
+  playNotificationSound,
+  stopNotificationSound,
+  unlockAudio,
+} from "../../../../../../../utils/notificationAudio";
 import { Switch } from "antd";
 import NotificationCard from "..";
 
@@ -14,70 +19,51 @@ const NotificationsDropdown = ({ isOpen, onClose }) => {
   const { items, soundEnabled } = useSelector((s) => s.notifications);
 
   const [tab, setTab] = useState("all");
-  const [audioUnlocked, setAudioUnlocked] = useState(false);
-
-  const audioRef = useRef(null);
   const prevCount = useRef(items.length);
 
-  // Load audio
+  /** ✅ Init global notification audio once */
   useEffect(() => {
-    const audio = new Audio("/laras_kitchen_notification.wav");
-    audio.preload = "auto";
-    audioRef.current = audio;
-    audio.load();
+    initNotificationAudio();
   }, []);
 
-  // FORCE unlock audio when user toggles ON
+  /** ✅ Global sound toggle */
   const handleToggle = async () => {
-    if (!audioUnlocked && audioRef.current) {
-      try {
-        audioRef.current.volume = 0;
-
-        await audioRef.current.play();
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-
-        audioRef.current.volume = 1;
-        setAudioUnlocked(true);
-      } catch (e) {
-        console.warn("Audio unlock failed:", e);
-      }
-    }
-
+    await unlockAudio();
     dispatch(toggleSound());
+
+    if (soundEnabled) {
+      stopNotificationSound(); // ✅ stop immediately when turning OFF
+    }
   };
 
-  // Play sound on new notifications
+  /** ✅ Play sound on new notifications */
   useEffect(() => {
-    if (!soundEnabled || !audioRef.current || !audioUnlocked) return;
+    if (!soundEnabled) return;
 
     if (items.length > prevCount.current) {
-      audioRef.current.currentTime = 0;
-
-      audioRef.current.play().catch((e) => {
-        console.warn("Notification sound blocked:", e);
-      });
+      playNotificationSound();
     }
 
     prevCount.current = items.length;
-  }, [items.length, soundEnabled, audioUnlocked]);
+  }, [items.length, soundEnabled]);
 
+  /** ✅ Filter logic */
   const filtered = useMemo(() => {
     if (tab === "all") return items;
     return items.filter((n) => !n.read);
   }, [items, tab]);
 
-  // Cleanup "_isNew"
+  /** ✅ Cleanup `_isNew` flags */
   useEffect(() => {
     const newItems = items.filter((item) => item._isNew);
 
-    if (newItems.length > 0) {
-      const timer = setTimeout(() => {
-        dispatch(clearNewFlags());
-      }, 700);
+    if (!newItems.length) return;
 
-      return () => clearTimeout(timer);
-    }
+    const timer = setTimeout(() => {
+      dispatch(clearNewFlags());
+    }, 700);
+
+    return () => clearTimeout(timer);
   }, [items, dispatch]);
 
   return (
@@ -88,7 +74,6 @@ const NotificationsDropdown = ({ isOpen, onClose }) => {
         <div className="notifications-actions">
           <div className="sound-toggle">
             <span className="sound-label">Sound</span>
-
             <Switch checked={soundEnabled} onChange={handleToggle} size="small" />
           </div>
         </div>
@@ -118,7 +103,10 @@ const NotificationsDropdown = ({ isOpen, onClose }) => {
             <NotificationCard
               key={note.id}
               note={note}
-              onClick={() => dispatch(markAsRead(note.id))}
+              onClick={() => {
+                stopNotificationSound(); // ✅ stop sound on click
+                dispatch(markAsRead(note.id));
+              }}
             />
           ))
         )}
