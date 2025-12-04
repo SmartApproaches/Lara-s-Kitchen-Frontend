@@ -1,15 +1,83 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Button, Image } from "antd";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import { Button, Image, Modal, Slider } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { CheckmarkCircle02Icon } from "hugeicons-react";
+import Cropper from "react-easy-crop";
+
+import { getCroppedImg } from "../../../../../../utils/cropImage";
+import { customWarningToast } from "../../../../../../utils/toast";
 
 const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
   const fileInputRef = useRef(null);
+  const isCroppingRef = useRef(false);
   const [imageName, setImageName] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [rotation, setRotation] = useState(0);
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleCropConfirm = async () => {
+    try {
+      isCroppingRef.current = false;
+
+      if (zoomTimeoutRef.current) {
+        clearTimeout(zoomTimeoutRef.current);
+      }
+      if (rotationTimeoutRef.current) {
+        clearTimeout(rotationTimeoutRef.current);
+      }
+
+      const croppedImage = await getCroppedImg(tempImageUrl, croppedAreaPixels, rotation);
+
+      const file = new File([croppedImage], imageName, {
+        type: "image/jpeg",
+      });
+
+      setUploadedImage(file);
+      setShowCropModal(false);
+      setTempImageUrl(null);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+      setRotation(0);
+    } catch (e) {
+      customWarningToast("Failed to crop image");
+    }
+  };
+
+  const handleCropCancel = () => {
+    isCroppingRef.current = false;
+
+    if (zoomTimeoutRef.current) {
+      clearTimeout(zoomTimeoutRef.current);
+    }
+    if (rotationTimeoutRef.current) {
+      clearTimeout(rotationTimeoutRef.current);
+    }
+
+    setShowCropModal(false);
+    if (tempImageUrl) {
+      URL.revokeObjectURL(tempImageUrl);
+      setTempImageUrl(null);
+    }
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setRotation(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   useEffect(() => {
-    if (uploadedImage) {
+    let isSubscribed = true;
+
+    if (uploadedImage && isSubscribed) {
       if (typeof uploadedImage === "string") {
         setPreviewUrl(uploadedImage);
         setImageName("Current image");
@@ -18,12 +86,19 @@ const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
         setPreviewUrl(objectUrl);
         setImageName(uploadedImage.name);
 
-        return () => URL.revokeObjectURL(objectUrl);
+        return () => {
+          isSubscribed = false;
+          URL.revokeObjectURL(objectUrl);
+        };
       }
-    } else {
+    } else if (isSubscribed) {
       setPreviewUrl(null);
       setImageName("");
     }
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [uploadedImage]);
 
   const handleImageUpload = (file) => {
@@ -39,8 +114,11 @@ const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
       return;
     }
 
-    setUploadedImage(file);
+    const objectUrl = URL.createObjectURL(file);
+    setTempImageUrl(objectUrl);
     setImageName(file.name);
+    isCroppingRef.current = true;
+    setShowCropModal(true);
   };
 
   const handleDragOver = (e) => {
@@ -56,6 +134,31 @@ const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
       handleImageUpload(files[0]);
     }
   };
+
+  const zoomTimeoutRef = useRef(null);
+  const rotationTimeoutRef = useRef(null);
+
+  const handleZoomChange = useCallback((value) => {
+    if (isCroppingRef.current) {
+      if (zoomTimeoutRef.current) {
+        clearTimeout(zoomTimeoutRef.current);
+      }
+      zoomTimeoutRef.current = setTimeout(() => {
+        setZoom(value);
+      }, 16);
+    }
+  }, []);
+
+  const handleRotationChange = useCallback((value) => {
+    if (isCroppingRef.current) {
+      if (rotationTimeoutRef.current) {
+        clearTimeout(rotationTimeoutRef.current);
+      }
+      rotationTimeoutRef.current = setTimeout(() => {
+        setRotation(value);
+      }, 20);
+    }
+  }, []);
 
   const handleRemoveImage = (e) => {
     e.stopPropagation();
@@ -124,6 +227,47 @@ const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
           style={{ display: "none" }}
         />
       </div>
+
+      <Modal
+        title="Crop Image"
+        open={showCropModal}
+        onCancel={handleCropCancel}
+        width={700}
+        footer={[
+          <Button key="cancel" onClick={handleCropCancel}>
+            Cancel
+          </Button>,
+          <Button key="confirm" type="primary" onClick={handleCropConfirm}>
+            Crop & Save
+          </Button>,
+        ]}
+      >
+        <div className="space-y-4">
+          <div className="relative h-[400px] w-full bg-gray-900">
+            {tempImageUrl && (
+              <Cropper
+                image={tempImageUrl}
+                crop={crop}
+                zoom={zoom}
+                rotation={rotation}
+                aspect={1}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+              />
+            )}
+          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="mb-2 block text-sm font-medium">Zoom</label>
+              <Slider min={1} max={3} step={0.1} value={zoom} onChange={handleZoomChange} />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium">Rotation</label>
+              <Slider min={0} max={360} step={1} value={rotation} onChange={handleRotationChange} />
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
