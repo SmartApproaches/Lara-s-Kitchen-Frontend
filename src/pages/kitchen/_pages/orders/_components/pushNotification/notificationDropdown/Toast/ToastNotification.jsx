@@ -8,7 +8,7 @@ const ToastNotification = ({ notification, onClose, onDismiss }) => {
     // Auto-dismiss after 5 seconds
     const timer = setTimeout(() => {
       handleDismiss();
-    }, 5000);
+    }, 20000);
 
     return () => clearTimeout(timer);
   }, []);
