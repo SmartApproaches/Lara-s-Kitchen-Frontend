@@ -1,4 +1,3 @@
-import React from "react";
 import { IMAGES } from "../../../../constants";
 
 const HerSection = () => {
@@ -34,19 +33,19 @@ const HerSection = () => {
 
         {/* Hero heading */}
         <div className="animate-fade-in-up absolute top-1/4 left-6 md:left-20 md:max-w-xl 2xl:max-w-6xl">
-          <h2 className="text-primary max-w-[20rem] text-2xl leading-snug font-bold md:max-w-full md:text-5xl 2xl:text-[5rem]">
+          <h2 className="text-primary max-w-[20rem] text-2xl leading-snug font-bold md:max-w-[50rem] md:text-5xl 2xl:text-[4rem]">
             A True Taste of Nigeria,
             <span className="text-[#FFC107]"> Just for You</span>
           </h2>
 
-          <p className="mt-2 max-w-[50rem] text-sm text-[#0C4113] md:text-xl 2xl:mt-10 2xl:text-6xl">
+          <p className="mt-2 max-w-[40rem] text-sm text-[#0C4113] md:text-xl 2xl:mt-10 2xl:text-4xl">
             We bring you the most delicious Nigerian dishes, served fresh in our restaurant or
             delivered straight to the comfort of your home.
           </p>
         </div>
 
         {/* Cloud */}
-        <div className="animate-slide-in-bottom absolute right-0 -bottom-16 left-0 md:-bottom-44 2xl:-bottom-80">
+        <div className="animate-slide-in-bottom absolute right-0 -bottom-16 left-0 md:-bottom-44 2xl:-bottom-60">
           <img src={IMAGES.cloudimge} alt="cloud" className="w-full" />
         </div>
       </div>

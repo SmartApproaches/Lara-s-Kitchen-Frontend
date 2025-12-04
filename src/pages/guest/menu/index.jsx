@@ -152,16 +152,35 @@ const DineInMenu = () => {
   };
 
   // Adjust quantity
-  const updateQty = (id, delta) => {
+
+  const updateQty = (cartId, delta) => {
     setCart((prev) =>
-      prev
-        .map((item) => (item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item))
-        .filter((i) => i.qty > 0),
+      prev.map((item) =>
+        item.cartId === cartId ? { ...item, qty: Math.max(1, item.qty + delta) } : item,
+      ),
     );
   };
 
-  const removeItem = (id) => {
-    setCart((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = (cartId) => {
+    setCart((prev) => prev.filter((i) => i.cartId !== cartId));
+  };
+
+  const updateSize = (cartId, newSize) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.cartId === cartId) {
+          const newSizeData = item.sizes.find((s) => s.name === newSize);
+
+          return {
+            ...item,
+            cartId: `${item.id}-${newSize}`, // ✅ update cart key
+            selectedSize: newSize,
+            base_price: newSizeData.price, // ✅ update price
+          };
+        }
+        return item;
+      }),
+    );
   };
 
   const totalPrice = cart.reduce((sum, i) => sum + Number(i.base_price) * i.qty, 0);
@@ -278,6 +297,7 @@ const DineInMenu = () => {
         updateQty={updateQty}
         removeItem={removeItem}
         note={note}
+        updateSize={updateSize}
         setNote={setNote}
         totalPrice={totalPrice}
         tableNumber={tableNumber}

@@ -64,7 +64,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center justify-center text-gray-600 lg:justify-start">
                 <Call02Icon size={18} className="mr-2" />
-                <span>07454822494, +441915434197</span>
+                <span>+447454822494, +441915434197</span>
               </div>
               <div className="flex items-center justify-center text-gray-600 lg:justify-start">
                 <Mail01Icon size={18} className="mr-2" />
