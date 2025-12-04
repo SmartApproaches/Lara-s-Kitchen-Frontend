@@ -275,7 +275,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                   <Image
                     src={previewUrl || IMAGES.foodFive}
                     alt="Food preview"
-                    className="relative h-full w-fit object-cover"
+                    className="relative h-full w-fit object-cover rounded-full"
                   />
                 </div>
               </div>

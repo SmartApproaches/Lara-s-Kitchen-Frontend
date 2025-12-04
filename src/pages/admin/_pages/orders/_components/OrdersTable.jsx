@@ -18,7 +18,7 @@ const OrdersTable = forwardRef(
         customer_name: order?.customer_name || "N/A",
         order_type: order?.order?.order_type || "N/A",
         items: order?.category?.map((item) => item?.menu_item?.name).join(", ") || "N/A",
-        grand_total: `₦${parseFloat(order?.order?.grand_total || 0).toFixed(2)}`,
+        grand_total: `£${parseFloat(order?.order?.grand_total || 0).toFixed(2)}`,
         order_date: new Date(order?.order?.created_at).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -95,7 +95,8 @@ const OrdersTable = forwardRef(
         dataIndex: "order",
         className: ["font-medium", "capitalize"],
         render: (_, record) => {
-          return record?.order?.order_type || "N/A";
+          const category = record?.order?.order_type ? record?.order?.order_type.replace("_", " ") : "N/A";
+          return category;
         },
       },
       {
@@ -112,12 +113,12 @@ const OrdersTable = forwardRef(
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <img
-                  src={firstItem?.menu_item?.media?.url || "/api/placeholder/40/40"}
+                  src={firstItem?.menu_item?.media?.url || IMAGES.emptyState}
                   alt={firstItem?.menu_item?.name}
-                  className="h-10 w-10 rounded-lg object-cover"
+                  className="h-10 w-10 rounded-full object-cover"
                 />
                 <div className="flex-1">
-                  <p className="font-medium">{firstItem?.menu_item?.name}</p>
+                  <p className="font-medium">{firstItem?.menu_item?.name || "N/A"}</p>
                 </div>
               </div>
 
@@ -126,7 +127,7 @@ const OrdersTable = forwardRef(
                   {remainingItems.map((item, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <p className="text-base text-gray-700">
-                        {item?.menu_item?.name}
+                        {item?.menu_item?.name || "N/A"}
                         {remainingItems.length - 1 > idx && ", "}
                       </p>
                     </div>
@@ -142,7 +143,7 @@ const OrdersTable = forwardRef(
         dataIndex: "order",
         className: "font-medium",
         render: (order) => {
-          return `₦${parseFloat(order?.grand_total || 0).toFixed(2)}`;
+          return `£${parseFloat(order?.grand_total || 0).toFixed(2)}`;
         },
       },
       {
@@ -180,12 +181,16 @@ const OrdersTable = forwardRef(
         title: "Status",
         dataIndex: "order",
         render: (order) => {
-          const status = order?.status;
+          const status = order?.status ? order?.status.replace("_", " ") : "N/A";
           const colors = {
             pending: "orange",
             delivered: "green",
             cancelled: "red",
             processing: "blue",
+            "awaiting payment": "purple",
+            ready: "cyan",
+            "in transit": "geekblue",
+            "picked up": "green",
           };
           return (
             <Tag

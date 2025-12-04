@@ -200,7 +200,7 @@ const CatalogueTable = ({
           alt={record?.name || "food item"}
           width={60}
           height={60}
-          className="rounded-lg object-cover"
+          className="rounded-full object-cover"
           preview={false}
           fallback={IMAGES?.emptyState}
           onError={(e) => {
