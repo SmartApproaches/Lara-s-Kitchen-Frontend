@@ -71,7 +71,7 @@ const InquiryForm = () => {
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Call02Icon className="text-lg" />
-              <span className="text-2xl">07454822494, +441915434197</span>
+              <span className="text-2xl">+447454822494, +441915434197</span>
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
               <Mail01Icon className="text-lg" />

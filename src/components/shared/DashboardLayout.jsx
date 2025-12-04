@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import NotificationsDropdown from "../../pages/kitchen/_pages/orders/_components/pushNotification/notificationDropdown";
 import ToastNotificationContainer from "../../pages/kitchen/_pages/orders/_components/pushNotification/notificationDropdown/Toast/ToastNotificationContainer";
 import { useRegisterDeviceMutation } from "../../redux/slices/kitchen/kitchenDashboardApiSlice";
-import { useRegisterDeviceCashierMutation } from "../../redux/slices/cashier/dashboardApiSlice";
 import { getBrowserDeviceId } from "../../utils/device";
 
 const DashboardLayout = ({ sidebarItems = [], children }) => {
@@ -32,8 +31,10 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
 
   const user = useSelector((state) => state.login?.userLogin);
   const notifications = useSelector((state) => state.notifications?.items || []);
-  const defaultSidebarItems = [{ icon: DashboardSquare02Icon, label: "Dashboard", active: true }];
 
+  const isKitchen = user?.role?.role === "kitchen";
+
+  const defaultSidebarItems = [{ icon: DashboardSquare02Icon, label: "Dashboard", active: true }];
   const menuItems = sidebarItems.length > 0 ? sidebarItems : defaultSidebarItems;
 
   const handleLogout = () => {
@@ -41,68 +42,37 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
   };
 
   const [registerKitchenDevice] = useRegisterDeviceMutation();
-  const [registerCashierDevice] = useRegisterDeviceCashierMutation();
 
-  // Track notification count to trigger shake animation
+  // ✅ KITCHEN ONLY: Register device + listen for notifications
   useEffect(() => {
-    // Check if there's a new notification with the _isNew flag
-    const hasNewNotification = notifications.some((n) => n._isNew);
-
-    if (hasNewNotification) {
-      setIsShaking(true);
-
-      // Remove shake class after animation completes (800ms)
-      const timer = setTimeout(() => {
-        setIsShaking(false);
-      }, 800);
-
-      return () => clearTimeout(timer);
-    }
-  }, [notifications]);
-
-  useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || !isKitchen) return;
 
     const setupNotifications = async () => {
       try {
-        // Register the service worker
         if ("serviceWorker" in navigator) {
-          const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+          await navigator.serviceWorker.register("/firebase-messaging-sw.js");
         }
 
-        // Request permission + FCM token
         const fcmToken = await requestNotificationPermission(
           "BHcPnvAa06uFSGuxn46bamNFTCQ3UyJAs3EnoQtQ17qyLaCJtcupSYbgf4fv0BWQYnQQCEe8P88gVx5OjV48Tl4",
         );
 
-        if (!fcmToken) {
-          return;
-        }
+        if (!fcmToken) return;
 
-        // Get stable browser device ID
         const deviceId = getBrowserDeviceId();
-        // Send to backend based on role
-        if (user?.role?.role === "kitchen") {
-          await registerKitchenDevice({
-            fcm_token: fcmToken,
-            device_id: deviceId,
-            platform: "web",
-          }).unwrap();
-        } else if (user?.role?.role === "cashier") {
-          await registerCashierDevice({
-            fcm_token: fcmToken,
-            device_id: deviceId,
-            platform: "web",
-          }).unwrap();
-        }
+
+        await registerKitchenDevice({
+          fcm_token: fcmToken,
+          device_id: deviceId,
+          platform: "web",
+        }).unwrap();
       } catch (error) {
-        console.error("Notification setup error:", error);
+        console.error("Kitchen notification setup error:", error);
       }
     };
 
     setupNotifications();
 
-    // Foreground notifications
     const unsubscribe = listenToForegroundMessages((payload) => {
       dispatch(
         addNotification({
@@ -110,18 +80,31 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
           body: payload.notification?.body,
           data: payload.data,
           createdAt: new Date().toISOString(),
-          _isNew: true, // <-- flag for animation
+          _isNew: true,
         }),
       );
     });
 
     return () => unsubscribe && unsubscribe();
-  }, [user, dispatch, registerKitchenDevice, registerCashierDevice]);
+  }, [user, isKitchen, dispatch, registerKitchenDevice]);
+
+  // ✅ KITCHEN ONLY: Shake animation
+  useEffect(() => {
+    if (!isKitchen) return;
+
+    const hasNewNotification = notifications.some((n) => n._isNew);
+
+    if (hasNewNotification) {
+      setIsShaking(true);
+      const timer = setTimeout(() => setIsShaking(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [notifications, isKitchen]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Sidebar overlay */}
-      <ToastNotificationContainer />
+      {isKitchen && <ToastNotificationContainer />}
 
       {isSidebarOpen && (
         <div
@@ -214,26 +197,28 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
 
               {/* Notifications + User */}
               <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <button
-                    className={`text-primary bg-accent relative rounded-full p-2 transition-all hover:text-green-500 ${
-                      isShaking ? "notification-icon-shake" : ""
-                    }`}
-                    onClick={() => setShowNotifications((s) => !s)}
-                  >
-                    <Notification01Icon size={22} />
-                    {notifications.filter((n) => !n.read).length > 0 && (
-                      <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
-                    )}
-                  </button>
+                {isKitchen && (
+                  <div className="relative">
+                    <button
+                      className={`text-primary bg-accent relative rounded-full p-2 transition-all hover:text-green-500 ${
+                        isShaking ? "notification-icon-shake" : ""
+                      }`}
+                      onClick={() => setShowNotifications((s) => !s)}
+                    >
+                      <Notification01Icon size={22} />
+                      {notifications.filter((n) => !n.read).length > 0 && (
+                        <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
+                      )}
+                    </button>
 
-                  {showNotifications && (
-                    <NotificationsDropdown
-                      isOpen={showNotifications}
-                      onClose={() => setShowNotifications(false)}
-                    />
-                  )}
-                </div>
+                    {showNotifications && (
+                      <NotificationsDropdown
+                        isOpen={showNotifications}
+                        onClose={() => setShowNotifications(false)}
+                      />
+                    )}
+                  </div>
+                )}
 
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
