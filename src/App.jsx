@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
+import { LoadScript, useLoadScript } from "@react-google-maps/api";
 
 import "./App.css";
 import "./Notifications.css";
@@ -10,6 +11,8 @@ import Login from "./pages/auth/login/Login";
 import LandingPage from "./pages/landingPage/landing";
 import LandingMenu from "./pages/landingPage/menu";
 import ContactUs from "./pages/landingPage/contact";
+
+import AdminBusinessSuiteGeoFencing from "./pages/admin/_pages/business-suite/_components/GeoFence";
 
 const ProtectedRoutes = lazy(() => import("./layout/protected/ProtectedRouteLayout"));
 
@@ -28,6 +31,15 @@ const AdminBusinessSuiteOrderAvailability = lazy(
 const AdminBusinessSuiteDeliveryFee = lazy(
   () => import("./pages/admin/_pages/business-suite/_components/DeliveryFee"),
 );
+
+const AdminBusinessSuiteDineInGeoFencing = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/DineInGeoFence"),
+);
+
+const AdminBusinessSuiteDeliveryGeoFencing = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/DeliveryGeoFence"),
+);
+
 const AdminAddNewFood = lazy(
   () => import("./pages/admin/_pages/catalogue/_components/add-new-food/AddNewFood"),
 );
@@ -47,7 +59,14 @@ const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Das
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
 const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrders"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8";
+
 const App = () => {
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+  });
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
@@ -57,6 +76,7 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/dinein-menu" element={<DineInMenu />} />
+
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
           <Route element={<AdminDashboardLayout />}>
@@ -78,6 +98,19 @@ const App = () => {
             <Route
               path="admin/business-suite/delivery-fee"
               element={<AdminBusinessSuiteDeliveryFee />}
+            />
+            <Route
+              path="admin/business-suite/geo-fence"
+              element={isLoaded ? <AdminBusinessSuiteGeoFencing /> : "Loading Maps..."}
+            />
+
+            <Route
+              path="admin/business-suite/geo-fence/dine-in"
+              element={<AdminBusinessSuiteDineInGeoFencing />}
+            />
+            <Route
+              path="admin/business-suite/geo-fence/delivery"
+              element={<AdminBusinessSuiteDeliveryGeoFencing />}
             />
           </Route>
         </Route>

@@ -68,6 +68,7 @@ import sucessImage from "../assets/images/success-j709HH5aq9.svg";
 import Testimonial1 from "../assets/images/Testimonial1.png";
 import Testimonial3 from "../assets/images/Testimonial3.png";
 import Testimonial2 from "../assets/images/Testimonial2.png";
+import suiteGeoFenceIcon from "../assets/icons/suiteGeoFenceIcon.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -110,6 +111,7 @@ export const ICONS = {
   carbonDrink: carbonDrink,
   swallowIcon: swallowIcon,
   grainsIcon: grainsIcon,
+  suiteGeoFenceIcon: suiteGeoFenceIcon,
 };
 
 export const IMAGES = {
