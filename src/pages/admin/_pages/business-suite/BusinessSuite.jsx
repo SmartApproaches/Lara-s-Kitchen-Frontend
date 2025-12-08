@@ -184,7 +184,7 @@ const BusinessSuite = () => {
             <h2 className="text-[#0CA921]">£{card.value}</h2>
           </div>
         ) : index === 2 ? (
-          <div className="flex justify-between gap-2">
+          <div className="flex flex-col lg:flex-row justify-between gap-2">
             <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
               <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Dine in</div>
               <h2 className="text-[#0CA921]">Radius: 150km</h2>
@@ -205,7 +205,7 @@ const BusinessSuite = () => {
   return (
     <>
       <BusinessSuiteHeader />
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3 md:w-3/4 md:gap-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3 md:w-full md:gap-6">
         {renderSuiteCards()}
       </div>
     </>

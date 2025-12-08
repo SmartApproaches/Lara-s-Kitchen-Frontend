@@ -1,6 +1,6 @@
 import React from "react";
 import { GoogleMap, LoadScript, Marker, Circle } from "@react-google-maps/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft01Icon } from "hugeicons-react";
 
 const MapWithCircle = ({ center, radius }) => {
@@ -33,6 +33,7 @@ const MapWithCircle = ({ center, radius }) => {
 };
 
 const GeoFence = () => {
+  const navigate = useNavigate();
   const deliveryFence = {
     center: { lat: 6.5244, lng: 3.3792 },
     radius: 200,
@@ -47,7 +48,7 @@ const GeoFence = () => {
     <div>
       <div className="min-h-screen bg-gray-50">
         <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-x-3">
+          <div onClick={() => navigate(-1)} className="flex items-center gap-x-3">
             <ArrowLeft01Icon className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900" />
             <h1 className="text-2xl font-bold text-gray-900">Geo fence</h1>
           </div>
