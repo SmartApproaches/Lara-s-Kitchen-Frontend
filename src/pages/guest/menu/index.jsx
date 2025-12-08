@@ -15,12 +15,13 @@ import FloatingCart from "../cart/FloatingCart";
 const DineInMenu = () => {
   const [page, setPage] = useState(1);
   const [allMenus, setAllMenus] = useState([]);
+  const [filteredMenus, setFilteredMenus] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [note, setNote] = useState("");
   const imageCache = new Map();
   const [loadedPages, setLoadedPages] = useState(new Set([1]));
 
-  // Query for current page
   const {
     data: dineInMenu,
     isLoading,
@@ -31,13 +32,12 @@ const DineInMenu = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  // Always poll page 1 in the background for real-time updates
   const { data: page1Data } = useGetDineInMenusQuery(1, {
     pollingInterval: 3000,
     skipPollingIfUnfocused: true,
-    skip: page === 1, // Skip if we're already on page 1
+    skip: page === 1,
   });
-  // console.log("page1Data", page1Data);
+
   const observerTarget = useRef(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [cart, setCart] = useState([]);
@@ -46,21 +46,15 @@ const DineInMenu = () => {
   const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceDineInOrderMutation();
   const [orderSuccess, setOrderSuccess] = useState(null);
 
-  // Update page 1 data in real-time (background polling)
+  // ✅ BACKGROUND SYNC FOR PAGE 1
   useEffect(() => {
     if (page1Data?.data?.data && page > 1) {
       const page1Items = page1Data.data.data;
 
       setAllMenus((prev) => {
-        // Create a map of all current items by ID
         const itemsMap = new Map(prev.map((item) => [item.id, item]));
+        page1Items.forEach((item) => itemsMap.set(item.id, item));
 
-        // Update page 1 items
-        page1Items.forEach((item) => {
-          itemsMap.set(item.id, item);
-        });
-
-        // Convert back to array, maintaining order (page 1 items first)
         const page1Ids = new Set(page1Items.map((i) => i.id));
         const updatedPage1 = page1Items;
         const otherPages = prev.filter((item) => !page1Ids.has(item.id));
@@ -70,7 +64,7 @@ const DineInMenu = () => {
     }
   }, [page1Data, page]);
 
-  // Update menus when new data is fetched (current page)
+  // ✅ LOAD MENUS BY PAGE
   useEffect(() => {
     if (dineInMenu?.data?.data) {
       const newMenus = dineInMenu.data.data;
@@ -78,22 +72,12 @@ const DineInMenu = () => {
 
       setAllMenus((prev) => {
         if (pagination.current_page === 1) {
-          // For page 1, replace all page 1 items
           setLoadedPages(new Set([1]));
           return newMenus;
         } else {
-          // For other pages, merge intelligently
           const itemsMap = new Map(prev.map((item) => [item.id, item]));
-
-          // Add/update new items
-          newMenus.forEach((item) => {
-            itemsMap.set(item.id, item);
-          });
-
-          // Track loaded pages
+          newMenus.forEach((item) => itemsMap.set(item.id, item));
           setLoadedPages((prevPages) => new Set([...prevPages, pagination.current_page]));
-
-          // Convert map back to array
           return Array.from(itemsMap.values());
         }
       });
@@ -102,35 +86,41 @@ const DineInMenu = () => {
     }
   }, [dineInMenu]);
 
-  // Infinite scroll observer
+  // ✅ SEARCH FILTER
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredMenus(allMenus);
+    } else {
+      const lower = searchTerm.toLowerCase();
+      const filtered = allMenus.filter((item) => item.name?.toLowerCase().includes(lower));
+      setFilteredMenus(filtered);
+    }
+  }, [searchTerm, allMenus]);
+
+  // ✅ INFINITE SCROLL
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isFetching) {
+        if (entries[0].isIntersecting && hasMore && !isFetching && !searchTerm) {
           setPage((prev) => prev + 1);
         }
       },
       { threshold: 0.1 },
     );
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
+    if (observerTarget.current) observer.observe(observerTarget.current);
 
     return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
+      if (observerTarget.current) observer.unobserve(observerTarget.current);
     };
-  }, [hasMore, isFetching]);
+  }, [hasMore, isFetching, searchTerm]);
 
-  // Add to Cart
+  // ✅ ADD TO CART
   const addToCart = (item, selectedSize = null) => {
     const defaultSize =
       selectedSize || item.sizes?.find((s) => s.name === "large") || item.sizes?.[0];
 
     const cartId = `${item.id}-${defaultSize.name}`;
-
     const existing = cart.find((c) => c.cartId === cartId);
 
     if (existing) {
@@ -151,8 +141,6 @@ const DineInMenu = () => {
     message.success("Item added to cart");
   };
 
-  // Adjust quantity
-
   const updateQty = (cartId, delta) => {
     setCart((prev) =>
       prev.map((item) =>
@@ -170,12 +158,11 @@ const DineInMenu = () => {
       prev.map((item) => {
         if (item.cartId === cartId) {
           const newSizeData = item.sizes.find((s) => s.name === newSize);
-
           return {
             ...item,
-            cartId: `${item.id}-${newSize}`, // ✅ update cart key
+            cartId: `${item.id}-${newSize}`,
             selectedSize: newSize,
-            base_price: newSizeData.price, // ✅ update price
+            base_price: newSizeData.price,
           };
         }
         return item;
@@ -185,31 +172,15 @@ const DineInMenu = () => {
 
   const totalPrice = cart.reduce((sum, i) => sum + Number(i.base_price) * i.qty, 0);
 
-  // Place Order
+  // ✅ PLACE ORDER
   const handlePlaceOrder = async () => {
     if (!tableNumber.trim()) {
-      toast.error("Table number is required", {
-        style: {
-          borderRadius: "12px",
-          background: "#fff",
-          color: "#1F5226",
-          fontWeight: 600,
-        },
-        icon: "⚠️",
-      });
+      toast.error("Table number is required");
       return;
     }
 
     if (cart.length === 0) {
-      toast.error("Your cart is empty", {
-        style: {
-          borderRadius: "12px",
-          background: "#fff",
-          color: "#1F5226",
-          fontWeight: 600,
-        },
-        icon: "🛒",
-      });
+      toast.error("Your cart is empty");
       return;
     }
 
@@ -219,7 +190,7 @@ const DineInMenu = () => {
       note: note,
       items: cart.map((item) => ({
         menu_item_id: item.id,
-        size: item.selectedSize, // ✅ REQUIRED BY BACKEND
+        size: item.selectedSize,
         quantity: item.qty,
       })),
     };
@@ -231,46 +202,50 @@ const DineInMenu = () => {
       setNote("");
       setIsCartOpen(false);
       setTableNumber("");
-      toast.success("Order placed successfully!", {
-        style: {
-          borderRadius: "12px",
-          background: "#fff",
-          color: "#1F5226",
-          fontWeight: 600,
-        },
-        icon: "✅",
-      });
+      toast.success("Order placed successfully!");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to place order", {
-        style: {
-          borderRadius: "12px",
-          background: "#fff",
-          color: "#1F5226",
-          fontWeight: 600,
-        },
-        icon: "❌",
-      });
+      toast.error(err?.data?.message || "Failed to place order");
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F0FFF4] to-[#F8FFFA] pb-28">
-      {/* Header */}
+      {/* ✅ HEADER + SEARCH */}
       <div className="sticky top-0 z-20 bg-white/80 px-4 py-4 shadow-sm backdrop-blur-md sm:px-6">
-        <h1 className="text-2xl font-extrabold text-[#1F5226] sm:text-3xl">Welcome 👋</h1>
-        <p className="text-xs text-[#69B47A] sm:text-sm">Find your next delicious meal!</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-extrabold text-[#1F5226] sm:text-3xl">Welcome 👋</h1>
+            <p className="text-xs text-[#69B47A] sm:text-sm">Find your next delicious meal!</p>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              placeholder="Search food..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-2 text-sm outline-none focus:border-[#1F5226]"
+            />
+            <button className="rounded-xl bg-[#1F5226] px-5 py-2 text-sm font-semibold text-white">
+              Search
+            </button>
+          </div>
+        </div>
       </div>
 
       <MenuCard
         isLoading={isLoading}
         page={page}
-        allMenus={allMenus}
+        allMenus={filteredMenus}
         setSelectedItem={setSelectedItem}
         addToCart={addToCart}
         imageCache={imageCache}
       />
 
-      {/* Loading indicator for infinite scroll */}
+      {filteredMenus.length === 0 && !isLoading && (
+        <div className="py-10 text-center text-gray-500">No food found for "{searchTerm}"</div>
+      )}
+
       {isFetching && page > 1 && (
         <div className="grid grid-cols-2 gap-3 px-3 pb-6 sm:grid-cols-3 sm:gap-4 sm:px-6 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
@@ -279,17 +254,10 @@ const DineInMenu = () => {
         </div>
       )}
 
-      {/* Intersection Observer Target */}
-      {hasMore && <div ref={observerTarget} className="h-10" />}
-
-      {/* End of results message */}
-      {!hasMore && allMenus.length > 0 && (
-        <div className="pb-6 text-center text-sm text-gray-500">
-          You've reached the end of the menu
-        </div>
-      )}
+      {!searchTerm && hasMore && <div ref={observerTarget} className="h-10" />}
 
       <FloatingCart cart={cart} totalPrice={totalPrice} setIsCartOpen={setIsCartOpen} />
+
       <CartModal
         isCartOpen={isCartOpen}
         setIsCartOpen={setIsCartOpen}
@@ -306,15 +274,11 @@ const DineInMenu = () => {
         isPlacingOrder={isPlacingOrder}
       />
 
-      {/* Food Details Modal */}
-
       <MenuDetails
         selectedItem={selectedItem}
         setSelectedItem={setSelectedItem}
         addToCart={addToCart}
       />
-
-      {/* Success Modal */}
 
       <SuccessModal orderSuccess={orderSuccess} setOrderSuccess={setOrderSuccess} />
     </div>
