@@ -1,6 +1,7 @@
 import React from "react";
 import { GoogleMap, LoadScript, Marker, Circle } from "@react-google-maps/api";
 import { Link } from "react-router-dom";
+import { ArrowLeft01Icon } from "hugeicons-react";
 
 const MapWithCircle = ({ center, radius }) => {
   const mapContainerStyle = {
@@ -45,9 +46,14 @@ const GeoFence = () => {
   return (
     <div>
       <div className="min-h-screen bg-gray-50">
-        <div className="px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold text-gray-900">Geo fence</h1>
-          <p className="text-gray-600">Delivery and dine-in ranges preview.</p>
+        <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-x-3">
+            <ArrowLeft01Icon className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900" />
+            <h1 className="text-2xl font-bold text-gray-900">Geo fence</h1>
+          </div>
+          <p className="text-gray-600">
+            Control how far your dine-in and delivery services can reach.
+          </p>
         </div>
 
         <div className="grid gap-6 px-4 py-4 sm:px-6 md:grid-cols-2 lg:px-8">
