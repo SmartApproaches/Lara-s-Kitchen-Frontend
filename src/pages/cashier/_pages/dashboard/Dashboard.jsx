@@ -8,7 +8,7 @@ import MenuList from "./components/menu-list";
 import QuickAccess from "./components/quick-action";
 import { useSelector } from "react-redux";
 import { useGetDashboardDataQuery } from "../../../../redux/slices/cashier/dashboardApiSlice";
-import { Skeleton } from "antd";
+import { Alert, Skeleton } from "antd";
 const Dashboard = () => {
   const user = useSelector((state) => state.login?.userLogin);
   const name = user?.name.split(" ")[0] || "User";
