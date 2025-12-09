@@ -130,11 +130,17 @@ const BusinessSuite = () => {
       icon: ICONS.suiteDeliveryIcon,
       link: "/admin/business-suite/delivery-fee",
     },
+    {
+      description: "Geo Fence",
+      value: null,
+      icon: ICONS.suiteGeoFenceIcon,
+      link: "/admin/business-suite/geo-fence",
+    },
   ];
 
   const renderSuiteCards = () => {
     if (isLoadingBusinessHours || isLoadingDeliveryFee) {
-      return Array.from({ length: 2 }).map((_, index) => (
+      return Array.from({ length: 3 }).map((_, index) => (
         <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <Skeleton active paragraph={{ rows: 2 }} />
         </div>
@@ -177,6 +183,18 @@ const BusinessSuite = () => {
             <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Fixed fee</div>
             <h2 className="text-[#0CA921]">£{card.value}</h2>
           </div>
+        ) : index === 2 ? (
+          <div className="flex flex-col lg:flex-row justify-between gap-2">
+            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
+              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Dine in</div>
+              <h2 className="text-[#0CA921]">Radius: 150km</h2>
+            </div>
+
+            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
+              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Delivery</div>
+              <h2 className="text-[#0CA921]">Radius: 4.0km</h2>
+            </div>
+          </div>
         ) : (
           renderBusinessHours()
         )}
@@ -187,7 +205,7 @@ const BusinessSuite = () => {
   return (
     <>
       <BusinessSuiteHeader />
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:w-1/2 md:gap-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3 md:w-full md:gap-6">
         {renderSuiteCards()}
       </div>
     </>
