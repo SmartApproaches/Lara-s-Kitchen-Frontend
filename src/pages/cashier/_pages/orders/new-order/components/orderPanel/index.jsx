@@ -6,6 +6,7 @@ import { useCreateOrderMutation } from "../../../../../../../redux/slices/cashie
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { countryCodes } from "../countryCode";
 import SuccessModal from "../sucessModal";
+import toast from "react-hot-toast";
 const libraries = ["places"];
 const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
 
@@ -62,7 +63,11 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
 
   useEffect(() => {
     if (isError) {
-      message.error(error?.data?.message || "Failed to create order");
+      const errorMessage = error?.data?.message || error?.data?.error || "Failed to create order";
+
+      toast.error(errorMessage, {
+        duration: 4000,
+      });
     }
   }, [isError, error]);
 
@@ -169,6 +174,9 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
     try {
       await createOrder(orderPayload).unwrap();
     } catch (err) {
+      const errMsg = err?.data?.message || err?.data?.error || "Order creation failed";
+
+      toast.error(errMsg);
       console.error("Failed to create order:", err);
     }
   };
