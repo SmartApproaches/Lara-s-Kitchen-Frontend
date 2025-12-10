@@ -19,6 +19,9 @@ const NewOrder = () => {
 
   const [cart, setCart] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  useEffect(() => {
+    setIsDrawerOpen(true);
+  }, []);
   const location = useLocation();
 
   // Queries
