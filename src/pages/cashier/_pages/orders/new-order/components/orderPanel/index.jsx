@@ -112,47 +112,116 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
     }
   };
 
+  // const handlePlaceOrder = async () => {
+  //   // Validation
+  //   if (cartItemsArray.length === 0) {
+  //     message.warning("Cart is empty!");
+  //     return;
+  //   }
+
+  //   if (!formData.guest_name.trim()) {
+  //     message.warning("Please enter guest name");
+  //     return;
+  //   }
+
+  //   if (!formData.guest_phone.trim()) {
+  //     message.warning("Please enter phone number");
+  //     return;
+  //   }
+
+  //   const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "dine_in";
+
+  //   // Validation for delivery
+  //   if (currentOrderType === "delivery") {
+  //     if (!formData.guest_address.trim()) {
+  //       message.warning("Please enter delivery address");
+  //       return;
+  //     }
+  //     if (!formData.guest_latitude || !formData.guest_longitude) {
+  //       message.warning("Please select a valid address from the dropdown");
+  //       return;
+  //     }
+  //   }
+
+  //   // Combine country code with phone number
+  //   const fullPhoneNumber = `${formData.country_code}${formData.guest_phone}`;
+
+  //   // Prepare order payload
+  //   const orderPayload = {
+  //     order_type: currentOrderType,
+  //     items: cartItemsArray.map(({ item, qty, size }) => ({
+  //       menu_item_id: item.id,
+  //       quantity: qty,
+  //       size: size,
+  //     })),
+  //     guest_name: formData.guest_name,
+  //     guest_phone: fullPhoneNumber,
+  //     guest_email: formData.guest_email || undefined,
+  //     note: formData.note || undefined,
+  //   };
+
+  //   // Add conditional fields based on order type
+  //   if (currentOrderType === "dine_in") {
+  //     orderPayload.table_number = formData.table_number;
+  //   }
+
+  //   if (currentOrderType === "delivery") {
+  //     orderPayload.guest_address = formData.guest_address;
+  //     orderPayload.guest_latitude = formData.guest_latitude;
+  //     orderPayload.guest_longitude = formData.guest_longitude;
+  //   }
+
+  //   try {
+  //     await createOrder(orderPayload).unwrap();
+  //   } catch (err) {
+  //     const errMsg = err?.data?.message || err?.data?.error || "Order creation failed";
+
+  //     toast.error(errMsg);
+  //     console.error("Failed to create order:", err);
+  //   }
+  // };
   const handlePlaceOrder = async () => {
-    // Validation
+    // Basic validation
     if (cartItemsArray.length === 0) {
       message.warning("Cart is empty!");
       return;
     }
 
-    if (!formData.guest_name.trim()) {
+    if (!formData.guest_name?.trim()) {
       message.warning("Please enter guest name");
       return;
     }
 
-    if (!formData.guest_phone.trim()) {
+    if (!formData.guest_phone?.trim()) {
       message.warning("Please enter phone number");
       return;
     }
 
     const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "dine_in";
 
-    // Validation for delivery
+    // Delivery-specific validation
     if (currentOrderType === "delivery") {
-      if (!formData.guest_address.trim()) {
+      if (!formData.guest_address?.trim()) {
         message.warning("Please enter delivery address");
         return;
       }
-      if (!formData.guest_latitude || !formData.guest_longitude) {
+
+      if (formData.guest_latitude === undefined || formData.guest_longitude === undefined) {
         message.warning("Please select a valid address from the dropdown");
         return;
       }
     }
 
-    // Combine country code with phone number
+    // Combine country code + phone
     const fullPhoneNumber = `${formData.country_code}${formData.guest_phone}`;
 
-    // Prepare order payload
+    // Base payload
     const orderPayload = {
       order_type: currentOrderType,
       items: cartItemsArray.map(({ item, qty, size }) => ({
         menu_item_id: item.id,
         quantity: qty,
-        size: size,
+        size,
       })),
       guest_name: formData.guest_name,
       guest_phone: fullPhoneNumber,
@@ -160,15 +229,24 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
       note: formData.note || undefined,
     };
 
-    // Add conditional fields based on order type
+    // Dine-in fields
     if (currentOrderType === "dine_in") {
       orderPayload.table_number = formData.table_number;
     }
 
+    // Delivery fields (PARSE FLOAT HERE ✅)
     if (currentOrderType === "delivery") {
+      const latitude = parseFloat(formData.guest_latitude);
+      const longitude = parseFloat(formData.guest_longitude);
+
+      if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+        message.warning("Invalid location coordinates");
+        return;
+      }
+
       orderPayload.guest_address = formData.guest_address;
-      orderPayload.guest_latitude = formData.guest_latitude;
-      orderPayload.guest_longitude = formData.guest_longitude;
+      orderPayload.guest_latitude = latitude; // number ✅
+      orderPayload.guest_longitude = longitude; // number ✅
     }
 
     try {
