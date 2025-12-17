@@ -1,3 +1,4 @@
+// src/utils/notificationAudio.js
 let audio = null;
 let unlocked = false;
 
@@ -13,12 +14,12 @@ export const unlockAudio = async () => {
 
   try {
     audio.volume = 0;
-    await audio.play();
+    await audio.play(); // browser unlock
     audio.pause();
     audio.currentTime = 0;
     audio.volume = 1;
     unlocked = true;
-  } catch (e) {
+  } catch {
     console.warn("Audio unlock blocked");
   }
 };

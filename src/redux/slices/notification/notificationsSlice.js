@@ -1,10 +1,12 @@
-// src/redux/slices/notificationsSlice.js
+// src/redux/slices/notification/notificationsSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
-  items: [], // { id, title, body, data, read, createdAt }
-  soundEnabled: false,
+  items: [],
+
+  // 🔊 Sound ON by default, persisted
+  soundEnabled: JSON.parse(localStorage.getItem("notificationSound")) ?? true,
 };
 
 const notificationsSlice = createSlice({
@@ -13,8 +15,7 @@ const notificationsSlice = createSlice({
   reducers: {
     addNotification: {
       reducer(state, action) {
-        const note = action.payload;
-        state.items.unshift(note);
+        state.items.unshift(action.payload);
       },
       prepare(payload) {
         return {
@@ -30,23 +31,28 @@ const notificationsSlice = createSlice({
         };
       },
     },
+
     markAsRead(state, action) {
-      const id = action.payload;
-      const note = state.items.find((n) => n.id === id);
+      const note = state.items.find((n) => n.id === action.payload);
       if (note) note.read = true;
     },
+
     markAllRead(state) {
       state.items.forEach((n) => (n.read = true));
     },
+
     clearNotifications(state) {
       state.items = [];
     },
+
     toggleSound(state) {
       state.soundEnabled = !state.soundEnabled;
+      localStorage.setItem("notificationSound", JSON.stringify(state.soundEnabled));
     },
-    clearNewFlags: (state) => {
-      state.items = state.items.map((item) => ({
-        ...item,
+
+    clearNewFlags(state) {
+      state.items = state.items.map((n) => ({
+        ...n,
         _isNew: false,
       }));
     },
