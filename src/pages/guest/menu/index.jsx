@@ -21,6 +21,11 @@ const DineInMenu = () => {
   const [note, setNote] = useState("");
   const imageCache = new Map();
   const [loadedPages, setLoadedPages] = useState(new Set([1]));
+  const [location, setLocation] = useState({
+    latitude: null,
+    longitude: null,
+    address: "",
+  });
 
   const {
     data: dineInMenu,
@@ -45,7 +50,7 @@ const DineInMenu = () => {
   const [tableNumber, setTableNumber] = useState("");
   const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceDineInOrderMutation();
   const [orderSuccess, setOrderSuccess] = useState(null);
-
+  const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
   // ✅ BACKGROUND SYNC FOR PAGE 1
   useEffect(() => {
     if (page1Data?.data?.data && page > 1) {
@@ -171,8 +176,46 @@ const DineInMenu = () => {
   };
 
   const totalPrice = cart.reduce((sum, i) => sum + Number(i.base_price) * i.qty, 0);
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      console.warn("Geolocation not supported");
+      return;
+    }
 
-  // ✅ PLACE ORDER
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = parseFloat(position.coords.latitude);
+        const lng = parseFloat(position.coords.longitude);
+
+        let address = "";
+
+        try {
+          // 🔹 OPTIONAL: Reverse geocode using Google
+          const res = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`,
+          );
+          const data = await res.json();
+          address = data?.results?.[0]?.formatted_address || "";
+        } catch (err) {
+          console.warn("Failed to resolve address");
+        }
+
+        setLocation({
+          latitude: lat,
+          longitude: lng,
+          address,
+        });
+      },
+      (error) => {
+        console.error("Location error:", error.message);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      },
+    );
+  }, []);
+
   const handlePlaceOrder = async () => {
     if (!tableNumber.trim()) {
       toast.error("Table number is required");
@@ -184,10 +227,18 @@ const DineInMenu = () => {
       return;
     }
 
+    if (!location.latitude || !location.longitude) {
+      toast.error("Unable to verify your location");
+      return;
+    }
+
     const orderBody = {
       order_type: "dine_in",
       table_number: tableNumber,
       note: note,
+      latitude: location.latitude, // ✅ number
+      longitude: location.longitude, // ✅ number
+      address: location.address, // ✅ string
       items: cart.map((item) => ({
         menu_item_id: item.id,
         size: item.selectedSize,

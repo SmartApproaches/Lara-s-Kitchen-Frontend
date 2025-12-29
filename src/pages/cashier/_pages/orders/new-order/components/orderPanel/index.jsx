@@ -6,6 +6,7 @@ import { useCreateOrderMutation } from "../../../../../../../redux/slices/cashie
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { countryCodes } from "../countryCode";
 import SuccessModal from "../sucessModal";
+import toast from "react-hot-toast";
 const libraries = ["places"];
 const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
 
@@ -62,7 +63,11 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
 
   useEffect(() => {
     if (isError) {
-      message.error(error?.data?.message || "Failed to create order");
+      const errorMessage = error?.data?.message || error?.data?.error || "Failed to create order";
+
+      toast.error(errorMessage, {
+        duration: 4000,
+      });
     }
   }, [isError, error]);
 
@@ -107,47 +112,116 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
     }
   };
 
+  // const handlePlaceOrder = async () => {
+  //   // Validation
+  //   if (cartItemsArray.length === 0) {
+  //     message.warning("Cart is empty!");
+  //     return;
+  //   }
+
+  //   if (!formData.guest_name.trim()) {
+  //     message.warning("Please enter guest name");
+  //     return;
+  //   }
+
+  //   if (!formData.guest_phone.trim()) {
+  //     message.warning("Please enter phone number");
+  //     return;
+  //   }
+
+  //   const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "dine_in";
+
+  //   // Validation for delivery
+  //   if (currentOrderType === "delivery") {
+  //     if (!formData.guest_address.trim()) {
+  //       message.warning("Please enter delivery address");
+  //       return;
+  //     }
+  //     if (!formData.guest_latitude || !formData.guest_longitude) {
+  //       message.warning("Please select a valid address from the dropdown");
+  //       return;
+  //     }
+  //   }
+
+  //   // Combine country code with phone number
+  //   const fullPhoneNumber = `${formData.country_code}${formData.guest_phone}`;
+
+  //   // Prepare order payload
+  //   const orderPayload = {
+  //     order_type: currentOrderType,
+  //     items: cartItemsArray.map(({ item, qty, size }) => ({
+  //       menu_item_id: item.id,
+  //       quantity: qty,
+  //       size: size,
+  //     })),
+  //     guest_name: formData.guest_name,
+  //     guest_phone: fullPhoneNumber,
+  //     guest_email: formData.guest_email || undefined,
+  //     note: formData.note || undefined,
+  //   };
+
+  //   // Add conditional fields based on order type
+  //   if (currentOrderType === "dine_in") {
+  //     orderPayload.table_number = formData.table_number;
+  //   }
+
+  //   if (currentOrderType === "delivery") {
+  //     orderPayload.guest_address = formData.guest_address;
+  //     orderPayload.guest_latitude = formData.guest_latitude;
+  //     orderPayload.guest_longitude = formData.guest_longitude;
+  //   }
+
+  //   try {
+  //     await createOrder(orderPayload).unwrap();
+  //   } catch (err) {
+  //     const errMsg = err?.data?.message || err?.data?.error || "Order creation failed";
+
+  //     toast.error(errMsg);
+  //     console.error("Failed to create order:", err);
+  //   }
+  // };
   const handlePlaceOrder = async () => {
-    // Validation
+    // Basic validation
     if (cartItemsArray.length === 0) {
       message.warning("Cart is empty!");
       return;
     }
 
-    if (!formData.guest_name.trim()) {
+    if (!formData.guest_name?.trim()) {
       message.warning("Please enter guest name");
       return;
     }
 
-    if (!formData.guest_phone.trim()) {
+    if (!formData.guest_phone?.trim()) {
       message.warning("Please enter phone number");
       return;
     }
 
     const currentOrderType = tabs.find((tab) => tab.key === orderType)?.apiValue || "dine_in";
 
-    // Validation for delivery
+    // Delivery-specific validation
     if (currentOrderType === "delivery") {
-      if (!formData.guest_address.trim()) {
+      if (!formData.guest_address?.trim()) {
         message.warning("Please enter delivery address");
         return;
       }
-      if (!formData.guest_latitude || !formData.guest_longitude) {
+
+      if (formData.guest_latitude === undefined || formData.guest_longitude === undefined) {
         message.warning("Please select a valid address from the dropdown");
         return;
       }
     }
 
-    // Combine country code with phone number
+    // Combine country code + phone
     const fullPhoneNumber = `${formData.country_code}${formData.guest_phone}`;
 
-    // Prepare order payload
+    // Base payload
     const orderPayload = {
       order_type: currentOrderType,
       items: cartItemsArray.map(({ item, qty, size }) => ({
         menu_item_id: item.id,
         quantity: qty,
-        size: size,
+        size,
       })),
       guest_name: formData.guest_name,
       guest_phone: fullPhoneNumber,
@@ -155,20 +229,32 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
       note: formData.note || undefined,
     };
 
-    // Add conditional fields based on order type
+    // Dine-in fields
     if (currentOrderType === "dine_in") {
       orderPayload.table_number = formData.table_number;
     }
 
+    // Delivery fields (PARSE FLOAT HERE ✅)
     if (currentOrderType === "delivery") {
+      const latitude = parseFloat(formData.guest_latitude);
+      const longitude = parseFloat(formData.guest_longitude);
+
+      if (Number.isNaN(latitude) || Number.isNaN(longitude)) {
+        message.warning("Invalid location coordinates");
+        return;
+      }
+
       orderPayload.guest_address = formData.guest_address;
-      orderPayload.guest_latitude = formData.guest_latitude;
-      orderPayload.guest_longitude = formData.guest_longitude;
+      orderPayload.guest_latitude = latitude; // number ✅
+      orderPayload.guest_longitude = longitude; // number ✅
     }
 
     try {
       await createOrder(orderPayload).unwrap();
     } catch (err) {
+      const errMsg = err?.data?.message || err?.data?.error || "Order creation failed";
+
+      toast.error(errMsg);
       console.error("Failed to create order:", err);
     }
   };
@@ -342,117 +428,74 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
 
         {/* ORDER ITEMS */}
         <div className="space-y-3 overflow-y-auto px-4">
-          {/* {cartItemsArray.map(({ item, qty }) => {
-            const itemTotal = Number(item.price) * qty;
+          {cartItemsArray.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+              <p className="text-sm">No menu selected</p>
+              <p className="text-xs">Please add items to begin an order</p>
+            </div>
+          ) : (
+            cartItemsArray.map(({ item, qty, size, price }) => {
+              const itemTotal = Number(price) * qty;
 
-            return (
-              <div
-                key={item.id}
-                className="flex items-center gap-3 rounded-xl border p-3 shadow-sm"
-              >
-                <img
-                  src={item.media?.url}
-                  className="h-14 w-14 rounded-md object-cover"
-                  alt={item.name}
-                />
+              return (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-3 rounded-xl border p-3 shadow-sm"
+                >
+                  <img
+                    src={item.media?.url}
+                    className="h-14 w-14 rounded-md object-cover"
+                    alt={item.name}
+                  />
 
-                <div className="flex-1">
-                  <p className="text-base leading-tight font-bold text-[#1F5226]">{item.name}</p>
-                  <p className="text-sm leading-snug text-gray-700">{item.description}</p>
+                  <div className="flex-1">
+                    <p className="text-base font-bold text-[#1F5226]">{item.name}</p>
+                    <p className="text-sm text-gray-700">{item.description}</p>
 
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="flex items-center gap-1">
-                      <p className="text-sm font-semibold text-[#00BC1A]">
-                        £{Number(item.price).toFixed(2)} ({item.size})
-                      </p>
-                      <span className="text-[#979797]">{qty}×</span>
-                    </div>
+                    {item?.sizes?.length > 0 && (
+                      <select
+                        value={size}
+                        onChange={(e) => {
+                          const selected = e.target.value;
+                          const selectedSizeObj = item.sizes.find((s) => s.name === selected);
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-[#00BC1A]">
+                          setCart((prev) => ({
+                            ...prev,
+                            [item.id]: {
+                              ...prev[item.id],
+                              size: selected,
+                              price: Number(selectedSizeObj?.price || item.base_price),
+                            },
+                          }));
+                        }}
+                        className="mt-2 w-full rounded-xl border px-3 py-2 text-sm"
+                      >
+                        {item.sizes.map((s) => (
+                          <option key={s.name} value={s.name}>
+                            {s.name} — £{Number(s.price).toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-[#00BC1A]">
+                          £{Number(price).toFixed(2)}
+                        </p>
+                        <span className="text-xs text-gray-500">({size})</span>
+                        <span className="text-xs text-gray-500">{qty}×</span>
+                      </div>
+
+                      <span className="text-base font-bold text-[#00BC1A]">
                         £{itemTotal.toFixed(2)}
                       </span>
-                      <Button
-                        type="text"
-                        danger
-                        size="small"
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleDeleteItem(item)}
-                      />
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })} */}
-          {cartItemsArray.map(({ item, qty, size, price }) => {
-            const itemTotal = Number(price) * qty;
-
-            return (
-              <div
-                key={item.id}
-                className="flex items-center gap-3 rounded-xl border p-3 shadow-sm"
-              >
-                <img
-                  src={item.media?.url}
-                  className="h-14 w-14 rounded-md object-cover"
-                  alt={item.name}
-                />
-
-                <div className="flex-1">
-                  {/* NAME + DESCRIPTION */}
-                  <p className="text-base font-bold text-[#1F5226]">{item.name}</p>
-                  <p className="text-sm text-gray-700">{item.description}</p>
-
-                  {/* SIZE DROPDOWN (TAILWIND ONLY) */}
-                  {item?.sizes?.length > 0 && (
-                    <select
-                      value={size}
-                      onChange={(e) => {
-                        const selected = e.target.value;
-                        const selectedSizeObj = item.sizes.find((s) => s.name === selected);
-
-                        setCart((prev) => ({
-                          ...prev,
-                          [item.id]: {
-                            ...prev[item.id],
-                            size: selected,
-                            price: Number(selectedSizeObj?.price || item.base_price),
-                          },
-                        }));
-                      }}
-                      className="mt-2 w-full cursor-pointer rounded-xl border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 shadow-sm transition-all outline-none focus:border-[#00BC1A] focus:ring-2 focus:ring-[#00BC1A]/30"
-                    >
-                      {item.sizes.map((s) => (
-                        <option key={s.name} value={s.name}>
-                          {s.name} — £{Number(s.price).toFixed(2)}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-
-                  {/* PRICE + QTY + SIZE -> SAME LINE */}
-                  <div className="mt-3 flex items-center justify-between">
-                    {/* LEFT SIDE */}
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-semibold text-[#00BC1A]">
-                        £{Number(price).toFixed(2)}
-                      </p>
-
-                      <span className="text-xs text-gray-500">({size})</span>
-
-                      <span className="text-xs text-gray-500">{qty}×</span>
-                    </div>
-
-                    {/* RIGHT SIDE TOTAL */}
-                    <span className="text-base font-bold text-[#00BC1A]">
-                      £{itemTotal.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
 
         {/* ORDER SUMMARY */}
