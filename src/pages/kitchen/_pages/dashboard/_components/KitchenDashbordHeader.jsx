@@ -1,32 +1,53 @@
 import React, { useState } from "react";
 import { Dropdown, Button, DatePicker } from "antd";
 import { Calendar01Icon } from "hugeicons-react";
+import dayjs from "dayjs";
 
-const DashboardHeader = ({ userName, onDateChange }) => {
+const KitchenDashboardHeader = ({ userName, onDateChange }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("This Year");
 
+  // Backend-supported periods
   const menuItems = [
-    { key: "today", label: "Today" },
-    { key: "yesterday", label: "Yesterday" },
-    { key: "lastWeek", label: "Last Week" },
-    { key: "lastMonth", label: "Last 30 days" },
-    { key: "lastYear", label: "Last 1 Year" },
+    { key: "today", label: "Today", period: "today" },
+    { key: "yesterday", label: "Yesterday", period: "yesterday" },
+    { key: "last_week", label: "Last Week", period: "last_week" },
+    { key: "last_30_days", label: "Last 30 days", period: "last_30_days" },
+    { key: "last_1_year", label: "Last 1 Year", period: "last_1_year" },
   ];
 
+  // =========================
+  // PERIOD FILTER
+  // =========================
   const handleMenuClick = ({ key }) => {
     const item = menuItems.find((m) => m.key === key);
-    if (item) {
-      setSelectedLabel(item.label);
-      if (onDateChange) onDateChange(item.key);
-    }
+    if (!item) return;
+
+    setSelectedLabel(item.label);
+
+    onDateChange?.({
+      from: null,
+      to: null,
+      period: item.period,
+    });
   };
 
-  const handleCalendarChange = (date, dateString) => {
-    if (date) {
-      setSelectedLabel(dateString);
-      if (onDateChange) onDateChange(dateString);
-    }
+  // =========================
+  // CUSTOM DATE FILTER
+  // =========================
+  const handleCalendarChange = (date) => {
+    if (!date) return;
+
+    const formattedDate = dayjs(date).format("YYYY-MM-DD");
+
+    setSelectedLabel(formattedDate);
+
+    onDateChange?.({
+      from: formattedDate,
+      to: formattedDate,
+      period: null,
+    });
+
     setOpenCalendar(false);
   };
 
@@ -38,6 +59,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
       </div>
 
       <div className="mt-4 flex items-center gap-3 sm:mt-0">
+        {/* PERIOD DROPDOWN */}
         <Dropdown
           menu={{ items: menuItems, onClick: handleMenuClick }}
           placement="bottomLeft"
@@ -55,6 +77,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
           </Button>
         </Dropdown>
 
+        {/* DATE PICKER */}
         <div className="relative">
           <Button
             style={{
@@ -67,7 +90,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
           />
 
           {openCalendar && (
-            <div className="absolute right-0 z-50 mt-2 rounded-lg shadow-lg">
+            <div className="absolute right-0 z-50 mt-2 rounded-lg bg-white shadow-lg">
               <DatePicker
                 open
                 onChange={handleCalendarChange}
@@ -81,4 +104,4 @@ const DashboardHeader = ({ userName, onDateChange }) => {
   );
 };
 
-export default DashboardHeader;
+export default KitchenDashboardHeader;
