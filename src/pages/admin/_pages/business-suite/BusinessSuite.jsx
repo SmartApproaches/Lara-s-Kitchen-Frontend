@@ -6,6 +6,7 @@ import BusinessSuiteHeader from "./_components/BusinessSuiteHeader";
 import {
   useGetBusinessHoursQuery,
   useGetDeliveryFeeQuery,
+  useGetGeofenceQuery,
 } from "../../../../redux/slices/super-admin/businessSuiteApiSlice";
 import { ICONS } from "../../../../constants";
 
@@ -20,6 +21,17 @@ const BusinessSuite = () => {
     isLoading: isLoadingDeliveryFee,
     isError: isErrorDeliveryFee,
   } = useGetDeliveryFeeQuery();
+  const {
+    data: geofence,
+    isLoading: isLoadingGeofence,
+    isError: isErrorGeofence,
+  } = useGetGeofenceQuery();
+
+  const dineInGeofence = geofence?.data.find((fence) => fence.type === "dine_in");
+  const deliveryGeofence = geofence?.data.find((fence) => fence.type === "delivery");
+
+  const dineInRadius = dineInGeofence ? `${dineInGeofence.radius}km` : "N/A";
+  const deliveryRadius = deliveryGeofence ? `${deliveryGeofence.radius}km` : "N/A";
 
   const formatTime = (time) => {
     if (!time) return "";
@@ -130,18 +142,24 @@ const BusinessSuite = () => {
       icon: ICONS.suiteDeliveryIcon,
       link: "/admin/business-suite/delivery-fee",
     },
+    {
+      description: "Geo Fence",
+      value: null,
+      icon: ICONS.suiteGeoFenceIcon,
+      link: "/admin/business-suite/geo-fence",
+    },
   ];
 
   const renderSuiteCards = () => {
-    if (isLoadingBusinessHours || isLoadingDeliveryFee) {
-      return Array.from({ length: 2 }).map((_, index) => (
+    if (isLoadingBusinessHours || isLoadingDeliveryFee || isLoadingGeofence) {
+      return Array.from({ length: 3 }).map((_, index) => (
         <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <Skeleton active paragraph={{ rows: 2 }} />
         </div>
       ));
     }
 
-    if (isErrorBusinessHours || isErrorDeliveryFee) {
+    if (isErrorBusinessHours || isErrorDeliveryFee || isErrorGeofence) {
       return (
         <div className="col-span-full space-y-3">
           {isErrorBusinessHours && (
@@ -156,6 +174,14 @@ const BusinessSuite = () => {
             <Alert
               message="Error loading Delivery Fee"
               description="Failed to fetch Delivery Fee data. Please try again later."
+              type="error"
+              showIcon
+            />
+          )}
+          {isErrorGeofence && (
+            <Alert
+              message="Error loading Geo Fence"
+              description="Failed to fetch Geo Fence data. Please try again later."
               type="error"
               showIcon
             />
@@ -177,6 +203,18 @@ const BusinessSuite = () => {
             <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Fixed fee</div>
             <h2 className="text-[#0CA921]">£{card.value}</h2>
           </div>
+        ) : index === 2 ? (
+          <div className="flex flex-col justify-between gap-2 lg:flex-row">
+            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
+              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Dine in</div>
+              <h2 className="text-[#0CA921]">Radius: {dineInRadius}</h2>
+            </div>
+
+            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
+              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Delivery</div>
+              <h2 className="text-[#0CA921]">Radius: {deliveryRadius}</h2>
+            </div>
+          </div>
         ) : (
           renderBusinessHours()
         )}
@@ -187,7 +225,7 @@ const BusinessSuite = () => {
   return (
     <>
       <BusinessSuiteHeader />
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:w-1/2 md:gap-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3 md:w-full md:gap-6">
         {renderSuiteCards()}
       </div>
     </>

@@ -70,6 +70,7 @@ import Testimonial3 from "../assets/images/Testimonial3.png";
 import Testimonial2 from "../assets/images/Testimonial2.png";
 import appStore from "../assets/images/appStore.svg";
 import playStore from "../assets/images/playStore.svg";
+import suiteGeoFenceIcon from "../assets/icons/suiteGeoFenceIcon.svg";
 
 export const ICONS = {
   descent: descentIcon,
@@ -112,6 +113,7 @@ export const ICONS = {
   carbonDrink: carbonDrink,
   swallowIcon: swallowIcon,
   grainsIcon: grainsIcon,
+  suiteGeoFenceIcon: suiteGeoFenceIcon,
 };
 
 export const IMAGES = {

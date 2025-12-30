@@ -28,6 +28,17 @@ const AdminBusinessSuiteOrderAvailability = lazy(
 const AdminBusinessSuiteDeliveryFee = lazy(
   () => import("./pages/admin/_pages/business-suite/_components/DeliveryFee"),
 );
+const AdminBusinessSuiteGeoFencing = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/GeoFence"),
+);
+const AdminBusinessSuiteDineInGeoFencing = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/DineInGeoFence"),
+);
+
+const AdminBusinessSuiteDeliveryGeoFencing = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/DeliveryGeoFence"),
+);
+
 const AdminAddNewFood = lazy(
   () => import("./pages/admin/_pages/catalogue/_components/add-new-food/AddNewFood"),
 );
@@ -47,6 +58,9 @@ const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Das
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
 const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrders"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
+
+const GOOGLE_MAPS_API_KEY = "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8";
+
 const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -57,6 +71,7 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/dinein-menu" element={<DineInMenu />} />
+
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
           <Route element={<AdminDashboardLayout />}>
@@ -78,6 +93,19 @@ const App = () => {
             <Route
               path="admin/business-suite/delivery-fee"
               element={<AdminBusinessSuiteDeliveryFee />}
+            />
+            <Route
+              path="admin/business-suite/geo-fence"
+              element={<AdminBusinessSuiteGeoFencing />}
+            />
+
+            <Route
+              path="admin/business-suite/geo-fence/dine-in"
+              element={<AdminBusinessSuiteDineInGeoFencing />}
+            />
+            <Route
+              path="admin/business-suite/geo-fence/delivery"
+              element={<AdminBusinessSuiteDeliveryGeoFencing />}
             />
           </Route>
         </Route>
