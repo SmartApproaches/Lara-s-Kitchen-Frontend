@@ -12,29 +12,61 @@ import {
   useGetDasOrderToPrepareQuery,
   useUpdateOrderStatusMutation,
 } from "../../../../redux/slices/kitchen/kitchenDashboardApiSlice";
+import KitchenDashboardHeader from "./_components/KitchenDashbordHeader";
 const Dashboard = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState({
+    from: null,
+    to: null,
+    period: null,
+  });
   const {
     data: orderStats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
-  } = useGetKitchenDashBoardDataQuery({
-    pollingInterval: 3000,
-    skipPollingIfUnfocused: true,
-  });
-  const [currentPage, setCurrentPage] = useState(1);
+  } = useGetKitchenDashBoardDataQuery(
+    {
+      from: filters.from,
+      to: filters.to,
+      period: filters.period,
+    },
+    {
+      pollingInterval: 3000,
+      skipPollingIfUnfocused: true,
+    },
+  );
+
   const [dateFilter, setDateFilter] = useState(null);
+
+  // const {
+  //   data: pendingOrdersData,
+  //   isLoading: isLoadingPendingOrders,
+  //   isError: isErrorPendingOrders,
+  // } = useGetDasOrderToPrepareQuery(
+  //   { page: currentPage },
+  //   {
+  //     pollingInterval: 3000,
+  //     skipPollingIfUnfocused: true,
+  //   },
+  // );
 
   const {
     data: pendingOrdersData,
     isLoading: isLoadingPendingOrders,
     isError: isErrorPendingOrders,
   } = useGetDasOrderToPrepareQuery(
-    { page: currentPage },
+    {
+      page: currentPage,
+      from: filters.from,
+      to: filters.to,
+      period: filters.period,
+    },
     {
       pollingInterval: 3000,
       skipPollingIfUnfocused: true,
     },
   );
+
   const [updateOrderStatus, { isLoading: isUpdatingStatus }] = useUpdateOrderStatusMutation();
 
   const pendingOrders = pendingOrdersData?.data?.data || [];
@@ -63,8 +95,9 @@ const Dashboard = () => {
     },
   ];
 
-  const handleDateChange = (datevalue) => {
-    console.log("Selected Date Range:", datevalue);
+  const handleDateChange = ({ from, to, period }) => {
+    setCurrentPage(1); // reset pagination on filter change
+    setFilters({ from, to, period });
   };
 
   const handleMarkAsPreparing = async (order) => {
@@ -170,7 +203,7 @@ const Dashboard = () => {
   };
   return (
     <div className="min-w-0">
-      <DashboardHeader userName="Kitchen" onDateChange={handleDateChange} />
+      <KitchenDashboardHeader userName="Kitchen" onDateChange={handleDateChange} />
 
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {renderStatsCards()}

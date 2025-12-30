@@ -20,12 +20,36 @@ const CravingNigeriaFood = () => {
           </p>
 
           {/* Store Buttons */}
-          <div className="animate-zoom-in mx-auto mt-8 w-56 sm:mt-10 sm:w-72 md:w-80">
-            <img src={IMAGES.PlayStoreApple} alt="playstore & apple download" className="w-full" />
+          <div className="animate-zoom-in relative z-10 mx-auto mt-8 flex justify-center gap-4 sm:mt-10">
+            {/* Google Play */}
+            <a
+              href="https://play.google.com/store/apps/details?id=org.laraskitchen&pcampaignid=web_share"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={IMAGES.playStore}
+                alt="Get it on Google Play"
+                className="h-10 w-auto cursor-pointer transition-transform hover:scale-105 sm:h-12"
+              />
+            </a>
+
+            {/* Apple Store */}
+            <a
+              href="https://apps.apple.com/us/app/laras-kitchen/id6753684107"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={IMAGES.appStore}
+                alt="Download on the App Store"
+                className="h-10 w-auto cursor-pointer transition-transform hover:scale-105 sm:h-12"
+              />
+            </a>
           </div>
 
           {/* Lottie Animation */}
-          <div className="animate-slide-in-bottom relative -mt-20 md:-mt-64">
+          <div className="animate-slide-in-bottom pointer-events-none relative -mt-20 md:-mt-64">
             <Lottie
               loop
               play
