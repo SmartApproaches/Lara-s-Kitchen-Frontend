@@ -34,8 +34,6 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
     last_page: data?.data?.last_page || 1,
   };
 
-  console.log(customer, customerOrders);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };

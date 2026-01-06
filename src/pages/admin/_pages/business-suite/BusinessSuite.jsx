@@ -194,25 +194,36 @@ const BusinessSuite = () => {
       <Link
         to={card?.link}
         key={index}
-        className="flex flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md transition-transform hover:scale-105 hover:shadow-lg md:m-4"
+        className="flex flex-col items-center justify-center rounded-xl bg-white p-3 shadow-md transition-transform hover:scale-105 hover:shadow-lg sm:p-4 md:m-4"
       >
-        <img src={card.icon} alt={card.description} className="mb-2 h-12 w-12" />
-        <p className="text-base font-medium md:text-lg lg:text-xl">{card.description}</p>
+        <img src={card.icon} alt={card.description} className="mb-2 h-10 w-10 sm:h-12 sm:w-12" />
+        <p className="px-2 text-center text-sm font-medium sm:text-base md:text-lg lg:text-xl">
+          {card.description}
+        </p>
+
         {index === 1 ? (
-          <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
-            <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Fixed fee</div>
-            <h2 className="text-[#0CA921]">£{card.value}</h2>
+          <div className="mt-2 flex w-full max-w-xs items-center justify-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-sm font-semibold">
+            <div className="flex-shrink-0 rounded-xl bg-[#D6FADB] px-3 py-2 whitespace-nowrap text-[#00BC1A]">
+              Fixed fee
+            </div>
+            <h2 className="font-bold text-[#0CA921]">£{card.value}</h2>
           </div>
         ) : index === 2 ? (
-          <div className="flex flex-col justify-between gap-2 lg:flex-row">
-            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
-              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Dine in</div>
-              <h2 className="text-[#0CA921]">Radius: {dineInRadius}</h2>
+          <div className="mt-2 flex w-full flex-col gap-2 sm:max-w-md lg:max-w-lg">
+            <div className="flex min-w-0 flex-1 items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-xs font-semibold sm:text-sm">
+              <div className="flex-shrink-0 rounded-xl bg-[#D6FADB] px-2 py-1.5 text-xs whitespace-nowrap text-[#00BC1A] sm:px-3 sm:py-2 sm:text-sm">
+                Dine in
+              </div>
+              <h2 className="truncate text-xs text-[#0CA921] sm:text-sm">Radius: {dineInRadius}</h2>
             </div>
 
-            <div className="text-primary mt-2 flex items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-base font-semibold sm:text-sm">
-              <div className="rounded-xl bg-[#D6FADB] p-2 text-[#00BC1A]">Delivery</div>
-              <h2 className="text-[#0CA921]">Radius: {deliveryRadius}</h2>
+            <div className="flex min-w-0 flex-1 items-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-xs font-semibold sm:text-sm">
+              <div className="flex-shrink-0 rounded-xl bg-[#D6FADB] px-2 py-1.5 text-xs whitespace-nowrap text-[#00BC1A] sm:px-3 sm:py-2 sm:text-sm">
+                Delivery
+              </div>
+              <h2 className="truncate text-xs text-[#0CA921] sm:text-sm">
+                Radius: {deliveryRadius}
+              </h2>
             </div>
           </div>
         ) : (

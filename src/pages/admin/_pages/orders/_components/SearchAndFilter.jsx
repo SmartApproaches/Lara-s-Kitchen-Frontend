@@ -22,7 +22,7 @@ const SearchAndFilters = ({
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [selectedOrderType, setSelectedOrderType] = useState(null);
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [selectedLabel, setSelectedLabel] = useState("This Month");
+  const [selectedLabel, setSelectedLabel] = useState("Last Month");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filterMenuItems = [
@@ -40,11 +40,10 @@ const SearchAndFilters = ({
 
   const dateRangeMenuItems = [
     { key: "today", label: "Today" },
-    { key: "thisWeek", label: "This Week" },
-    { key: "thisMonth", label: "This Month" },
-    { key: "lastWeek", label: "Last Week" },
-    { key: "lastMonth", label: "Last Month" },
-    { key: "lastYear", label: "Last Year" },
+    { key: "yesterday", label: "Yesterday" },
+    { key: "last_week", label: "Last Week" },
+    { key: "last_30_days", label: "Last Month" },
+    { key: "last_1_year", label: "Last Year" },
   ];
 
   const handleFilterSelect = ({ key }) => {
