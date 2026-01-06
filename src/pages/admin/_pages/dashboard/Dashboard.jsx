@@ -16,12 +16,12 @@ import {
 const Dashboard = () => {
   const [
     getDashboardSummary,
-    { data: stats, isLoading: isLoadingStats, isError: isErrorStats },
+    { data: stats, isFetching: isLoadingStats, isError: isErrorStats },
   ] = useLazyGetDashboardSummaryQuery();
 
   const [
     getDashboardTotalRevenue,
-    { data: revenue, isLoading: isLoadingRevenue, isError: isErrorRevenue },
+    { data: revenue, isFetching: isLoadingRevenue, isError: isErrorRevenue },
   ] = useLazyGetDashboardTotalRevenueQuery();
 
   const {
