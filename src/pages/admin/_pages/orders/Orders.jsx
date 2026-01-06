@@ -30,7 +30,7 @@ const OrdersPage = () => {
     isError: isErrorSummary,
   } = useGetOrdersSummaryQuery();
 
-  const [getAllOrders, { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders }] =
+  const [getAllOrders, { data: orders, isFetching: isLoadingOrders, isError: isErrorOrders }] =
     useLazyGetAllOrdersQuery();
 
   const orderSummary = summary?.data || null;
