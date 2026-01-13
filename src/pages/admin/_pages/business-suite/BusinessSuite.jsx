@@ -5,7 +5,7 @@ import { Alert, Skeleton } from "antd";
 import BusinessSuiteHeader from "./_components/BusinessSuiteHeader";
 import {
   useGetBusinessHoursQuery,
-  useGetDeliveryFeeQuery,
+  useGetGeneralDeliveryFeeQuery,
   useGetGeofenceQuery,
 } from "../../../../redux/slices/super-admin/businessSuiteApiSlice";
 import { ICONS } from "../../../../constants";
@@ -14,17 +14,17 @@ const BusinessSuite = () => {
   const {
     data: businessHours,
     isLoading: isLoadingBusinessHours,
-    isError: isErrorBusinessHours,
+    error: errorBusinessHours,
   } = useGetBusinessHoursQuery();
   const {
-    data: deliveryFee,
-    isLoading: isLoadingDeliveryFee,
-    isError: isErrorDeliveryFee,
-  } = useGetDeliveryFeeQuery();
+    data: generalDeliveryFee,
+    isLoading: isLoadingGeneralDeliveryFee,
+    error: errorGeneralDeliveryFee,
+  } = useGetGeneralDeliveryFeeQuery();
   const {
     data: geofence,
     isLoading: isLoadingGeofence,
-    isError: isErrorGeofence,
+    error: errorGeofence,
   } = useGetGeofenceQuery();
 
   const dineInGeofence = geofence?.data.find((fence) => fence.type === "dine_in");
@@ -138,7 +138,7 @@ const BusinessSuite = () => {
     },
     {
       description: "Delivery Fee",
-      value: deliveryFee?.data?.base_delivery_fee || "N/A",
+      value: generalDeliveryFee?.data?.base_delivery_fee || "N/A",
       icon: ICONS.suiteDeliveryIcon,
       link: "/admin/business-suite/delivery-fee",
     },
@@ -151,7 +151,7 @@ const BusinessSuite = () => {
   ];
 
   const renderSuiteCards = () => {
-    if (isLoadingBusinessHours || isLoadingDeliveryFee || isLoadingGeofence) {
+    if (isLoadingBusinessHours || isLoadingGeneralDeliveryFee || isLoadingGeofence) {
       return Array.from({ length: 3 }).map((_, index) => (
         <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
           <Skeleton active paragraph={{ rows: 2 }} />
@@ -159,28 +159,28 @@ const BusinessSuite = () => {
       ));
     }
 
-    if (isErrorBusinessHours || isErrorDeliveryFee || isErrorGeofence) {
+    if (errorBusinessHours || errorGeneralDeliveryFee || errorGeofence) {
       return (
         <div className="col-span-full space-y-3">
-          {isErrorBusinessHours && (
+          {errorBusinessHours && (
             <Alert
-              message="Error loading Business Hours"
+              message={errorBusinessHours?.data?.message || "Error loading Business Hours"}
               description="Failed to fetch Business Hours data. Please try again later."
               type="error"
               showIcon
             />
           )}
-          {isErrorDeliveryFee && (
+          {errorGeneralDeliveryFee && (
             <Alert
-              message="Error loading Delivery Fee"
+              message={errorGeneralDeliveryFee?.data?.message || "Error loading Delivery Fee"}
               description="Failed to fetch Delivery Fee data. Please try again later."
               type="error"
               showIcon
             />
           )}
-          {isErrorGeofence && (
+          {errorGeofence && (
             <Alert
-              message="Error loading Geo Fence"
+              message={errorGeofence?.data?.message || "Error loading Geo Fence"}
               description="Failed to fetch Geo Fence data. Please try again later."
               type="error"
               showIcon
