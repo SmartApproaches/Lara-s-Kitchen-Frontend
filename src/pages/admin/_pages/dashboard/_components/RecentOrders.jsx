@@ -58,7 +58,7 @@ const RecentOrders = ({ orders }) => {
                   className="h-10 w-10 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-semibold text-gray-900">{item?.menu_item?.name}</p>
+                  <p className="font-semibold capitalize text-gray-900">{item?.menu_item?.name}</p>
                   <p className="text-sm font-bold text-green-600">£{item?.subtotal}</p>
                 </div>
               </div>
@@ -69,7 +69,7 @@ const RecentOrders = ({ orders }) => {
                 <Tag
                   style={{ borderRadius: "12px" }}
                   color={order?.status === "completed" ? "green" : "orange"}
-                  className="px-2 py-0.5 text-xs"
+                  className="px-2 capitalize py-0.5 text-xs"
                 >
                   {order?.status}
                 </Tag>

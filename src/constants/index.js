@@ -68,6 +68,8 @@ import sucessImage from "../assets/images/success-j709HH5aq9.svg";
 import Testimonial1 from "../assets/images/Testimonial1.png";
 import Testimonial3 from "../assets/images/Testimonial3.png";
 import Testimonial2 from "../assets/images/Testimonial2.png";
+import appStore from "../assets/images/appStore.svg";
+import playStore from "../assets/images/playStore.svg";
 import suiteGeoFenceIcon from "../assets/icons/suiteGeoFenceIcon.svg";
 
 export const ICONS = {
@@ -145,4 +147,6 @@ export const IMAGES = {
   Testimonial1: Testimonial1,
   Testimonial2: Testimonial2,
   Testimonial3: Testimonial3,
+  appStore: appStore,
+  playStore: playStore,
 };

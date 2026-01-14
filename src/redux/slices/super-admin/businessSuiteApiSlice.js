@@ -2,10 +2,47 @@ import { api } from "../../api/rtkQuery";
 
 export const businessSuiteSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    getDeliveryFee: builder.query({
-      query: () => "/admin/business-suite/delivery-fee",
+    getGeneralDeliveryFee: builder.query({
+      query: () => "/admin/business-suite/general-delivery-fee",
       keepUnusedDataFor: 0,
       providesTags: ["DeliveryFee"],
+    }),
+    updateGeneralDeliveryFee: builder.mutation({
+      query: (body) => ({
+        url: "/admin/business-suite/general-delivery-fee",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["DeliveryFee"],
+    }),
+
+    postSpecialDeliveryFee: builder.mutation({
+      query: (body) => ({
+        url: "/admin/business-suite/special-delivery-fee",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["DeliveryFee"],
+    }),
+    getSpecialDeliveryFees: builder.query({
+      query: () => "/admin/business-suite/special-delivery-fees",
+      keepUnusedDataFor: 0,
+      providesTags: ["DeliveryFee"],
+    }),
+    updateSpecialDeliveryFee: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/admin/business-suite/delivery-fee/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["DeliveryFee"],
+    }),
+    deleteSpecialDeliveryFee: builder.mutation({
+      query: (id) => ({
+        url: `/admin/business-suite/delivery-fee/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["DeliveryFee"],
     }),
 
     getBusinessHours: builder.query({
@@ -13,16 +50,6 @@ export const businessSuiteSlice = api.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: ["BusinessHours"],
     }),
-
-    updateDeliveryFee: builder.mutation({
-      query: (body) => ({
-        url: "/admin/business-suite/update-delivery-fee",
-        method: "PUT",
-        body,
-      }),
-      invalidatesTags: ["DeliveryFee"],
-    }),
-
     updateBusinessHours: builder.mutation({
       query: (body) => ({
         url: "/admin/business-suite/update-business-hours",
@@ -46,13 +73,11 @@ export const businessSuiteSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["Geofence"],
     }),
-
     getGeofenceByType: builder.query({
       query: (type) => `/admin/business-suite/geofence/${type}`,
       keepUnusedDataFor: 0,
       providesTags: ["Geofence"],
     }),
-
     updateGeofenceByType: builder.mutation({
       query: ({ type, data }) => ({
         url: `/admin/business-suite/geofence/${type}`,
@@ -61,7 +86,6 @@ export const businessSuiteSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["Geofence"],
     }),
-
     deleteGeofenceByType: builder.mutation({
       query: (type) => ({
         url: `/admin/business-suite/geofence/${type}`,
@@ -73,9 +97,13 @@ export const businessSuiteSlice = api.injectEndpoints({
 });
 
 export const {
-  useGetDeliveryFeeQuery,
+  useGetGeneralDeliveryFeeQuery,
   useGetBusinessHoursQuery,
-  useUpdateDeliveryFeeMutation,
+  useUpdateGeneralDeliveryFeeMutation,
+  usePostSpecialDeliveryFeeMutation,
+  useGetSpecialDeliveryFeesQuery,
+  useUpdateSpecialDeliveryFeeMutation,
+  useDeleteSpecialDeliveryFeeMutation,
   useUpdateBusinessHoursMutation,
   useGetGeofenceQuery,
   usePostGeofenceMutation,

@@ -17,7 +17,7 @@ const OrdersPage = () => {
   const [orderTypeFilter, setOrderTypeFilter] = useState(null);
 
   const [filters, setFilters] = useState({
-    period: "this_month",
+    period: "last_30_days",
     from: null,
     to: null,
   });
@@ -30,7 +30,7 @@ const OrdersPage = () => {
     isError: isErrorSummary,
   } = useGetOrdersSummaryQuery();
 
-  const [getAllOrders, { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders }] =
+  const [getAllOrders, { data: orders, isFetching: isLoadingOrders, isError: isErrorOrders }] =
     useLazyGetAllOrdersQuery();
 
   const orderSummary = summary?.data || null;
@@ -41,15 +41,6 @@ const OrdersPage = () => {
     last_page: orders?.data?.last_page,
     per_page: orders?.data?.per_page,
     total: orders?.data?.total,
-  };
-
-  const dateMap = {
-    today: "today",
-    thisWeek: "this_week",
-    thisMonth: "this_month",
-    lastWeek: "last_week",
-    lastMonth: "last_month",
-    lastYear: "last_year",
   };
 
   const handleSearchChange = (query) => {
@@ -79,7 +70,7 @@ const OrdersPage = () => {
     };
 
     if (selection.type === "preset") {
-      newFilters.period = dateMap[selection.value] || "this_month";
+      newFilters.period = selection.value || "last_30_days";
     } else if (selection.type === "custom") {
       newFilters.from = selection.from;
       newFilters.to = selection.to;
@@ -162,15 +153,13 @@ const OrdersPage = () => {
       <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {renderStatsCards()}
       </div>
-      {ordersData?.length > 0 && (
-        <SearchAndFilters
-          handleCSVExport={handleCSVExport}
-          onDateChange={handleDateChange}
-          onSearchChange={handleSearchChange}
-          onFilterChange={handleFilterChange}
-          onOrderTypeChange={handleOrderTypeChange}
-        />
-      )}
+      <SearchAndFilters
+        handleCSVExport={handleCSVExport}
+        onDateChange={handleDateChange}
+        onSearchChange={handleSearchChange}
+        onFilterChange={handleFilterChange}
+        onOrderTypeChange={handleOrderTypeChange}
+      />
       <OrdersTable
         ref={ordersTableRef}
         orders={filteredOrders}

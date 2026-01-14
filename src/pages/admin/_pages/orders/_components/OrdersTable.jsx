@@ -88,7 +88,7 @@ const OrdersTable = forwardRef(
       {
         title: "Customer",
         dataIndex: "customer_name",
-        className: "font-medium",
+        className: ["font-medium", "capitalize"],
       },
       {
         title: "Category",
@@ -118,7 +118,7 @@ const OrdersTable = forwardRef(
                   className="h-10 w-10 rounded-full object-cover"
                 />
                 <div className="flex-1">
-                  <p className="font-medium">{firstItem?.menu_item?.name || "N/A"}</p>
+                  <p className="font-medium capitalize">{firstItem?.menu_item?.name || "N/A"}</p>
                 </div>
               </div>
 
