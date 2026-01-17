@@ -44,9 +44,7 @@ const DeliveryFee = () => {
 
   const [deliveryFee, setDeliveryFee] = useState("");
   const [originalFee, setOriginalFee] = useState("");
-  const [specialLocations, setSpecialLocations] = useState([
-    { address: "", fee: "", lat: null, lng: null },
-  ]);
+  const [specialLocations, setSpecialLocations] = useState([{ city: "", fee: "" }]);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
@@ -98,11 +96,9 @@ const DeliveryFee = () => {
       if (specialDelivery.data.length > 0) {
         const mappedLocations = specialDelivery.data.map((item) => ({
           id: item.id,
-          address: item.address || "",
+          city: item.city || "",
           fee: item.base_delivery_fee || "",
-          lat: item.latitude,
-          lng: item.longitude,
-          isEditing: false, // Add this flag
+          isEditing: false,
         }));
         setSpecialLocations(mappedLocations);
         setOriginalSpecialLocations(mappedLocations);
@@ -129,9 +125,7 @@ const DeliveryFee = () => {
     }
 
     const newLocation = {
-      address: "",
-      lat: null,
-      lng: null,
+      city: "",
       fee: "",
       isEditing: true,
     };
@@ -160,7 +154,7 @@ const DeliveryFee = () => {
 
         const location = specialLocations[index];
 
-        if (!location.address || !location.fee || !location.lat || !location.lng) {
+        if (!location.city || !location.fee) {
           toast.error("Please fill in all required fields");
           return;
         }
@@ -176,33 +170,34 @@ const DeliveryFee = () => {
 
           const payload = {};
 
-          if (location.address !== original?.address) {
-            payload.address = location.address;
-          }
-          if (location.lat !== original?.lat) {
-            payload.latitude = location.lat;
-          }
-          if (location.lng !== original?.lng) {
-            payload.longitude = location.lng;
+          if (location.city !== original?.city) {
+            payload.city = location.city;
           }
 
           const currentFee = parseFloat(location.fee);
           const originalFee = parseFloat(original?.fee);
 
           if (currentFee !== originalFee) {
-            payload.base_delivery_fee = feeValue;
+            payload.base_delivery_fee = currentFee;
           }
 
           if (Object.keys(payload).length === 0) {
             customInfoToast("No changes to save");
+
             const copy = [...specialLocations];
             copy[index].isEditing = false;
             setSpecialLocations(copy);
             setEditingIndex(null);
+
             return;
           }
 
-          await updateSpecialDeliveryFee({ id: location.id, ...payload }).unwrap();
+          await updateSpecialDeliveryFee({
+            id: location.id,
+            name: "0",
+            minimum_order_amount: 0,
+            ...payload,
+          }).unwrap();
 
           toast.success("Special delivery location saved successfully");
 
@@ -220,9 +215,7 @@ const DeliveryFee = () => {
         } else {
           const payload = {
             name: "0",
-            address: location.address,
-            latitude: location.lat,
-            longitude: location.lng,
+            city: location.city,
             base_delivery_fee: feeValue,
             minimum_order_amount: 0,
           };
@@ -449,13 +442,13 @@ const DeliveryFee = () => {
                 <div className="flex flex-col gap-3 lg:hidden">
                   <div className="w-full">
                     <AddressAutocomplete
-                      value={loc.address}
+                      value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
                         const copy = [...specialLocations];
                         copy[index] = {
                           ...copy[index],
-                          address: data.address,
+                          city: data.address,
                           lat: data.lat,
                           lng: data.lng,
                         };
@@ -535,13 +528,13 @@ const DeliveryFee = () => {
                 <div className="hidden w-full lg:flex lg:items-center lg:gap-3">
                   <div className="flex-1">
                     <AddressAutocomplete
-                      value={loc.address}
+                      value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
                         const copy = [...specialLocations];
                         copy[index] = {
                           ...copy[index],
-                          address: data.address,
+                          city: data.address,
                           lat: data.lat,
                           lng: data.lng,
                         };
@@ -558,6 +551,7 @@ const DeliveryFee = () => {
                       prefix="£"
                       placeholder="0.00"
                       size="large"
+                      className="text-black/60!"
                       style={{
                         backgroundColor: "#f5f5f5",
                         border: "none",
@@ -572,7 +566,7 @@ const DeliveryFee = () => {
                         type="button"
                         onClick={() => handleEditLocation(index)}
                         disabled={editingIndex !== null && editingIndex !== index}
-                        className="text-primary flex h-12 w-12 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
+                        className="text-primary flex h-12 w-12 cursor-pointer items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
                         title="Edit location"
                       >
                         <PencilEdit02Icon strokeWidth={2} size={24} />
@@ -610,7 +604,7 @@ const DeliveryFee = () => {
                         type="button"
                         onClick={() => removeSpecialLocation(index)}
                         disabled={editingIndex !== null}
-                        className="flex h-12 w-12 items-center justify-center rounded-md text-red-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md text-red-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                         title="Remove location"
                       >
                         <Delete01Icon size={20} />
@@ -648,6 +642,7 @@ const DeliveryFee = () => {
           danger: true,
           loading: isLoadingDeleteSpecialDelivery,
         }}
+        centered
       >
         <p>Are you sure you want to delete this special delivery location?</p>
       </Modal>

@@ -21,10 +21,21 @@ const AddressAutocomplete = ({ value, onSelect, disabled }) => {
 
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${val}&addressdetails=1&limit=5`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${val}&addressdetails=1&limit=10&featuretype=city`,
       );
       const data = await res.json();
-      setResults(data);
+      const filteredData = data.filter((item) => {
+        const type = item.type;
+        const addressType = item.address?.city || item.address?.town || item.address?.village;
+        return (
+          type === "city" ||
+          type === "town" ||
+          type === "village" ||
+          type === "administrative" ||
+          addressType
+        );
+      });
+      setResults(filteredData);
     } finally {
       setLoading(false);
     }
@@ -49,9 +60,9 @@ const AddressAutocomplete = ({ value, onSelect, disabled }) => {
     <div ref={containerRef} className="relative w-full">
       <div>
         <Input
-          value={query}
+          value={query || "Not specified"}
           disabled={disabled}
-          placeholder="Enter address"
+          placeholder="Enter city name"
           size="large"
           allowClear
           suffix={<Location01Icon size={20} className="text-gray-600" />}
@@ -73,17 +84,19 @@ const AddressAutocomplete = ({ value, onSelect, disabled }) => {
               key={item.place_id}
               type="button"
               onClick={() => {
+                const cityName =
+                  item.address?.city || item.address?.town || item.address?.village || item.name;
                 onSelect({
-                  address: item.display_name,
+                  address: cityName,
                   lat: Number(item.lat),
                   lng: Number(item.lon),
                 });
-                setQuery(item.display_name);
+                setQuery(cityName);
                 setResults([]);
               }}
               className="block w-full px-3 py-2 text-left text-sm hover:bg-gray-100"
             >
-              {item.display_name}
+              {item.address?.city || item.address?.town || item.address?.village || item.name}
             </button>
           ))}
         </div>
