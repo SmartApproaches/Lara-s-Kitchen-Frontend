@@ -1,5 +1,5 @@
 import React from "react";
-import { DashboardSquare02Icon, FireIcon, Note05Icon } from "hugeicons-react";
+import { DashboardSquare02Icon, FireIcon, Menu02Icon, Note05Icon } from "hugeicons-react";
 import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
@@ -15,6 +15,11 @@ const KitchenDashboardLayout = () => {
       icon: Note05Icon,
       label: "Orders",
       path: "/kitchen/orders",
+    },
+    {
+      icon: Menu02Icon,
+      label: "Menu List",
+      path: "/kitchen/menu-list",
     },
     {
       icon: FireIcon,

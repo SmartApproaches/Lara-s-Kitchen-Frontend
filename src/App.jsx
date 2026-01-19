@@ -57,6 +57,7 @@ const KitchenDashboardLayout = lazy(() => import("./layout/kitchen/KitchenDashbo
 const KitchenDashboard = lazy(() => import("./pages/kitchen/_pages/dashboard/Dashboard"));
 const KitchenOrders = lazy(() => import("./pages/kitchen/_pages/orders/Orders"));
 const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrders"));
+const KitchenMenuList = lazy(() => import("./pages/kitchen/_pages/menu-list/MenuList"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8";
@@ -128,6 +129,7 @@ const App = () => {
             <Route index path="kitchen/dashboard" element={<KitchenDashboard />} />
             <Route path="kitchen/orders" element={<KitchenOrders />} />
             <Route path="kitchen/special-orders" element={<KitchenSpecialOrder />} />
+            <Route path="kitchen/menu-list" element={<KitchenMenuList />} />
           </Route>
         </Route>
       </Routes>
