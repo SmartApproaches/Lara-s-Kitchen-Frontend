@@ -42,6 +42,9 @@ const AdminBusinessSuiteDeliveryGeoFencing = lazy(
 const AdminAddNewFood = lazy(
   () => import("./pages/admin/_pages/catalogue/_components/add-new-food/AddNewFood"),
 );
+const AdminBusinessSuiteAppSettings = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/AppSettings"),
+);
 
 // Cashier Dashboard
 const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashboardLayout"));
@@ -106,6 +109,10 @@ const App = () => {
             <Route
               path="admin/business-suite/geo-fence/delivery"
               element={<AdminBusinessSuiteDeliveryGeoFencing />}
+            />
+            <Route
+              path="admin/business-suite/app-settings"
+              element={<AdminBusinessSuiteAppSettings />}
             />
           </Route>
         </Route>

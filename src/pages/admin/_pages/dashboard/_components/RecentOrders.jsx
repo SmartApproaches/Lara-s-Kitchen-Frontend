@@ -71,7 +71,7 @@ const RecentOrders = ({ orders }) => {
                   color={order?.status === "completed" ? "green" : "orange"}
                   className="px-2 capitalize py-0.5 text-xs"
                 >
-                  {order?.status}
+                  {order?.status?.replaceAll("_", " ")}
                 </Tag>
               </div>
             </List.Item>

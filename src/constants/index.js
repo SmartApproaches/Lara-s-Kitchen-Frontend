@@ -69,6 +69,7 @@ import Testimonial1 from "../assets/images/Testimonial1.png";
 import Testimonial3 from "../assets/images/Testimonial3.png";
 import Testimonial2 from "../assets/images/Testimonial2.png";
 import suiteGeoFenceIcon from "../assets/icons/suiteGeoFenceIcon.svg";
+import suiteSettingsIcon from "../assets/icons/suiteSettingsIcon.png";
 
 export const ICONS = {
   descent: descentIcon,
@@ -112,6 +113,7 @@ export const ICONS = {
   swallowIcon: swallowIcon,
   grainsIcon: grainsIcon,
   suiteGeoFenceIcon: suiteGeoFenceIcon,
+  suiteSettingsIcon: suiteSettingsIcon,
 };
 
 export const IMAGES = {
