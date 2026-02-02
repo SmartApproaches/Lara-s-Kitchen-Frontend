@@ -38,3 +38,22 @@ export const stopNotificationSound = () => {
   audio.pause();
   audio.currentTime = 0;
 };
+
+let urgentAudio = null;
+
+export const playUrgentNotificationSound = () => {
+  if (!urgentAudio) {
+    urgentAudio = new Audio("/new-notification-026-380249.mp3");
+    urgentAudio.loop = true;
+  }
+  if (urgentAudio.paused) {
+    urgentAudio.currentTime = 0;
+    urgentAudio.play().catch(() => {});
+  }
+};
+
+export const stopUrgentNotificationSound = () => {
+  if (!urgentAudio) return;
+  urgentAudio.pause();
+  urgentAudio.currentTime = 0;
+};

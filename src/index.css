@@ -38,3 +38,23 @@ body {
 
   --font-primary: "Jura", sans-serif;
 }
+
+@keyframes blink-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    border-color: rgba(255, 0, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    border-color: rgba(255, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    border-color: rgba(255, 0, 0, 0);
+  }
+}
+
+.urgent-blink {
+  animation: blink-red 1.5s infinite;
+  border: 2px solid red !important;
+}

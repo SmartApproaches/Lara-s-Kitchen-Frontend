@@ -4,7 +4,14 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PendingOrderDrawer from "./PendingOrderDrawer";
 
-const PendingOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onCancel }) => {
+const PendingOrderCard = ({
+  order,
+  onMarkAsPreparing,
+  onMarkAsReady,
+  onCancel,
+  isOverdue,
+  onMute,
+}) => {
   dayjs.extend(relativeTime);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const status = order?.status?.toLowerCase();
@@ -14,6 +21,7 @@ const PendingOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onCancel })
   const orderType = order?.order_type === "DINE_IN" ? "DINE IN" : order?.order_type;
   const handleCardClick = () => {
     setSelectedOrder(order);
+    if (onMute) onMute();
   };
 
   const closeDrawer = () => {
@@ -24,7 +32,9 @@ const PendingOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onCancel })
     <>
       <div
         onClick={handleCardClick}
-        className="w-full cursor-pointer rounded-xl bg-white p-5 shadow transition-all hover:shadow-md"
+        className={`w-full cursor-pointer rounded-xl bg-white p-5 shadow transition-all hover:shadow-md ${
+          isOverdue ? "urgent-blink mb-4" : ""
+        }`}
       >
         {/* Top Row */}
         <div className="mb-4 flex items-center justify-between">
