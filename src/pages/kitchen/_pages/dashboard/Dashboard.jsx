@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AutoConversationsIcon, CheckmarkCircle01Icon } from "hugeicons-react";
 import { Alert, Pagination, Skeleton } from "antd";
 import toast from "react-hot-toast";
@@ -13,6 +13,11 @@ import {
   useUpdateOrderStatusMutation,
 } from "../../../../redux/slices/kitchen/kitchenDashboardApiSlice";
 import KitchenDashboardHeader from "./_components/KitchenDashbordHeader";
+import dayjs from "dayjs";
+import {
+  playUrgentNotificationSound,
+  stopUrgentNotificationSound,
+} from "../../../../utils/notificationAudio";
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
@@ -70,7 +75,33 @@ const Dashboard = () => {
   const [updateOrderStatus, { isLoading: isUpdatingStatus }] = useUpdateOrderStatusMutation();
 
   const pendingOrders = pendingOrdersData?.data?.data || [];
+
   const pagination = pendingOrdersData?.data;
+  const [userHasMuted, setUserHasMuted] = useState(false);
+
+  // 🔊 Dashboard urgency alert: Check for pending orders > 20 mins and play sound continuously
+  useEffect(() => {
+    if (!pendingOrders.length) {
+      stopUrgentNotificationSound();
+      return;
+    }
+
+    const hasOverdue = pendingOrders.some(
+      (order) =>
+        order.status === "pending" && dayjs().diff(dayjs(order.created_at), "minute") > 20,
+    );
+
+    if (hasOverdue) {
+      if (!userHasMuted) {
+        playUrgentNotificationSound();
+      } else {
+        stopUrgentNotificationSound();
+      }
+    } else {
+      stopUrgentNotificationSound();
+      setUserHasMuted(false); // Reset mute when no orders are overdue
+    }
+  }, [pendingOrders, userHasMuted]);
 
   const statsConfig = [
     {
@@ -197,7 +228,12 @@ const Dashboard = () => {
         disableReady={order.status !== "preparing"}
         onMarkAsPreparing={handleMarkAsPreparing}
         onMarkAsReady={handleMarkAsReady}
+
         onCancel={handleCancel}
+        isOverdue={
+          order.status === "pending" && dayjs().diff(dayjs(order.created_at), "minute") > 20
+        }
+        onMute={() => setUserHasMuted(true)}
       />
     ));
   };
