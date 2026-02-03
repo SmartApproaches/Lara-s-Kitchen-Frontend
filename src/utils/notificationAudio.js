@@ -43,7 +43,7 @@ let urgentAudio = null;
 
 export const playUrgentNotificationSound = () => {
   if (!urgentAudio) {
-    urgentAudio = new Audio("/new-notification-026-380249.mp3");
+    urgentAudio = new Audio("/mixkit-elevator-tone-2863.mp3");
     urgentAudio.loop = true;
   }
   if (urgentAudio.paused) {
