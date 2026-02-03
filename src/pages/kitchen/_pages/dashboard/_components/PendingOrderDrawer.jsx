@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Drawer, Avatar, Tag, Button, Collapse, Divider, Modal } from "antd";
-import { ArrowDown01Icon, ArrowUp01Icon, PrinterIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowDown01Icon, ArrowUp01Icon, PrinterIcon } from "@hugeicons/core-free-icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ReceiptPreview from "../../../../cashier/_pages/orders/receipt";
@@ -209,9 +210,9 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                 expandIconPosition="end"
                 expandIcon={({ isActive }) =>
                   isActive ? (
-                    <ArrowUp01Icon size={18} className="text-primary" />
+                    <HugeiconsIcon icon={ArrowUp01Icon} size={18} className="text-primary" />
                   ) : (
-                    <ArrowDown01Icon size={18} className="text-primary" />
+                    <HugeiconsIcon icon={ArrowDown01Icon} size={18} className="text-primary" />
                   )
                 }
               >
@@ -393,7 +394,7 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
               </div>
 
               <Button
-                icon={<PrinterIcon className="h-4 w-4" />}
+                icon={<HugeiconsIcon icon={PrinterIcon} className="h-4 w-4" />}
                 block
                 className="mt-5 border border-gray-300 py-2 text-sm hover:bg-gray-50"
                 onClick={() => setShowReceiptModal(true)}

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Skeleton, Alert } from "antd";
-import { AutoConversationsIcon, PlusSignIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AutoConversationsIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 
 import { ICONS } from "../../../../constants";
 import DashboardHeader from "./_components/DashboardHeader";

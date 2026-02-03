@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { List, Tag, Card } from "antd";
-import { ArrowLeft01Icon, ArrowRight01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 
 const RecentOrders = ({ orders }) => {
   const [itemIndices, setItemIndices] = useState(orders?.map(() => 0) || []);
@@ -34,10 +35,10 @@ const RecentOrders = ({ orders }) => {
             disabled={!canGoPrevious}
             className="disabled:opacity-30"
           >
-            <ArrowLeft01Icon size={18} className="text-gray-500" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} size={18} className="text-gray-500" />
           </button>
           <button onClick={handleNext} disabled={!canGoNext} className="disabled:opacity-30">
-            <ArrowRight01Icon size={18} className="text-gray-500" />
+            <HugeiconsIcon icon={ArrowRight01Icon} size={18} className="text-gray-500" />
           </button>
         </div>
       }

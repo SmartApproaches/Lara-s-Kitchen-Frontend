@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal } from "antd";
-import { Tick02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Tick02Icon } from "@hugeicons/core-free-icons";
 
 import { Button } from "../../../../../components";
 
@@ -29,7 +30,7 @@ const PermissionSuccessModal = ({ visible, onClose, userName, userRole, isEditMo
     >
       <div className="flex flex-col items-center justify-center space-y-6 md:space-y-10">
         <div className="flex h-32 w-32 items-center justify-center rounded-full bg-green-500">
-          <Tick02Icon strokeWidth={2} size={80} className="text-2xl text-white" />
+          <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} size={80} className="text-2xl text-white" />
         </div>
 
         <h2 className="mb-0 text-lg font-semibold text-[#178E28] md:text-xl lg:text-2xl">

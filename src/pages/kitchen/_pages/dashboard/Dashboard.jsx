@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { AutoConversationsIcon, CheckmarkCircle01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AutoConversationsIcon, CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import { Alert, Pagination, Skeleton } from "antd";
 import toast from "react-hot-toast";
 import StatCard from "./_components/StatCard";

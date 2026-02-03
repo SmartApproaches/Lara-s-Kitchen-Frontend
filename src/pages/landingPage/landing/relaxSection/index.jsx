@@ -1,4 +1,5 @@
-import { PlayIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PlayIcon } from "@hugeicons/core-free-icons";
 import React, { useRef, useState } from "react";
 
 const RelaxSection = () => {
@@ -43,7 +44,7 @@ const RelaxSection = () => {
                 className="absolute inset-0 flex items-center justify-center bg-black/30 transition hover:bg-black/40"
               >
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-lg">
-                  <PlayIcon size={50} className="ml-2 text-[#0C4113]" />
+                  <HugeiconsIcon icon={PlayIcon} size={50} className="ml-2 text-[#0C4113]" />
                 </div>
               </button>
             )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { DashboardSquare02Icon, FireIcon, Menu02Icon, Note05Icon } from "hugeicons-react";
+import { DashboardSquare02Icon, FireIcon, Menu02Icon, Note05Icon } from "@hugeicons/core-free-icons";
 import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";

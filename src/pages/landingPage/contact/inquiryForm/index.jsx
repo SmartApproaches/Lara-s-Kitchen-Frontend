@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Mail01Icon,
   Call02Icon,
@@ -9,7 +10,7 @@ import {
   NewTwitterIcon,
   Facebook01Icon,
   TiktokIcon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 
 const { TextArea } = Input;
 
@@ -66,15 +67,15 @@ const InquiryForm = () => {
 
           <div className="animate-fade-in-up space-y-6">
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
-              <Location01Icon className="text-lg" />
+              <HugeiconsIcon icon={Location01Icon} className="text-lg" />
               <span className="text-2xl">233 5th Ave Ext, Johnstown NY 12095</span>
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
-              <Call02Icon className="text-lg" />
+              <HugeiconsIcon icon={Call02Icon} className="text-lg" />
               <span className="text-2xl">+447454822494, +441915434197</span>
             </div>
             <div className="flex items-center space-x-3 border-b border-green-700 pb-3">
-              <Mail01Icon className="text-lg" />
+              <HugeiconsIcon icon={Mail01Icon} className="text-lg" />
               <span className="text-2xl">admin@laraskichen.org</span>
             </div>
           </div>
@@ -90,7 +91,7 @@ const InquiryForm = () => {
               rel="noopener noreferrer"
               className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
             >
-              <InstagramIcon />
+              <HugeiconsIcon icon={InstagramIcon} />
             </a>
             <a
               href="https://www.tiktok.com/@abula.spot?_t=ZN-90XtHy0CnQc&_r=1"
@@ -98,7 +99,7 @@ const InquiryForm = () => {
               rel="noopener noreferrer"
               className="rounded-full bg-white p-3 text-green-900 hover:bg-green-100"
             >
-              <TiktokIcon />
+              <HugeiconsIcon icon={TiktokIcon} />
             </a>
           </div>
         </div>

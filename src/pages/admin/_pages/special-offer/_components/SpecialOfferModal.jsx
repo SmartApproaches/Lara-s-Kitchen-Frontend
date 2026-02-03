@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Input, DatePicker, Radio, Pagination, Spin, Form } from "antd";
-import { ArrowLeft02Icon, Search01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, Search01Icon } from "@hugeicons/core-free-icons";
 import dayjs from "dayjs";
 
 import { Button } from "../../../../../components";
@@ -157,7 +158,7 @@ const SpecialOfferModal = ({
               className="absolute top-1 -left-1 flex-shrink-0 cursor-pointer text-gray-600 hover:text-gray-800 sm:relative sm:top-0 sm:left-0"
               onClick={handleBack}
             >
-              <ArrowLeft02Icon size={20} />
+              <HugeiconsIcon icon={ArrowLeft02Icon} size={20} />
             </div>
           )}
 
@@ -172,7 +173,7 @@ const SpecialOfferModal = ({
           {currentStep === 1 && !isEditMode && (
             <div className="mt-2 w-full sm:mt-0 sm:w-auto">
               <Input
-                suffix={<Search01Icon size={16} />}
+                suffix={<HugeiconsIcon icon={Search01Icon} size={16} />}
                 type="text"
                 placeholder="Search by name"
                 value={searchQuery}

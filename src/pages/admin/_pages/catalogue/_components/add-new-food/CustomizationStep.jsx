@@ -1,6 +1,7 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { Cancel01Icon, PlusSignIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Cancel01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
 
 const CustomizationsStep = ({ control, errors, watch, setValue }) => {
   const menuSizes = watch("menu_sizes") || [{ name: "large", price: "" }];
@@ -89,7 +90,7 @@ const CustomizationsStep = ({ control, errors, watch, setValue }) => {
                     onClick={() => removeMenuSize(index)}
                     className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50"
                   >
-                    <Cancel01Icon className="h-5 w-5" />
+                    <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
                   </button>
                 )}
               </div>
@@ -101,7 +102,7 @@ const CustomizationsStep = ({ control, errors, watch, setValue }) => {
             onClick={addMenuSize}
             className="flex cursor-pointer items-center gap-2 rounded-md bg-green-600 font-semibold px-4 py-2 text-white transition-colors hover:bg-green-700"
           >
-            <PlusSignIcon className="h-5 w-5" />
+            <HugeiconsIcon icon={PlusSignIcon} className="h-5 w-5" />
             Add other sizes
           </button>
         </div>

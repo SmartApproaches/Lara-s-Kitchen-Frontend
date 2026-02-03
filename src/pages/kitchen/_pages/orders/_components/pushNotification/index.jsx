@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Notification01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Notification01Icon } from "@hugeicons/core-free-icons";
 dayjs.extend(relativeTime);
 
 const NotificationCard = ({ note, onClick }) => {
@@ -31,7 +32,7 @@ const NotificationCard = ({ note, onClick }) => {
 
       <div className="notification-content">
         <div className="notification-icon-wrapper">
-          <Notification01Icon className="notification-icon" />
+          <HugeiconsIcon icon={Notification01Icon} size={48} className="text-[#326137]" />
         </div>
 
         <div className="notification-text">

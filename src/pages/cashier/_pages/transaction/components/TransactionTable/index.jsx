@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Table, Tag, Button, Skeleton, Space } from "antd";
-import { PrinterIcon, Delete02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Delete02Icon, PrinterIcon } from "@hugeicons/core-free-icons";
 import { useGetCashierTransactionsQuery } from "../../../../../../redux/slices/cashier/transactionApiSlice";
 
 const TransactionTable = () => {
@@ -150,7 +151,7 @@ const TransactionTable = () => {
       render: (_, record) => (
         <div className="flex gap-3">
           <Button
-            icon={<PrinterIcon />}
+            icon={<HugeiconsIcon icon={PrinterIcon} size={20} className="text-gray-400" />}
             type="text"
             onClick={() => {
               const newWin = window.open("", "_blank");
@@ -167,7 +168,7 @@ const TransactionTable = () => {
               newWin.print();
             }}
           />
-          <Button icon={<Delete02Icon />} danger type="text" />
+          <Button icon={<HugeiconsIcon icon={Delete02Icon} size={20} className="text-red-500" />} danger type="text" />
         </div>
       ),
     },

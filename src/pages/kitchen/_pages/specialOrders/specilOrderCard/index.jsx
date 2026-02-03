@@ -3,7 +3,8 @@ import { Avatar, Button, Tag } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PendingOrderDrawer from "../../dashboard/_components/PendingOrderDrawer";
-import { FireIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Call02Icon, FireIcon } from "@hugeicons/core-free-icons";
 
 const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady }) => {
   dayjs.extend(relativeTime);
@@ -27,7 +28,7 @@ const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady }) => {
         <div className="mb-2 flex items-center">
           <Tag color="red" className="border-none bg-red-500 px-3 py-1 text-white">
             <span className="flex items-center gap-1">
-              <FireIcon size={14} />
+              <HugeiconsIcon icon={FireIcon} size={20} color="#EF4444" />
               Special Order
             </span>
           </Tag>

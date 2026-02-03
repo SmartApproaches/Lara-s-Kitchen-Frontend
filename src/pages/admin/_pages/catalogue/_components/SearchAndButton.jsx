@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { PlusSignIcon, Search01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PlusSignIcon, Search02Icon } from "@hugeicons/core-free-icons";
 
 import { Button } from "../../../../../components";
 
@@ -9,7 +10,7 @@ const SearchAndButton = ({ searchQuery, onSearchChange }) => {
     <div className="relative flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center">
       <div className="relative w-full max-w-lg">
         <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center pl-3">
-          <Search01Icon size={19} strokeWidth={2} className="text-[#326137]" />
+            <HugeiconsIcon icon={Search02Icon} size={19} className="text-[#326137]" />
         </div>
         <input
           type="text"
@@ -24,7 +25,7 @@ const SearchAndButton = ({ searchQuery, onSearchChange }) => {
         <Button
           size="lg"
           className="w-full md:w-fit"
-          leftIcon={<PlusSignIcon strokeWidth={2} size={18} />}
+          leftIcon={<HugeiconsIcon icon={PlusSignIcon} size={18} strokeWidth={2} />}
         >
           Add new food
         </Button>

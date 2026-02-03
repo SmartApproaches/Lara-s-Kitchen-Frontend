@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dropdown, Button, DatePicker } from "antd";
-import { Calendar01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar01Icon } from "@hugeicons/core-free-icons";
 
 const DashboardHeader = ({ userName, onDateChange }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -62,7 +63,7 @@ const DashboardHeader = ({ userName, onDateChange }) => {
               color: "#1F5226",
               border: "none",
             }}
-            icon={<Calendar01Icon size={20} />}
+            icon={<HugeiconsIcon icon={Calendar01Icon} size={20} className="text-gray-600" />}
             onClick={() => setOpenCalendar((prev) => !prev)}
           />
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { ArrowLeft01Icon, Clock01Icon, Delete01Icon, Search01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, Clock01Icon, Delete01Icon, Search01Icon } from "@hugeicons/core-free-icons";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -434,7 +435,7 @@ const DineInGeoFence = () => {
                 disabled={isLoadingDelete}
                 className="flex items-center justify-center rounded-lg border border-red-300 bg-white p-2 text-red-600 hover:bg-red-50 disabled:opacity-50"
               >
-                <Delete01Icon className="h-5 w-5" />
+                <HugeiconsIcon icon={Delete01Icon} className="h-5 w-5" />
               </button>
             )}
 
@@ -466,7 +467,7 @@ const DineInGeoFence = () => {
         <div className="relative h-[105vh] w-full lg:h-full lg:flex-1">
           <div className="absolute top-4 left-1/2 z-[1000] w-[90%] max-w-md -translate-x-1/2 rounded-lg bg-white px-4 py-2 shadow-md">
             <div className="flex items-center gap-3">
-              <Search01Icon className="h-4 w-4 text-gray-400" />
+              <HugeiconsIcon icon={Search01Icon} className="h-4 w-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search location or coordinates (lat, lng)"
@@ -525,12 +526,12 @@ const DineInGeoFence = () => {
                     onClick={() => setIsCollapsed(true)}
                     className="hidden text-gray-400 hover:text-gray-600 lg:block"
                   >
-                    <ArrowLeft01Icon className="h-5 w-5" />
+                    <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
                   </button>
                 </div>
 
                 <div className="mb-4 flex items-center gap-2">
-                  <Clock01Icon className="h-4 w-4 text-green-600" />
+                  <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-green-600">Real time report</span>
                 </div>
 
@@ -592,7 +593,7 @@ const DineInGeoFence = () => {
             onClick={() => setIsCollapsed(false)}
             className="absolute top-1/2 left-4 z-[1000] hidden -translate-y-1/2 rounded-full bg-white p-2 shadow-lg lg:flex"
           >
-            <ArrowLeft01Icon className="h-5 w-5 rotate-180 text-gray-600" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5 rotate-180 text-gray-600" />
           </button>
         )}
       </div>

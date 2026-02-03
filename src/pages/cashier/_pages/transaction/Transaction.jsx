@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import TransStatsCard from "./components/transStats";
 import { ICONS } from "../../../../constants";
 import { Dropdown, Button, DatePicker, Skeleton, Alert } from "antd";
-import { Calendar01Icon, AutoConversationsIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar01Icon, AutoConversationsIcon } from "@hugeicons/core-free-icons";
 import TransactionTable from "./components/TransactionTable";
 import { useGetTransactionSummaryQuery } from "../../../../redux/slices/cashier/transactionApiSlice";
 
@@ -134,7 +135,7 @@ const Transaction = () => {
                 color: "#1F5226",
                 border: "none",
               }}
-              icon={<Calendar01Icon size={20} />}
+              icon={<HugeiconsIcon icon={Calendar01Icon} size={20} />}
               onClick={() => setOpenCalendar((prev) => !prev)}
             />
             {openCalendar && (

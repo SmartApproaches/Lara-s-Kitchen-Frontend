@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Tag, Dropdown } from "antd";
-import { Search01Icon, FilterIcon, Cancel01Icon, Upload04Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, FilterIcon, Cancel01Icon, Upload04Icon } from "@hugeicons/core-free-icons";
 
 import { Button as CustomButton } from "../../../../../components";
 
@@ -36,7 +37,7 @@ const CustomersHeader = ({ handleCSVExport, searchQuery, onSearchChange, onFilte
           size="lg"
           type="primary"
           onClick={handleCSVExport}
-          leftIcon={<Upload04Icon strokeWidth={2} size={18} />}
+          leftIcon={<HugeiconsIcon icon={Upload04Icon} strokeWidth={2} size={18} />}
         >
           Export
         </CustomButton>
@@ -45,7 +46,7 @@ const CustomersHeader = ({ handleCSVExport, searchQuery, onSearchChange, onFilte
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="relative w-full max-w-lg">
           <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center pl-3">
-            <Search01Icon size={19} strokeWidth={2} className="text-[#326137]" />
+            <HugeiconsIcon icon={Search01Icon} size={19} strokeWidth={2} className="text-[#326137]" />
           </div>
           <input
             type="text"
@@ -72,7 +73,7 @@ const CustomersHeader = ({ handleCSVExport, searchQuery, onSearchChange, onFilte
               onClose={handleClearFilter}
               closeIcon={
                 <span className="ml-2 cursor-pointer rounded-full bg-gray-200 p-1">
-                  <Cancel01Icon size={14} />
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
                 </span>
               }
             >
@@ -81,7 +82,7 @@ const CustomersHeader = ({ handleCSVExport, searchQuery, onSearchChange, onFilte
           )}
           <Dropdown menu={{ items: filterMenuItems, onClick: handleFilterSelect }}>
             <Button
-              icon={<FilterIcon size={20} />}
+              icon={<HugeiconsIcon icon={FilterIcon} size={20} />}
               className="text-primary border-none !bg-white !text-base"
             >
               Filter

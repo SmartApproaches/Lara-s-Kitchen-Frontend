@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Skeleton, Alert, Checkbox, Modal, Tag } from "antd";
-import { Delete01Icon, Edit02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Delete01Icon, Edit02Icon } from "@hugeicons/core-free-icons";
 import { IMAGES } from "../../../../../constants";
 
 const PermissionsTable = ({
@@ -185,7 +186,7 @@ const PermissionsTable = ({
             title="Edit permission"
             type="button"
           >
-            <Edit02Icon size={20} />
+            <HugeiconsIcon icon={Edit02Icon} size={20} />
           </button>
           <button
             className="cursor-pointer transition-colors hover:text-red-500"
@@ -196,7 +197,7 @@ const PermissionsTable = ({
             title="Delete permission"
             type="button"
           >
-            <Delete01Icon size={20} />
+            <HugeiconsIcon icon={Delete01Icon} size={20} />
           </button>
         </div>
       ),
