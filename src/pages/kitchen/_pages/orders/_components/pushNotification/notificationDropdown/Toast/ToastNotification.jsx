@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Notification01Icon, Cancel01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Notification01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 const ToastNotification = ({ notification, onClose, onDismiss }) => {
   const [isExiting, setIsExiting] = useState(false);
@@ -43,7 +44,7 @@ const ToastNotification = ({ notification, onClose, onDismiss }) => {
 
       <div className="toast-content">
         <div className="toast-icon-wrapper">
-          <Notification01Icon className="toast-icon" />
+          <HugeiconsIcon icon={Notification01Icon} className="toast-icon" />
         </div>
 
         <div className="toast-text">
@@ -66,7 +67,7 @@ const ToastNotification = ({ notification, onClose, onDismiss }) => {
           handleDismiss();
         }}
       >
-        <Cancel01Icon size={16} />
+        <HugeiconsIcon icon={Cancel01Icon} size={16} />
       </button>
     </div>
   );

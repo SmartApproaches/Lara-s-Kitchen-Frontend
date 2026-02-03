@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Table, Skeleton, Alert, Image, Checkbox, Modal, Dropdown } from "antd";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   ArrowDown01Icon,
   ArrowLeft01Icon,
   ArrowRight01Icon,
   Delete01Icon,
   Edit02Icon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 import { useNavigate } from "react-router-dom";
 import toast, { LoaderIcon } from "react-hot-toast";
 
@@ -272,7 +273,7 @@ const CatalogueTable = ({
                 >
                   {status || "Unknown"}
                 </p>
-                <ArrowDown01Icon className="text-xs text-gray-400" size={16} />
+                <HugeiconsIcon icon={ArrowDown01Icon} className="text-xs text-gray-400" size={16} />
               </>
             )}
           </div>
@@ -297,7 +298,7 @@ const CatalogueTable = ({
             title="Edit item"
             type="button"
           >
-            <Edit02Icon size={20} />
+            <HugeiconsIcon icon={Edit02Icon} size={20} />
           </button>
           <button
             className="cursor-pointer transition-colors hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
@@ -309,7 +310,7 @@ const CatalogueTable = ({
             type="button"
             disabled={isDeleting}
           >
-            <Delete01Icon size={20} />
+            <HugeiconsIcon icon={Delete01Icon} size={20} />
           </button>
         </div>
       ),
@@ -376,7 +377,7 @@ const CatalogueTable = ({
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
-            <ArrowLeft01Icon strokeWidth={2} size={20} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} size={20} />
           </button>
           <span className="text-base">
             Page {currentPage} of {pagination?.lastPage || 1}
@@ -387,7 +388,7 @@ const CatalogueTable = ({
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
-            <ArrowRight01Icon strokeWidth={2} size={20} />
+            <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} size={20} />
           </button>
         </div>
       )}

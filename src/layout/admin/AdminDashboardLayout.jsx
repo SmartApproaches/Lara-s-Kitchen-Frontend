@@ -9,7 +9,7 @@ import {
   CookBookIcon,
   Note05Icon,
   TravelBagIcon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";
 import { getCategories, getSubCategories } from "../../redux/slices/super-admin/categoriesSlice";

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Card, DatePicker, Dropdown } from "antd";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Calendar01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar01Icon } from "@hugeicons/core-free-icons";
 
 const { RangePicker } = DatePicker;
 
@@ -62,7 +63,7 @@ const RevenueChart = ({ onDateChange, data }) => {
             <Button
               className="!border-none !bg-[#F0EDED] !text-[#1F5226]"
               size="small"
-              icon={<Calendar01Icon size={18} />}
+              icon={<HugeiconsIcon icon={Calendar01Icon} size={18} />}
               onClick={() => setOpenCalendar((prev) => !prev)}
             />
 

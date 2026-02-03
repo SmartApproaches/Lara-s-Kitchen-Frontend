@@ -2,7 +2,8 @@
 import { ICONS, IMAGES } from "../../../../../constants";
 import React, { useState } from "react";
 import { Card } from "antd";
-import { PlusSignIcon, MinusSignIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { MinusSignIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import OrderSidePanel from "../order-sidepanel";
 const categories = [
   { key: "all", label: "All", icon: ICONS.allorderIcon, count: 150 },
@@ -115,14 +116,19 @@ const EditOrder = () => {
               <span className="text-primary font-bold">£{item.price.toFixed(2)}</span>
 
               <div className="bg-primary flex items-center justify-center rounded-full px-2 py-1">
-                <MinusSignIcon
+                <HugeiconsIcon
+                  icon={MinusSignIcon}
                   className="h-3 w-3 text-white"
                   onClick={() => removeFromCart(item.id)}
                 />
                 <span className="bg-accent text-primary mx-2 rounded-md px-2 text-xs font-bold select-none">
                   {cart[item.id] || 0}
                 </span>
-                <PlusSignIcon className="h-3 w-3 text-white" onClick={() => addToCart(item.id)} />
+                <HugeiconsIcon
+                  icon={PlusSignIcon}
+                  className="h-3 w-3 text-white"
+                  onClick={() => addToCart(item.id)}
+                />
               </div>
             </div>
           </Card>

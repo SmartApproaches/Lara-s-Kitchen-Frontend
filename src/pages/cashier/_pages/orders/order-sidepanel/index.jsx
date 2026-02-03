@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { ArrowUp01Icon, PrinterIcon, Delete02Icon, PencilEdit02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUp01Icon, PrinterIcon, Delete02Icon, PencilEdit02Icon, Call02Icon, InformationDiamondIcon } from "@hugeicons/core-free-icons";
 import { Drawer, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import ReceiptPreview from "../receipt";
@@ -66,11 +67,11 @@ const OrderSidePanel = ({ order, onClose }) => {
             </div>
             <div className="flex gap-2">
               <Button
-                icon={<PencilEdit02Icon className="h-4 w-4" />}
+                icon={<HugeiconsIcon icon={Call02Icon} size={16} />}
                 onClick={handleEdit}
                 size="small"
               />
-              <Button danger icon={<Delete02Icon className="h-4 w-4" />} size="small" />
+              <Button danger icon={<HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />} size="small" />
             </div>
           </div>
         </div>
@@ -82,7 +83,8 @@ const OrderSidePanel = ({ order, onClose }) => {
             className="flex w-full items-center justify-between rounded-md border bg-gray-50 px-3 py-2 text-sm font-medium"
           >
             <span>Customer Information</span>
-            <ArrowUp01Icon
+            <HugeiconsIcon
+              icon={ArrowUp01Icon}
               className={`h-4 w-4 transition-transform ${
                 isCustomerInfoExpanded ? "" : "rotate-180"
               }`}
@@ -176,7 +178,7 @@ const OrderSidePanel = ({ order, onClose }) => {
         {/* PRINT RECEIPT BUTTON */}
         <div className="mt-6 px-4">
           <Button
-            icon={<PrinterIcon className="h-4 w-4" />}
+            icon={<HugeiconsIcon icon={InformationDiamondIcon} size={20} color="#EF4444" />}
             block
             className="border border-gray-300 py-2 text-sm hover:bg-gray-50"
             onClick={() => setShowReceiptModal(true)}

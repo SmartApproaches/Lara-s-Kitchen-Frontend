@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Input, Spin, Modal } from "antd";
-import { ArrowLeft02Icon, Delete01Icon, PencilEdit02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, Delete01Icon, PencilEdit02Icon } from "@hugeicons/core-free-icons";
 
 import {
   useDeleteSpecialDeliveryFeeMutation,
@@ -354,7 +355,7 @@ const DeliveryFee = () => {
                 onClick={() => navigate(-1)}
                 className="mt-1 shrink-0 text-gray-600 hover:text-gray-900 sm:mt-0"
               >
-                <ArrowLeft02Icon size={20} className="sm:h-6 sm:w-6" />
+                <HugeiconsIcon icon={ArrowLeft02Icon} size={20} className="sm:h-6 sm:w-6" />
               </button>
               <div>
                 <h1 className="text-lg font-bold text-gray-900 sm:text-xl md:text-2xl">

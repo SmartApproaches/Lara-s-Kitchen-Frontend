@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 
 import { useGetGeofenceQuery } from "../../../../../redux/slices/super-admin/businessSuiteApiSlice";
 
@@ -109,7 +110,8 @@ const GeoFence = () => {
       <div className="min-h-screen bg-gray-50">
         <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-x-3">
-            <ArrowLeft01Icon
+            <HugeiconsIcon
+              icon={ArrowLeft01Icon}
               onClick={() => navigate(-1)}
               className="h-6 w-6 cursor-pointer text-gray-600 hover:text-gray-900"
             />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, Dropdown, Menu, Skeleton } from "antd";
-import { Calendar01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar01Icon } from "@hugeicons/core-free-icons";
 import { ICONS } from "../../../../../../constants";
 import { useGetCashierMenuSummaryQuery } from "../../../../../../redux/slices/cashier/menuApiSlice";
 
@@ -97,7 +98,7 @@ const MenuStats = ({ onDateChange }) => {
                 className="flex cursor-pointer items-center space-x-1 rounded-md bg-green-50 px-2 py-1 text-xs text-green-600"
               >
                 <span>{selectedLabels[idx]}</span>
-                <Calendar01Icon className="h-4 w-4" />
+                <HugeiconsIcon icon={Calendar01Icon} className="h-4 w-4" />
               </div>
             </Dropdown>
           </div>

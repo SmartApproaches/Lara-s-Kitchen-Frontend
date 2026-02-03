@@ -1,4 +1,5 @@
-import { Alert02Icon, InformationDiamondIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Alert01Icon, InformationDiamondIcon } from "@hugeicons/core-free-icons";
 import toast from "react-hot-toast";
 
 export const customWarningToast = (message) => {
@@ -9,7 +10,7 @@ export const customWarningToast = (message) => {
       fontWeight: "bold",
     },
     duration: 6000,
-    icon: <Alert02Icon size={16} color="#fff" strokeWidth={2.4} />,
+    icon: <HugeiconsIcon icon={Alert01Icon} size={16} color="#fff" strokeWidth={2.4} />,
   });
 };
 
@@ -21,6 +22,8 @@ export const customInfoToast = (message) => {
       fontWeight: "bold",
     },
     duration: 6000,
-    icon: <InformationDiamondIcon size={16} color="#222222" strokeWidth={2.4} />,
+    icon: (
+      <HugeiconsIcon icon={InformationDiamondIcon} size={16} color="#222222" strokeWidth={2.4} />
+    ),
   });
 };

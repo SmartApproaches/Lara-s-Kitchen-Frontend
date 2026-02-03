@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { ArrowLeft02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { Button, Row, Col, Typography, Spin } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -455,7 +456,7 @@ const AddNewFood = () => {
           <div className="h-full p-6">
             <div className="mb-6 flex items-center justify-between">
               <Link to="/admin/catalogue" className="flex items-center gap-4">
-                <ArrowLeft02Icon size={25} className="text-gray-600" />
+                <HugeiconsIcon icon={ArrowLeft02Icon} size={25} className="text-gray-600" />
                 <h2 className="text-lg font-semibold md:text-xl lg:text-2xl">{pageTitle}</h2>
               </Link>
               <div className="flex gap-3">

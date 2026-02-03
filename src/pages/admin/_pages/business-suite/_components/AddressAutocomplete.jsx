@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "antd";
-import { Location01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Location01Icon } from "@hugeicons/core-free-icons";
 
 const AddressAutocomplete = ({ value, onSelect, disabled }) => {
   const [query, setQuery] = useState(value || "");
@@ -65,7 +66,7 @@ const AddressAutocomplete = ({ value, onSelect, disabled }) => {
           placeholder="Enter city name"
           size="large"
           allowClear
-          suffix={<Location01Icon size={20} className="text-gray-600" />}
+          suffix={<HugeiconsIcon icon={Location01Icon} size={20} className="text-gray-600" />}
           onChange={(e) => search(e.target.value)}
           className="text-black/60!"
           style={{

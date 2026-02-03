@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "antd";
-import { PrinterIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PrinterIcon } from "@hugeicons/core-free-icons";
 import { IMAGES } from "../../../../../constants";
 import { formatPhone } from "../../../../../utils/formatPhone";
 import { formattedDate } from "../../../../../utils/formateDate";
@@ -149,7 +150,7 @@ const ReceiptPreview = ({ order }) => {
       <div className="mt-5">
         <Button
           type="primary"
-          icon={<PrinterIcon className="h-4 w-4" />}
+          icon={<HugeiconsIcon icon={PrinterIcon} className="h-4 w-4" />}
           className="h-10 w-full rounded-lg !bg-[#164D2F] text-white hover:bg-[#1c5e3a]"
           onClick={handlePrintReceipt}
         >

@@ -10,7 +10,8 @@ import OrdersHeader from "./_components/OrdersHeader";
 import PendingOrderCard from "../dashboard/_components/PendingOrderCard";
 import { ICONS } from "../../../../constants";
 import toast from "react-hot-toast";
-import { AutoConversationsIcon, CheckmarkCircle01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AutoConversationsIcon, CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
 import dayjs from "dayjs";
 import {
   playUrgentNotificationSound,

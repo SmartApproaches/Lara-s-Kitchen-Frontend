@@ -1,6 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from "react";
 import { Table, Tag, Skeleton, Alert } from "antd";
-import { ArrowLeft01Icon, ArrowRight01Icon, Download01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon, Download01Icon } from "@hugeicons/core-free-icons";
 
 import { useCSVExport } from "../../../../../hooks/useCSVExport";
 import { IMAGES } from "../../../../../constants";
@@ -256,7 +257,7 @@ const OrdersTable = forwardRef(
           <div className="mb-4 flex gap-3">
             <Button
               variant="primary"
-              icon={<Download01Icon size={16} />}
+              icon={<HugeiconsIcon icon={Download01Icon} size={16} />}
               onClick={handleExportSelected}
               disabled={selectedRowKeys.length === 0}
             >
@@ -296,7 +297,7 @@ const OrdersTable = forwardRef(
               className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
               type="button"
             >
-              <ArrowLeft01Icon strokeWidth={2} size={20} />
+              <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} size={20} />
             </button>
             <span className="text-base">
               Page {currentPage} of {pagination?.last_page || 1}
@@ -307,7 +308,7 @@ const OrdersTable = forwardRef(
               className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
               type="button"
             >
-              <ArrowRight01Icon strokeWidth={2} size={20} />
+              <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} size={20} />
             </button>
           </div>
         )}

@@ -1,19 +1,20 @@
 import React, { useMemo, useState } from "react";
 import { Button, Card, Typography, Input, Image } from "antd";
 import { MinusOutlined, PlusOutlined, SearchOutlined, MenuOutlined } from "@ant-design/icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowLeft02Icon,
-  BatteryLowIcon,
-  FavouriteIcon,
-  GoogleDocIcon,
-  Home07Icon,
-  Notification01Icon,
-  PlusSignIcon,
-  Pot01Icon,
-  PreferenceHorizontalIcon,
-  SignalFull01Icon,
-  StarIcon,
-} from "hugeicons-react";
+  ArrowLeft02,
+  BatteryLow,
+  Favourite,
+  GoogleDoc,
+  Home07,
+  Notification01,
+  PlusSign,
+  Pot01,
+  PreferenceHorizontal,
+  SignalFull01,
+  Star,
+} from "@hugeicons/core-free-icons";
 
 import { IMAGES } from "../../../../../../constants";
 
@@ -56,8 +57,8 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                 {displayHour}:{minutes} {ampm}
               </span>
               <div className="flex items-center gap-1">
-                <SignalFull01Icon size={14} className="text-xs" />
-                <BatteryLowIcon />
+                <HugeiconsIcon icon={SignalFull01} size={14} className="text-xs" />
+                <HugeiconsIcon icon={BatteryLow} />
               </div>
             </div>
 
@@ -78,7 +79,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                 <Input
                   placeholder="Search food"
                   prefix={<SearchOutlined className="text-xs sm:text-sm" />}
-                  suffix={<PreferenceHorizontalIcon size={16} />}
+                  suffix={<HugeiconsIcon icon={PreferenceHorizontal} size={16} />}
                   className="!bg-accent rounded-lg border-0 !p-1.5 text-xs sm:!p-2 sm:text-sm"
                 />
               </div>
@@ -92,7 +93,8 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <Card className="overflow-hidden rounded-lg !border-2 !border-[#0CA921] !bg-[#F7F7F7]">
                   <div className="relative mb-1 aspect-square rounded-lg sm:mb-2">
-                    <FavouriteIcon
+                    <HugeiconsIcon
+                      icon={Favourite}
                       fill="#FF383C"
                       size={14}
                       className="absolute -top-2 -right-2 text-red-400 sm:-top-3 sm:-right-3"
@@ -108,7 +110,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                       <span className="text-xs text-gray-500 sm:text-sm">20 mins</span>
                     </div>
                     <div className="my-1 flex items-center gap-1">
-                      <StarIcon size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon icon={Star} size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
                       <span className="text-xs sm:text-sm">4.5</span>
                     </div>
                   </div>
@@ -117,7 +119,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                       £12.00
                     </p>
                     <button className="bg-primary absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-tl-[6px] rounded-br-[6px] border-0 text-white sm:h-6 sm:w-6">
-                      <PlusSignIcon color="#fff" size={12} className="text-xs" />
+                      <HugeiconsIcon icon={PlusSign} color="#fff" size={12} className="text-xs" />
                     </button>
                   </div>
                 </Card>
@@ -138,7 +140,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                       <span className="text-xs sm:text-sm">Non - Alcoholic</span>
                     </div>
                     <div className="my-1 flex items-center gap-1">
-                      <StarIcon size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon icon={Star} size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
                       <span className="text-xs sm:text-sm">4.5</span>
                     </div>
                   </div>
@@ -147,7 +149,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                       £12.00
                     </p>
                     <button className="bg-primary absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-tl-[6px] rounded-br-[6px] border-0 text-white sm:h-6 sm:w-6">
-                      <PlusSignIcon color="#fff" size={12} className="text-xs" />
+                      <HugeiconsIcon icon={PlusSign} color="#fff" size={12} className="text-xs" />
                     </button>
                   </div>
                 </Card>
@@ -181,7 +183,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                       £12.00
                     </p>
                     <button className="bg-primary absolute right-0 bottom-0 flex h-5 w-5 items-center justify-center rounded-tl-[6px] rounded-br-[6px] border-0 text-white sm:h-6 sm:w-6">
-                      <PlusSignIcon color="#fff" size={12} className="text-xs" />
+                      <HugeiconsIcon icon={PlusSign} color="#fff" size={12} className="text-xs" />
                     </button>
                   </div>
                 </Card>
@@ -217,17 +219,17 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
             <div className="bg-white p-2">
               <div className="flex justify-around">
                 <div className="flex flex-col items-center text-center text-green-600">
-                  <Home07Icon fill="#1F5226" color="#ffffff" size={24} />
+                  <HugeiconsIcon icon={Home07} fill="#1F5226" color="#ffffff" size={24} />
                   <Text className="text-xs">Home</Text>
                 </div>
                 <div className="flex flex-col items-end text-center text-white opacity-90">
-                  <GoogleDocIcon size={24} opacity={0.5} fill="#1F5226" />
+                  <HugeiconsIcon icon={GoogleDoc} size={24} opacity={0.5} fill="#1F5226" />
                 </div>
                 <div className="flex flex-col items-end text-center text-white opacity-90">
-                  <FavouriteIcon size={24} opacity={0.5} fill="#1F5226" />
+                  <HugeiconsIcon icon={Favourite} size={24} opacity={0.5} fill="#1F5226" />
                 </div>
                 <div className="flex flex-col items-end text-center text-white opacity-90">
-                  <Notification01Icon size={24} opacity={0.5} fill="#1F5226" />
+                  <HugeiconsIcon icon={Notification01} size={24} opacity={0.5} fill="#1F5226" />
                 </div>
               </div>
             </div>
@@ -254,15 +256,16 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                   {displayHour}:{minutes} {ampm}
                 </span>
                 <div className="flex items-center gap-1">
-                  <SignalFull01Icon className="text-sm" />
-                  <BatteryLowIcon className="text-sm" />
+                  <HugeiconsIcon icon={SignalFull01} className="text-sm" />
+                  <HugeiconsIcon icon={BatteryLow} className="text-sm" />
                 </div>
               </div>
 
               <div className="mb-4 flex items-center justify-between sm:mb-6">
-                <ArrowLeft02Icon className="text-sm text-white sm:text-base" />
+                <HugeiconsIcon icon={ArrowLeft02} className="text-sm text-white sm:text-base" />
                 <h3 className="text-sm font-medium text-white sm:text-base">Food Details</h3>
-                <FavouriteIcon
+                <HugeiconsIcon
+                  icon={Favourite}
                   className={`cursor-pointer text-sm sm:text-base ${
                     isFavorited ? "text-red-400" : "text-white"
                   }`}
@@ -293,7 +296,7 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
 
               <div className="my-3 flex items-center justify-between gap-2 text-sm font-semibold text-gray-500 sm:gap-4">
                 <div className="flex items-center gap-1">
-                  <StarIcon size={16} fill="#FFC107" color="#FFC107" className="text-xs" />
+                  <HugeiconsIcon icon={Star} size={16} fill="#FFC107" color="#FFC107" className="text-xs" />
                   <span>4.5</span>
                 </div>
                 <span>🔥 {formData?.calorieSize || 100} kcal</span>

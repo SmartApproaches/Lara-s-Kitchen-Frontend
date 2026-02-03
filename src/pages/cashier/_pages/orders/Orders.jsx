@@ -9,7 +9,8 @@ import {
   useGetCashierOrdersQuery,
   useGetCashierOrderSummaryQuery,
 } from "../../../../redux/slices/cashier/ordersApiSlice";
-import { AutoConversationsIcon, PlusSignIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, Tag01Icon, AutoConversationsIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { useNavigate } from "react-router-dom";
 
 const STATUS_FILTERS = [
@@ -187,7 +188,7 @@ const Orders = () => {
           className="bg-primary flex cursor-pointer items-center gap-1 rounded-md px-5 py-2 text-white"
           onClick={() => navigate("/cashier/create-orders")}
         >
-          <PlusSignIcon className="h-5 w-5" />
+          <HugeiconsIcon icon={PlusSignIcon} size={14} />
           <span className="font-semibold">Add New Order</span>
         </div>
       </div>
