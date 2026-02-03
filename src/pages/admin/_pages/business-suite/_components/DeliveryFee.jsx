@@ -14,7 +14,7 @@ import {
   useUpdateSpecialDeliveryFeeMutation,
 } from "../../../../../redux/slices/super-admin/businessSuiteApiSlice";
 import { customInfoToast } from "../../../../../utils/toast";
-import AddressAutocomplete from "./AddressAutocomplete";
+import CityInput from "./CityInput";
 
 const DeliveryFee = () => {
   const navigate = useNavigate();
@@ -442,7 +442,7 @@ const DeliveryFee = () => {
               <div key={index} className="mb-6">
                 <div className="flex flex-col gap-3 lg:hidden">
                   <div className="w-full">
-                    <AddressAutocomplete
+                    <CityInput
                       value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
@@ -450,8 +450,6 @@ const DeliveryFee = () => {
                         copy[index] = {
                           ...copy[index],
                           city: data.address,
-                          lat: data.lat,
-                          lng: data.lng,
                         };
                         setSpecialLocations(copy);
                       }}
@@ -528,7 +526,7 @@ const DeliveryFee = () => {
 
                 <div className="hidden w-full lg:flex lg:items-center lg:gap-3">
                   <div className="flex-1">
-                    <AddressAutocomplete
+                    <CityInput
                       value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
@@ -536,8 +534,6 @@ const DeliveryFee = () => {
                         copy[index] = {
                           ...copy[index],
                           city: data.address,
-                          lat: data.lat,
-                          lng: data.lng,
                         };
                         setSpecialLocations(copy);
                       }}
