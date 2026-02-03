@@ -148,6 +148,12 @@ const BusinessSuite = () => {
       icon: ICONS.suiteGeoFenceIcon,
       link: "/admin/business-suite/geo-fence",
     },
+    {
+      description: "App Settings",
+      value: null,
+      icon: ICONS.suiteSettingsIcon,
+      link: "/admin/business-suite/app-settings",
+    },
   ];
 
   const renderSuiteCards = () => {
@@ -194,7 +200,7 @@ const BusinessSuite = () => {
       <Link
         to={card?.link}
         key={index}
-        className="flex flex-col items-center justify-center rounded-xl bg-white p-3 shadow-md transition-transform hover:scale-105 hover:shadow-lg sm:p-4 md:m-4"
+        className="flex flex-col items-center justify-center rounded-xl bg-white p-3 shadow-md sm:py-10 transition-transform hover:scale-105 hover:shadow-lg sm:p-4 md:m-4"
       >
         <img src={card.icon} alt={card.description} className="mb-2 h-10 w-10 sm:h-12 sm:w-12" />
         <p className="px-2 text-center text-sm font-medium sm:text-base md:text-lg lg:text-xl">
@@ -226,9 +232,9 @@ const BusinessSuite = () => {
               </h2>
             </div>
           </div>
-        ) : (
+        ) : index === 0 ? (
           renderBusinessHours()
-        )}
+        ) : null}
       </Link>
     ));
   };
