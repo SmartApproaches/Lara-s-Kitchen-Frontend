@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from "react";
 import { Button, Image, Modal, Slider } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { CheckmarkCircle02 } from "@hugeicons/core-free-icons";
+import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
 import Cropper from "react-easy-crop";
 
 import { getCroppedImg } from "../../../../../../utils/cropImage";
@@ -194,7 +194,12 @@ const ImageUploadStep = ({ uploadedImage, setUploadedImage }) => {
                 />
                 <div className="flex items-center justify-center gap-1 text-sm md:text-base">
                   <p className="max-w-[150px] truncate text-left md:max-w-[300px]">{imageName}</p>
-                  <HugeiconsIcon icon={CheckmarkCircle02} fill="#0CA921" color="#fff" className="ml-2 shrink-0" />
+                  <HugeiconsIcon
+                    icon={CheckmarkCircle02Icon}
+                    fill="#0CA921"
+                    color="#fff"
+                    className="ml-2 shrink-0"
+                  />
                 </div>
               </div>
               <Button type="text" danger onClick={handleRemoveImage} className="shrink-0">
