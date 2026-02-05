@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, Tag, Drawer, Skeleton, Pagination } from "antd";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Mail01Icon,
   Call02Icon,
@@ -8,7 +9,7 @@ import {
   ArrowRight01Icon,
   UserIcon,
   Dish01Icon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 
 import { useGetCustomerOrdersQuery } from "../../../../../redux/slices/super-admin/customersApiSlice";
 
@@ -79,7 +80,7 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
               size={100}
               style={{ borderRadius: "13px" }}
               src={customer?.profile_picture}
-              icon={<UserIcon size={40} />}
+              icon={<HugeiconsIcon icon={UserIcon} size={40} />}
               className="mx-auto mb-4"
             />
             <h2 className="mb-4 text-xl font-semibold text-gray-800 md:text-2xl">
@@ -89,14 +90,14 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
             <div className="space-y-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
-                  <Mail01Icon size={14} className="text-green-600" />
+                  <HugeiconsIcon icon={Mail01Icon} size={14} className="text-green-600" />
                 </div>
                 <span className="text-base text-green-600">{customer?.email || "N/A"}</span>
               </div>
 
               <div className="flex items-center gap-3">
                 <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
-                  <Call02Icon size={14} className="text-green-600" />
+                  <HugeiconsIcon icon={Call02Icon} size={14} className="text-green-600" />
                 </div>
                 <span className="text-base text-green-600">{customer?.phone || "N/A"}</span>
               </div>
@@ -107,7 +108,7 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
             <h3 className="mb-3 text-base font-medium text-gray-500">Delivery Address</h3>
             <div className="flex items-start gap-3">
               <div className="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center">
-                <Location01Icon size={16} className="text-gray-600" />
+                <HugeiconsIcon icon={Location01Icon} size={16} className="text-gray-600" />
               </div>
               <div className="text-base leading-relaxed text-gray-700">
                 {typeof customer?.address === "string"
@@ -123,7 +124,7 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
               <Link to="/admin/orders" className="cursor-pointer">
                 <button className="flex cursor-pointer items-center gap-1 text-[15px] font-medium text-gray-500 transition-colors hover:text-gray-700">
                   See all
-                  <ArrowRight01Icon size={14} />
+                  <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
                 </button>
               </Link>
             </div>
@@ -143,7 +144,7 @@ const CustomerProfileDrawer = ({ customer, onClose }) => {
                       <Avatar
                         size={36}
                         src={order?.image}
-                        icon={<Dish01Icon size={18} />}
+                        icon={<HugeiconsIcon icon={Dish01Icon} size={18} />}
                         className="flex-shrink-0"
                       />
 

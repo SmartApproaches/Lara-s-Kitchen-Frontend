@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Card, DatePicker, Dropdown } from "antd";
-import { Calendar01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar01Icon } from "@hugeicons/core-free-icons";
 const TransStatsCard = ({ icon, title, value, footer, onDateChange, footerIcon }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("This Year");
@@ -98,7 +99,7 @@ const TransStatsCard = ({ icon, title, value, footer, onDateChange, footerIcon }
                 <Button
                   className="flex !h-7 !w-7 items-center justify-center !border-none !bg-[#D6FADB] !p-1 !text-[#1F5226]"
                   size="small"
-                  icon={<Calendar01Icon size={14} />} // smaller icon
+                  icon={<HugeiconsIcon icon={Calendar01Icon} className="h-4 w-4" />} // smaller icon
                   onClick={() => setOpenCalendar((prev) => !prev)}
                 />
 
@@ -157,11 +158,13 @@ const TransStatsCard = ({ icon, title, value, footer, onDateChange, footerIcon }
                           : "bg-[#D6FADB]" // default
                 }`}
               >
-                {footerIcon &&
-                  React.createElement(footerIcon, {
-                    size: 12,
-                    className: "text-green-600",
-                  })}
+                {footerIcon && (
+                  <HugeiconsIcon
+                    icon={footerIcon}
+                    size={12}
+                    className="text-green-600"
+                  />
+                )}
                 <p className={`text-xs sm:text-sm ${style.footerText}`}>{footer}</p>
               </div>
             )}

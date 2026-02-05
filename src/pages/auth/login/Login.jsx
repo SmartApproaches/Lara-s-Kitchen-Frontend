@@ -5,7 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Checkbox } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ViewIcon, ViewOffSlashIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ViewIcon, ViewOffSlashIcon } from "@hugeicons/core-free-icons";
 
 import WomanEatingImage from "../../../assets/images/woman-eating.svg";
 import LoginBgImage from "../../../assets/images/login-bg.svg";
@@ -153,7 +154,11 @@ const LoginForm = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  {showPassword ? <ViewOffSlashIcon size={20} /> : <ViewIcon size={20} />}
+                  {showPassword ? (
+                    <HugeiconsIcon icon={ViewOffSlashIcon} size={20} />
+                  ) : (
+                    <HugeiconsIcon icon={ViewIcon} size={20} />
+                  )}
                 </button>
               </div>
               {errors.password && (

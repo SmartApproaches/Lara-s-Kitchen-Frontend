@@ -1,6 +1,6 @@
 import React from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Menu01Icon,
   Mail01Icon,
   Call02Icon,
   Location01Icon,
@@ -10,7 +10,7 @@ import {
   Facebook01Icon,
   GoogleIcon,
   TiktokIcon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 
 const Footer = () => {
   return (
@@ -55,7 +55,7 @@ const Footer = () => {
             <h3 className="mb-4 text-lg font-semibold text-gray-800">Get In Touch</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-center text-gray-600 lg:justify-start">
-                <Location01Icon size={18} className="mr-2 flex-shrink-0" />
+                <HugeiconsIcon icon={Location01Icon} size={18} className="mr-2 flex-shrink-0" />
                 <span>
                   11- 12 Tavistock place
                   <br />
@@ -63,11 +63,11 @@ const Footer = () => {
                 </span>
               </div>
               <div className="flex items-center justify-center text-gray-600 lg:justify-start">
-                <Call02Icon size={18} className="mr-2" />
+                <HugeiconsIcon icon={Call02Icon} size={18} className="mr-2" />
                 <span>+447454822494, +441915434197</span>
               </div>
               <div className="flex items-center justify-center text-gray-600 lg:justify-start">
-                <Mail01Icon size={18} className="mr-2" />
+                <HugeiconsIcon icon={Mail01Icon} size={18} className="mr-2" />
                 <span>admin@lareskitchen.org</span>
               </div>
             </div>
@@ -90,7 +90,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="bg-primary flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-green-800"
               >
-                <InstagramIcon size={20} />
+                <HugeiconsIcon icon={InstagramIcon} size={20} />
               </a>
 
               {/* TikTok */}
@@ -100,7 +100,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="bg-primary flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:bg-green-800"
               >
-                <TiktokIcon size={20} />
+                <HugeiconsIcon icon={TiktokIcon} size={20} />
               </a>
             </div>
           </div>

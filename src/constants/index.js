@@ -71,6 +71,7 @@ import Testimonial2 from "../assets/images/Testimonial2.png";
 import appStore from "../assets/images/appStore.svg";
 import playStore from "../assets/images/playStore.svg";
 import suiteGeoFenceIcon from "../assets/icons/suiteGeoFenceIcon.svg";
+import suiteSettingsIcon from "../assets/icons/suiteSettingsIcon.png";
 
 export const ICONS = {
   descent: descentIcon,
@@ -114,6 +115,7 @@ export const ICONS = {
   swallowIcon: swallowIcon,
   grainsIcon: grainsIcon,
   suiteGeoFenceIcon: suiteGeoFenceIcon,
+  suiteSettingsIcon: suiteSettingsIcon,
 };
 
 export const IMAGES = {

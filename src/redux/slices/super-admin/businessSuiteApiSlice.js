@@ -93,6 +93,19 @@ export const businessSuiteSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["Geofence"],
     }),
+    getAppSettings: builder.query({
+      query: () => "/admin/business-suite/app-settings",
+      keepUnusedDataFor: 0,
+      providesTags: ["AppSettings"],
+    }),
+    updateAppSettings: builder.mutation({
+      query: (body) => ({
+        url: "/admin/business-suite/app-settings",
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["AppSettings"],
+    }),
   }),
 });
 
@@ -110,4 +123,6 @@ export const {
   useGetGeofenceByTypeQuery,
   useUpdateGeofenceByTypeMutation,
   useDeleteGeofenceByTypeMutation,
+  useGetAppSettingsQuery,
+  useUpdateAppSettingsMutation,
 } = businessSuiteSlice;

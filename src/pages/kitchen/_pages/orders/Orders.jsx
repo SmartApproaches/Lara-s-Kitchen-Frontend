@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Alert, Pagination, Skeleton } from "antd";
 import {
   useGetKitchenDashBoardDataQuery,
@@ -10,7 +10,13 @@ import OrdersHeader from "./_components/OrdersHeader";
 import PendingOrderCard from "../dashboard/_components/PendingOrderCard";
 import { ICONS } from "../../../../constants";
 import toast from "react-hot-toast";
-import { AutoConversationsIcon, CheckmarkCircle01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { AutoConversationsIcon, CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
+import dayjs from "dayjs";
+import {
+  playUrgentNotificationSound,
+  stopUrgentNotificationSound,
+} from "../../../../utils/notificationAudio";
 
 const Orders = () => {
   const [activeTab, setActiveTab] = useState("pending");
@@ -44,6 +50,31 @@ const Orders = () => {
 
   const orders = ordersData?.data?.data || [];
   const pagination = ordersData?.data;
+  const [userHasMuted, setUserHasMuted] = useState(false);
+
+  // 🔊 Check for overdue orders (> 20 mins) and play sound continuously
+  useEffect(() => {
+    if (activeTab !== "pending" || orders.length === 0) {
+      stopUrgentNotificationSound();
+      return;
+    }
+
+    const hasOverdue = orders.some(
+      (order) =>
+        order.status === "pending" && dayjs().diff(dayjs(order.created_at), "minute") > 20,
+    );
+
+    if (hasOverdue) {
+      if (!userHasMuted) {
+        playUrgentNotificationSound();
+      } else {
+        stopUrgentNotificationSound();
+      }
+    } else {
+      stopUrgentNotificationSound();
+      setUserHasMuted(false); // Reset mute when no orders are overdue
+    }
+  }, [orders, activeTab, userHasMuted]);
 
   const statsConfig = [
     {
@@ -87,17 +118,25 @@ const Orders = () => {
     if (orders.length === 0)
       return <p className="py-6 text-center text-gray-400">No orders found</p>;
 
-    return orders.map((order) => (
-      <PendingOrderCard
-        key={order.id}
-        order={{ ...order, order_type: order.order_type?.toUpperCase() }}
-        disablePreparing={order.status !== "pending"}
-        disableReady={order.status !== "preparing"}
-        onMarkAsPreparing={() => handleUpdateStatus(order.id, "preparing")}
-        onMarkAsReady={() => handleUpdateStatus(order.id, "ready")}
-        isUpdating={isUpdating}
-      />
-    ));
+    return orders.map((order) => {
+      const isOverdue =
+        order.status === "pending" && dayjs().diff(dayjs(order.created_at), "minute") > 20;
+
+      return (
+        <PendingOrderCard
+          key={order.id}
+          order={{ ...order, order_type: order.order_type?.toUpperCase() }}
+          disablePreparing={order.status !== "pending"}
+          disableReady={order.status !== "preparing"}
+          onMarkAsPreparing={() => handleUpdateStatus(order.id, "preparing")}
+          onMarkAsReady={() => handleUpdateStatus(order.id, "ready")}
+          isUpdating={isUpdating}
+
+          isOverdue={isOverdue}
+          onMute={() => setUserHasMuted(true)}
+        />
+      );
+    });
   };
 
   return (

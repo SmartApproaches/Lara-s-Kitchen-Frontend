@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { PlusSignIcon, Search02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { PlusSignIcon, Search02Icon } from "@hugeicons/core-free-icons";
 
 import { Button } from "../../../../../components";
 
@@ -25,7 +26,7 @@ const SearchAndButton = ({ onCreateOffer, onSearchChange }) => {
       <div className="relative flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div className="relative w-full max-w-lg">
           <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center pl-3">
-            <Search02Icon size={19} className="text-green-700" />
+            <HugeiconsIcon icon={Search02Icon} size={19} className="text-green-700" />
           </div>
           <input
             type="text"
@@ -39,7 +40,7 @@ const SearchAndButton = ({ onCreateOffer, onSearchChange }) => {
         <Button
           variant="primary"
           size="lg"
-          leftIcon={<PlusSignIcon size={18} />}
+          leftIcon={<HugeiconsIcon icon={PlusSignIcon} size={18} />}
           onClick={() => handleAddOffer(true)}
         >
           Special Offer

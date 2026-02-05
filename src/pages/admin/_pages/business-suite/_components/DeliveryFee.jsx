@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Input, Spin, Modal } from "antd";
-import { ArrowLeft02Icon, Delete01Icon, PencilEdit02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft02Icon, Delete01Icon, PencilEdit02Icon } from "@hugeicons/core-free-icons";
 
 import {
   useDeleteSpecialDeliveryFeeMutation,
@@ -13,7 +14,7 @@ import {
   useUpdateSpecialDeliveryFeeMutation,
 } from "../../../../../redux/slices/super-admin/businessSuiteApiSlice";
 import { customInfoToast } from "../../../../../utils/toast";
-import AddressAutocomplete from "./AddressAutocomplete";
+import CityInput from "./CityInput";
 
 const DeliveryFee = () => {
   const navigate = useNavigate();
@@ -354,7 +355,7 @@ const DeliveryFee = () => {
                 onClick={() => navigate(-1)}
                 className="mt-1 shrink-0 text-gray-600 hover:text-gray-900 sm:mt-0"
               >
-                <ArrowLeft02Icon size={20} className="sm:h-6 sm:w-6" />
+                <HugeiconsIcon icon={ArrowLeft02Icon} size={20} className="sm:h-6 sm:w-6" />
               </button>
               <div>
                 <h1 className="text-lg font-bold text-gray-900 sm:text-xl md:text-2xl">
@@ -441,7 +442,7 @@ const DeliveryFee = () => {
               <div key={index} className="mb-6">
                 <div className="flex flex-col gap-3 lg:hidden">
                   <div className="w-full">
-                    <AddressAutocomplete
+                    <CityInput
                       value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
@@ -449,8 +450,6 @@ const DeliveryFee = () => {
                         copy[index] = {
                           ...copy[index],
                           city: data.address,
-                          lat: data.lat,
-                          lng: data.lng,
                         };
                         setSpecialLocations(copy);
                       }}
@@ -527,7 +526,7 @@ const DeliveryFee = () => {
 
                 <div className="hidden w-full lg:flex lg:items-center lg:gap-3">
                   <div className="flex-1">
-                    <AddressAutocomplete
+                    <CityInput
                       value={loc.city}
                       disabled={!loc.isEditing}
                       onSelect={(data) => {
@@ -535,8 +534,6 @@ const DeliveryFee = () => {
                         copy[index] = {
                           ...copy[index],
                           city: data.address,
-                          lat: data.lat,
-                          lng: data.lng,
                         };
                         setSpecialLocations(copy);
                       }}

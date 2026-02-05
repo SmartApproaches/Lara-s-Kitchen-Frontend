@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "antd";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 const StatCard = ({ icon, title, value, footer, footerIcon }) => {
   const isImageIcon = typeof icon === "string";
@@ -32,12 +33,13 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
             {isImageIcon ? (
               <img src={icon} className="h-8 w-8 object-contain sm:h-10 sm:w-10" alt={title} />
             ) : (
-              React.createElement(icon, {
-                size: 40,
-                className: `h-8 w-8 sm:h-10 sm:w-10 ${
+              <HugeiconsIcon
+                icon={icon}
+                size={40}
+                className={`h-8 w-8 sm:h-10 sm:w-10 ${
                   title === "Completed Orders" ? "text-[#1F5226]" : "text-[#FF0000]"
-                }`,
-              })
+                }`}
+              />
             )}
           </div>
 
@@ -63,11 +65,9 @@ const StatCard = ({ icon, title, value, footer, footerIcon }) => {
                       : "bg-[#FFD2D8] text-[#D40707]"
                 }`}
               >
-                {footerIcon &&
-                  React.createElement(footerIcon, {
-                    size: 12,
-                    className: "shrink-0",
-                  })}
+                {footerIcon && (
+                  <HugeiconsIcon icon={footerIcon} size={12} className="shrink-0" />
+                )}
                 <p className="truncate text-xs sm:text-sm">{footer}</p>
               </div>
             )}

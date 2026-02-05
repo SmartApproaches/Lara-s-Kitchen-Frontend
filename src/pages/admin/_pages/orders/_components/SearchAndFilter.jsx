@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Dropdown, Button, DatePicker, Tag } from "antd";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   FilterIcon,
   Cancel01Icon,
   Upload04Icon,
   Search02Icon,
   Calendar01Icon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 
 import { Button as CustomButton } from "../../../../../components";
 
@@ -113,7 +114,7 @@ const SearchAndFilters = ({
       <div className="relative my-0 flex w-full flex-col justify-between gap-3 sm:flex-row sm:items-center md:my-3">
         <div className="relative w-full max-w-lg">
           <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center pl-3">
-            <Search02Icon size={22} className="text-green-700" />
+            <HugeiconsIcon icon={Search02Icon} size={22} className="text-green-700" />
           </div>
           <input
             type="text"
@@ -150,7 +151,7 @@ const SearchAndFilters = ({
                 color: "#1F5226",
                 border: "none",
               }}
-              icon={<Calendar01Icon size={20} />}
+              icon={<HugeiconsIcon icon={Calendar01Icon} size={20} />}
               onClick={() => setOpenCalendar((prev) => !prev)}
             />
             {openCalendar && (
@@ -169,7 +170,7 @@ const SearchAndFilters = ({
       <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
           <Dropdown menu={{ items: filterMenuItems, onClick: handleFilterSelect }}>
-            <Button icon={<FilterIcon size={20} />} className="border-none !bg-gray-100 !text-base">
+            <Button icon={<HugeiconsIcon icon={FilterIcon} size={20} />} className="border-none !bg-gray-100 !text-base">
               Filter
             </Button>
           </Dropdown>
@@ -189,7 +190,7 @@ const SearchAndFilters = ({
               onClose={handleClearFilter}
               closeIcon={
                 <span className="ml-2 cursor-pointer rounded-full bg-gray-200 p-1">
-                  <Cancel01Icon size={14} />
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
                 </span>
               }
             >
@@ -218,7 +219,7 @@ const SearchAndFilters = ({
               onClose={handleClearOrderType}
               closeIcon={
                 <span className="ml-2 cursor-pointer rounded-full bg-gray-200 p-1">
-                  <Cancel01Icon size={14} />
+                  <HugeiconsIcon icon={Cancel01Icon} size={14} />
                 </span>
               }
             >
@@ -228,7 +229,7 @@ const SearchAndFilters = ({
         </div>
 
         <CustomButton
-          leftIcon={<Upload04Icon strokeWidth={2} size={20} />}
+          leftIcon={<HugeiconsIcon icon={Upload04Icon} strokeWidth={2} size={20} />}
           type="primary"
           size="md"
           className="ml-auto text-base"

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft01Icon, ArrowRight01Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 
 import CustomersHeader from "./_components/CustomersHeader";
 import CustomersCards from "./_components/CustomersCards";
@@ -64,7 +65,7 @@ const CustomersPage = () => {
             onClick={() => setCurrentPage((p) => p - 1)}
             className="disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ArrowLeft01Icon strokeWidth={2} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} />
           </button>
           <span>
             {pagination.current} of {pagination.lastPage}
@@ -74,7 +75,7 @@ const CustomersPage = () => {
             onClick={() => setCurrentPage((p) => p + 1)}
             className="disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ArrowRight01Icon strokeWidth={2} />
+            <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} />
           </button>
         </div>
       )}

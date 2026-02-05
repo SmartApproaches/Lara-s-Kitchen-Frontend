@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, Button, Input, message, Modal, Select } from "antd";
 import { DeleteOutlined, EnvironmentOutlined, CheckCircleFilled } from "@ant-design/icons";
-import { ArrowUp01Icon, Cancel01Icon, PrinterIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUp01Icon, Cancel01Icon, PrinterIcon } from "@hugeicons/core-free-icons";
 import { useCreateOrderMutation } from "../../../../../../../redux/slices/cashier/ordersApiSlice";
 import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { countryCodes } from "../countryCode";
@@ -288,7 +289,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
           <div className="flex items-center gap-2">
             <Button icon={<DeleteOutlined />} danger type="text" onClick={handleClearCart} />
             <button className="text-2xl text-[#0A3A1A] hover:opacity-60" onClick={handleClearCart}>
-              <Cancel01Icon />
+              <HugeiconsIcon icon={Cancel01Icon} />
             </button>
           </div>
         </div>
@@ -299,7 +300,7 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
             onClick={() => setCollapseInfo(!collapseInfo)}
           >
             <span className="font-semibold text-[#0A3A1A]">Customer Information</span>
-            <ArrowUp01Icon className={`${collapseInfo ? "rotate-180" : ""}`} />
+            <HugeiconsIcon icon={ArrowUp01Icon} className={`${collapseInfo ? "rotate-180" : ""}`} />
           </button>
 
           {collapseInfo && (

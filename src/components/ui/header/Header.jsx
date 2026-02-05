@@ -52,9 +52,13 @@ const Header = () => {
 
           {/* CTA */}
           <div className="hidden md:flex">
-            <NavLink to="/order">
+            <a
+              href="https://apps.apple.com/us/app/laras-kitchen/id6753684107"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button size="lg">Order Now</Button>
-            </NavLink>
+            </a>
           </div>
 
           {/* Mobile Toggle */}
@@ -103,13 +107,15 @@ const Header = () => {
                 {item.name}
               </NavLink>
             ))}
-            <NavLink
-              to="/order"
-              onClick={() => setMenuOpen(false)}
+            <a
+              href="https://apps.apple.com/us/app/laras-kitchen/id6753684107"
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-md bg-green-800 px-6 py-2 font-medium text-white"
+              onClick={() => setMenuOpen(false)}
             >
               Order Now
-            </NavLink>
+            </a>
           </div>
         )}
       </div>

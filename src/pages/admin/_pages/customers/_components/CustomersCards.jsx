@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, Skeleton, Alert, Avatar, Tag } from "antd";
-import { CallRinging02Icon, Mail01Icon, UserIcon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { CallRinging02Icon, Mail01Icon, UserIcon } from "@hugeicons/core-free-icons";
 
 import CustomerDetailsDrawer from "./CustomerDetailsDrawer";
 import { IMAGES } from "../../../../../constants";
@@ -28,7 +29,7 @@ const CustomersCards = ({ customers, isLoading, isError }) => {
                   style={{ borderRadius: "13px" }}
                   size={80}
                   src={cust?.profile_picture}
-                  icon={<UserIcon size={40} />}
+                  icon={<HugeiconsIcon icon={UserIcon} size={40} />}
                   className="flex-shrink-0 rounded-lg"
                 />
 
@@ -38,12 +39,12 @@ const CustomersCards = ({ customers, isLoading, isError }) => {
                   </h2>
 
                   <div className="mt-1 flex items-center gap-2 truncate text-base font-medium text-green-600">
-                    <Mail01Icon size={18} />
+                    <HugeiconsIcon icon={Mail01Icon} size={18} />
                     <span className="truncate">{cust?.email || "N/A"}</span>
                   </div>
 
                   <div className="mt-1 flex items-center gap-2 truncate text-base font-medium text-green-600">
-                    <CallRinging02Icon fill="currentColor" size={18} />
+                    <HugeiconsIcon icon={CallRinging02Icon} fill="currentColor" size={18} />
                     <span className="truncate">{cust?.phone || "N/A"}</span>
                   </div>
 

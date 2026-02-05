@@ -1,5 +1,10 @@
 import React from "react";
-import { DashboardSquare02Icon, Note05Icon, Menu02Icon, Money01Icon } from "hugeicons-react";
+import {
+  DashboardSquare02Icon,
+  Note05Icon,
+  Menu02Icon,
+  Money01Icon,
+} from "@hugeicons/core-free-icons";
 import { Outlet } from "react-router-dom";
 
 import DashboardLayout from "../../components/shared/DashboardLayout";

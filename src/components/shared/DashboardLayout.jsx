@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Search01Icon,
   Menu01Icon,
@@ -8,7 +9,7 @@ import {
   Cancel01Icon,
   Logout02Icon,
   UserStatusIcon,
-} from "hugeicons-react";
+} from "@hugeicons/core-free-icons";
 import { addNotification } from "../../redux/slices/notification/notificationsSlice";
 import { listenToForegroundMessages, requestNotificationPermission } from "../../utils/firebase";
 import logo from "../../assets/images/logo.svg";
@@ -126,7 +127,8 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
               onClick={() => setIsSidebarOpen(false)}
               className="rounded-md p-1 hover:bg-gray-100 md:hidden"
             >
-              <Cancel01Icon
+              <HugeiconsIcon
+                icon={Cancel01Icon}
                 size={20}
                 strokeWidth={2}
                 className="absolute top-3 right-2 text-gray-500"
@@ -152,7 +154,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                 }`}
                 onClick={() => navigate(item.path)}
               >
-                <Icon size={22} className="mr-3" />
+                <HugeiconsIcon icon={Icon} size={22} className="mr-3" />
                 <span className="font-semibold">{item.label}</span>
               </button>
             );
@@ -162,7 +164,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
             onClick={handleLogout}
             className="text-secondary my-4 mt-20 mb-1 flex w-full cursor-pointer items-center rounded-lg px-3 py-3 text-left transition-colors hover:bg-gray-50 hover:text-gray-900"
           >
-            <Logout02Icon size={22} className="mr-3" />
+            <HugeiconsIcon icon={Logout02Icon} size={22} className="mr-3" />
             <span className="font-semibold">Logout</span>
           </button>
         </nav>
@@ -180,12 +182,12 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                   onClick={() => setIsSidebarOpen(true)}
                   className="mr-2 rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 md:hidden"
                 >
-                  <Menu01Icon size={20} />
+                  <HugeiconsIcon icon={Menu01Icon} size={20} />
                 </button>
 
                 <div className="relative w-full max-w-lg">
                   <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center pl-3">
-                    <Search01Icon size={16} className="text-gray-500" />
+                    <HugeiconsIcon icon={Search01Icon} size={16} className="text-gray-500" />
                   </div>
                   <input
                     type="text"
@@ -205,7 +207,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
                       }`}
                       onClick={() => setShowNotifications((s) => !s)}
                     >
-                      <Notification01Icon size={22} />
+                      <HugeiconsIcon icon={Notification01Icon} size={22} />
                       {notifications.filter((n) => !n.read).length > 0 && (
                         <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
                       )}
@@ -222,7 +224,7 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
 
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
-                    <UserStatusIcon size={32} className="text-primary" />
+                    <HugeiconsIcon icon={UserStatusIcon} size={32} className="text-primary" />
                   </div>
                   <div className="hidden sm:block">
                     <div className="text-secondary text-base font-semibold capitalize">
@@ -246,7 +248,11 @@ const DashboardLayout = ({ sidebarItems = [], children }) => {
             {children || (
               <div className="min-h-96 rounded-lg bg-white p-6 shadow-sm">
                 <div className="py-12 text-center text-gray-500">
-                  <DashboardSquare02Icon size={48} className="mx-auto mb-4 text-gray-300" />
+                  <HugeiconsIcon
+                    icon={DashboardSquare02Icon}
+                    size={48}
+                    className="mx-auto mb-4 text-gray-300"
+                  />
                   <h3 className="mb-2 text-lg font-medium text-gray-900">Page Content</h3>
                 </div>
               </div>

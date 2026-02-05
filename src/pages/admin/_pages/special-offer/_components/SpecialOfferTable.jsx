@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Skeleton, Alert, Checkbox, Modal } from "antd";
-import { ArrowLeft01Icon, ArrowRight01Icon, Delete01Icon, Edit02Icon } from "hugeicons-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon, ArrowRight01Icon, Delete01Icon, Edit02Icon } from "@hugeicons/core-free-icons";
 
 import { IMAGES } from "../../../../../constants";
 
@@ -186,7 +187,7 @@ const SpecialOfferTable = ({
             title="Edit special offer"
             type="button"
           >
-            <Edit02Icon size={20} />
+            <HugeiconsIcon icon={Edit02Icon} size={20} />
           </button>
           <button
             className="cursor-pointer transition-colors hover:text-red-500"
@@ -197,7 +198,7 @@ const SpecialOfferTable = ({
             title="Delete special offer"
             type="button"
           >
-            <Delete01Icon size={20} />
+            <HugeiconsIcon icon={Delete01Icon} size={20} />
           </button>
         </div>
       ),
@@ -263,7 +264,7 @@ const SpecialOfferTable = ({
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
-            <ArrowLeft01Icon strokeWidth={2} size={20} />
+            <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} size={20} />
           </button>
           <span className="text-base">
             Page {currentPage} of {pagination?.last_page || 1}
@@ -274,7 +275,7 @@ const SpecialOfferTable = ({
             className="flex items-center justify-center rounded p-2 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
             type="button"
           >
-            <ArrowRight01Icon strokeWidth={2} size={20} />
+            <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} size={20} />
           </button>
         </div>
       )}
