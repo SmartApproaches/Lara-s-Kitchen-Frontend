@@ -17,6 +17,7 @@ const PermissionsModal = ({
   const [employeeName, setEmployeeName] = useState("");
   const [email, setEmail] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [phone, setPhone] = useState("");
 
   const roles = [
     {
@@ -47,7 +48,7 @@ const PermissionsModal = ({
       label: "Rider",
       description: "The Rider would have access to:",
       permissions: [
-        "Receive assigned deliveries",
+        "View assigned deliveries",
         "Access customer delivery details",
         "Update delivery status (picked up, on the way, delivered)",
         "Track delivery history",
@@ -102,7 +103,7 @@ const PermissionsModal = ({
 
     const normalizedRole =
       selectedRole?.toLowerCase() === "super admin" ? "super_admin" : selectedRole?.toLowerCase();
-
+    
     const permissionData = {};
 
     if (isEditMode && editData) {
@@ -119,6 +120,9 @@ const PermissionsModal = ({
       if (normalizedRole !== originalRole) {
         permissionData.role = normalizedRole;
       }
+      if (normalizedRole === "rider" && phone !== editData?.phone) {
+        permissionData.phone = phone;
+      }
       if (Object.keys(permissionData).length === 0) {
         customWarningToast("No changes made to update");
         return;
@@ -127,6 +131,13 @@ const PermissionsModal = ({
       permissionData.name = employeeName;
       permissionData.email = email;
       permissionData.role = normalizedRole;
+      if (normalizedRole === "rider" && phone.trim()) {
+        permissionData.phone = phone;
+      }
+      if (normalizedRole === "rider" && !phone.trim()) {
+        customWarningToast("Please enter phone number for rider");
+        return;
+      }
     }
 
     try {
@@ -142,6 +153,7 @@ const PermissionsModal = ({
     setEmployeeName("");
     setEmail("");
     setSelectedRole("");
+    setPhone("");
     onClose();
   };
 
@@ -206,6 +218,21 @@ const PermissionsModal = ({
             style={{ backgroundColor: "#f5f5f5", border: "none" }}
           />
         </div>
+
+        {selectedRole === "Rider" && (
+          <div>
+            <label className="mb-2 block text-base font-medium text-gray-700">Phone Number</label>
+            <Input
+              placeholder="Enter Phone Number"
+              size="large"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="text-base"
+              style={{ backgroundColor: "#f5f5f5", border: "none" }}
+            />
+          </div>
+        )}
 
         <div>
           <label className="mb-2 block text-base font-medium text-gray-700">Select Role</label>
