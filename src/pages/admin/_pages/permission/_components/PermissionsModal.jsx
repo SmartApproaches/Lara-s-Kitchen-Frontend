@@ -92,18 +92,28 @@ const PermissionsModal = ({
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(?:\+?[1-9]\d{1,14}|0\d{9,14})$/;
+
     if (!emailRegex.test(email)) {
       customWarningToast("Please enter a valid email address");
+      return;
+    }
+    if (!phoneRegex.test(phone) && selectedRole === "Rider") {
+      customWarningToast("Please enter a valid phone number for rider");
       return;
     }
     if (!selectedRole) {
       customWarningToast("Please select a role");
       return;
     }
+    if (selectedRole.toLowerCase() === "rider" && !phone.trim()) {
+      customWarningToast("Please enter phone number for rider");
+      return;
+    }
 
     const normalizedRole =
       selectedRole?.toLowerCase() === "super admin" ? "super_admin" : selectedRole?.toLowerCase();
-    
+
     const permissionData = {};
 
     if (isEditMode && editData) {
@@ -120,7 +130,7 @@ const PermissionsModal = ({
       if (normalizedRole !== originalRole) {
         permissionData.role = normalizedRole;
       }
-      if (normalizedRole === "rider" && phone !== editData?.phone) {
+      if (phone !== editData?.phone) {
         permissionData.phone = phone;
       }
       if (Object.keys(permissionData).length === 0) {
@@ -131,13 +141,7 @@ const PermissionsModal = ({
       permissionData.name = employeeName;
       permissionData.email = email;
       permissionData.role = normalizedRole;
-      if (normalizedRole === "rider" && phone.trim()) {
-        permissionData.phone = phone;
-      }
-      if (normalizedRole === "rider" && !phone.trim()) {
-        customWarningToast("Please enter phone number for rider");
-        return;
-      }
+      permissionData.phone = phone;
     }
 
     try {
@@ -146,7 +150,10 @@ const PermissionsModal = ({
       setEmployeeName("");
       setEmail("");
       setSelectedRole("");
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      handleClose();
+    }
   };
 
   const handleClose = () => {
@@ -173,6 +180,11 @@ const PermissionsModal = ({
       setEmployeeName(editData?.name || "");
       setEmail(editData?.email || "");
       setSelectedRole(editData?.role?.name || "");
+      if (editData?.role?.name?.toLowerCase() === "rider") {
+        setPhone(editData?.phone || "");
+      } else {
+        setPhone("");
+      }
     }
   }, [isEditMode, editData]);
 
