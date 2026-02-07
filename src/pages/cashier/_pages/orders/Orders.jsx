@@ -67,6 +67,15 @@ const Orders = () => {
         images,
         extraItems: Math.max(0, images.length - 4),
         items: order.items,
+        // Financial fields for receipt
+        total_amount: order.total_amount,
+        delivery_fee: order.delivery_fee,
+        discount_amount: order.discount_amount,
+        discount_percentage: order.discount_percentage,
+        grand_total: order.grand_total,
+        // Additional order data
+        order_number: order.order_number,
+        order_type: order.order_type,
       };
     });
   }, [ordersList]);

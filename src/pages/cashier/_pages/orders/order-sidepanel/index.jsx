@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp01Icon, PrinterIcon, Delete02Icon, PencilEdit02Icon, Call02Icon, InformationDiamondIcon } from "@hugeicons/core-free-icons";
+import {
+  ArrowUp01Icon,
+  PrinterIcon,
+  Delete02Icon,
+  PencilEdit02Icon,
+  Call02Icon,
+  InformationDiamondIcon,
+} from "@hugeicons/core-free-icons";
 import { Drawer, Button, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import ReceiptPreview from "../receipt";
 import toast from "react-hot-toast";
 import { useCashierUpdateOrderStatusMutation } from "../../../../../redux/slices/cashier/ordersApiSlice";
 const OrderSidePanel = ({ order, onClose }) => {
+  console.log("cashier order data in drawer:", order);
   const navigate = useNavigate();
   const [isCustomerInfoExpanded, setIsCustomerInfoExpanded] = useState(true);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
@@ -71,7 +79,11 @@ const OrderSidePanel = ({ order, onClose }) => {
                 onClick={handleEdit}
                 size="small"
               />
-              <Button danger icon={<HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />} size="small" />
+              <Button
+                danger
+                icon={<HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />}
+                size="small"
+              />
             </div>
           </div>
         </div>
@@ -178,7 +190,7 @@ const OrderSidePanel = ({ order, onClose }) => {
         {/* PRINT RECEIPT BUTTON */}
         <div className="mt-6 px-4">
           <Button
-            icon={<HugeiconsIcon icon={InformationDiamondIcon} size={20} color="#EF4444" />}
+            icon={<HugeiconsIcon icon={PrinterIcon} size={20} color="#EF4444" />}
             block
             className="border border-gray-300 py-2 text-sm hover:bg-gray-50"
             onClick={() => setShowReceiptModal(true)}

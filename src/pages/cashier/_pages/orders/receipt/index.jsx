@@ -8,8 +8,13 @@ import { formattedDate } from "../../../../../utils/formateDate";
 import { formattedTime } from "../../../../../utils/formatTime";
 const ReceiptPreview = ({ order }) => {
   const orderItems = order?.items || [];
-  const subtotal = orderItems.reduce((sum, i) => sum + Number(i.subtotal || 0), 0);
-  const total = subtotal;
+
+  // Get values from order data
+  const subtotal = Number(order?.total_amount || 0);
+  const deliveryFee = Number(order?.delivery_fee || 0);
+  const discountAmount = Number(order?.discount_amount || 0);
+  const discountPercentage = Number(order?.discount_percentage || 0);
+  const grandTotal = Number(order?.grand_total || 0);
   const customerInfo = order?.customer || order?.guest;
 
   const handlePrintReceipt = () => {
@@ -133,16 +138,38 @@ const ReceiptPreview = ({ order }) => {
         {orderItems.map((item, idx) => (
           <div key={idx} className="flex justify-between py-0.5 text-[13px]">
             <span>
-              {item.menu_item?.name} ×{item.quantity}
+              {item.menu_item?.description} ×{item.quantity}
             </span>
             <span>£{Number(item.subtotal).toFixed(2)}</span>
           </div>
         ))}
 
         <div className="my-2 border-t border-dotted border-gray-300" />
-        <div className="flex justify-between font-semibold">
-          <span>Total</span>
-          <span>£{total.toFixed(2)}</span>
+
+        {/* Subtotal (total_amount from order) */}
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>£{subtotal.toFixed(2)}</span>
+        </div>
+
+        {/* Delivery Fee (delivery_fee from order) */}
+        <div className="flex justify-between">
+          <span>Delivery Fee</span>
+          <span>£{deliveryFee.toFixed(2)}</span>
+        </div>
+
+        {/* Discount (discount_amount and discount_percentage from order) */}
+        <div className="flex justify-between text-green-600">
+          <span>Discount ({discountPercentage.toFixed(0)}%)</span>
+          <span>-£{discountAmount.toFixed(2)}</span>
+        </div>
+
+        <div className="my-2 border-t border-dotted border-gray-300" />
+
+        {/* Grand Total (grand_total from order) */}
+        <div className="flex justify-between text-base font-semibold">
+          <span>Grand Total</span>
+          <span>£{grandTotal.toFixed(2)}</span>
         </div>
       </div>
 
