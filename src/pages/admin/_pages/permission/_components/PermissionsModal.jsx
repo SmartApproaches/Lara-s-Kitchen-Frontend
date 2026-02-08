@@ -17,6 +17,7 @@ const PermissionsModal = ({
   const [employeeName, setEmployeeName] = useState("");
   const [email, setEmail] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
+  const [phone, setPhone] = useState("");
 
   const roles = [
     {
@@ -47,7 +48,7 @@ const PermissionsModal = ({
       label: "Rider",
       description: "The Rider would have access to:",
       permissions: [
-        "Receive assigned deliveries",
+        "View assigned deliveries",
         "Access customer delivery details",
         "Update delivery status (picked up, on the way, delivered)",
         "Track delivery history",
@@ -91,12 +92,22 @@ const PermissionsModal = ({
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(?:\+?[1-9]\d{1,14}|0\d{9,14})$/;
+
     if (!emailRegex.test(email)) {
       customWarningToast("Please enter a valid email address");
       return;
     }
+    if (!phoneRegex.test(phone) && selectedRole === "Rider") {
+      customWarningToast("Please enter a valid phone number for rider");
+      return;
+    }
     if (!selectedRole) {
       customWarningToast("Please select a role");
+      return;
+    }
+    if (selectedRole.toLowerCase() === "rider" && !phone.trim()) {
+      customWarningToast("Please enter phone number for rider");
       return;
     }
 
@@ -119,6 +130,9 @@ const PermissionsModal = ({
       if (normalizedRole !== originalRole) {
         permissionData.role = normalizedRole;
       }
+      if (phone !== editData?.phone) {
+        permissionData.phone = phone;
+      }
       if (Object.keys(permissionData).length === 0) {
         customWarningToast("No changes made to update");
         return;
@@ -127,6 +141,7 @@ const PermissionsModal = ({
       permissionData.name = employeeName;
       permissionData.email = email;
       permissionData.role = normalizedRole;
+      permissionData.phone = phone;
     }
 
     try {
@@ -135,13 +150,17 @@ const PermissionsModal = ({
       setEmployeeName("");
       setEmail("");
       setSelectedRole("");
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      handleClose();
+    }
   };
 
   const handleClose = () => {
     setEmployeeName("");
     setEmail("");
     setSelectedRole("");
+    setPhone("");
     onClose();
   };
 
@@ -161,6 +180,11 @@ const PermissionsModal = ({
       setEmployeeName(editData?.name || "");
       setEmail(editData?.email || "");
       setSelectedRole(editData?.role?.name || "");
+      if (editData?.role?.name?.toLowerCase() === "rider") {
+        setPhone(editData?.phone || "");
+      } else {
+        setPhone("");
+      }
     }
   }, [isEditMode, editData]);
 
@@ -206,6 +230,21 @@ const PermissionsModal = ({
             style={{ backgroundColor: "#f5f5f5", border: "none" }}
           />
         </div>
+
+        {selectedRole === "Rider" && (
+          <div>
+            <label className="mb-2 block text-base font-medium text-gray-700">Phone Number</label>
+            <Input
+              placeholder="Enter Phone Number"
+              size="large"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="text-base"
+              style={{ backgroundColor: "#f5f5f5", border: "none" }}
+            />
+          </div>
+        )}
 
         <div>
           <label className="mb-2 block text-base font-medium text-gray-700">Select Role</label>
