@@ -480,7 +480,7 @@ const DeliveryFee = () => {
                         className="text-primary flex h-12 w-12 shrink-0 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
                         title="Edit location"
                       >
-                        <PencilEdit02Icon strokeWidth={2} size={24} />
+                        <HugeiconsIcon icon={PencilEdit02Icon} strokeWidth={2} size={24} />
                       </button>
                     )}
 
@@ -492,7 +492,7 @@ const DeliveryFee = () => {
                         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md text-red-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                         title="Remove location"
                       >
-                        <Delete01Icon size={20} />
+                        <HugeiconsIcon icon={Delete01Icon} size={20} />
                       </button>
                     )}
                   </div>
@@ -566,7 +566,7 @@ const DeliveryFee = () => {
                         className="text-primary flex h-12 w-12 cursor-pointer items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
                         title="Edit location"
                       >
-                        <PencilEdit02Icon strokeWidth={2} size={24} />
+                        <HugeiconsIcon icon={PencilEdit02Icon} strokeWidth={2} size={24} />
                       </button>
                     )}
 
@@ -604,7 +604,7 @@ const DeliveryFee = () => {
                         className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md text-red-500 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                         title="Remove location"
                       >
-                        <Delete01Icon size={20} />
+                        <HugeiconsIcon icon={Delete01Icon} size={20} />
                       </button>
                     )}
                   </div>
