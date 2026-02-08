@@ -99,12 +99,15 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                     />
                     <img src={IMAGES.foodOne} className="h-full w-full object-cover" alt="" />
                   </div>
-                  <p className="text-center text-sm font-semibold sm:text-lg" strong>
-                    Abula
-                  </p>
+                  <p className="text-center text-sm font-semibold sm:text-lg">Abula</p>
                   <div className="flex justify-between gap-x-1 sm:gap-x-2">
                     <div className="my-1 flex items-center gap-1">
-                      <Pot01Icon size={14} color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon
+                        icon={Pot01Icon}
+                        size={14}
+                        color="#FFC107"
+                        className="text-xs"
+                      />
                       <span className="text-xs text-gray-500 sm:text-sm">20 mins</span>
                     </div>
                     <div className="my-1 flex items-center gap-1">
@@ -124,15 +127,14 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
 
                 <Card className="overflow-hidden rounded-lg !border-2 !border-[#0CA921] !bg-[#D9D9D9] opacity-60">
                   <div className="relative mb-1 aspect-square rounded-lg sm:mb-2">
-                    <FavouriteIcon
+                    <HugeiconsIcon
+                      icon={FavouriteIcon}
                       size={14}
                       className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3"
                     />
                     <img src={IMAGES.foodTwo} className="h-full w-full object-cover" alt="" />
                   </div>
-                  <p className="text-center text-sm font-semibold sm:text-lg" strong>
-                    Fanta
-                  </p>
+                  <p className="text-center text-sm font-semibold sm:text-lg">Fanta</p>
                   <div className="flex justify-between gap-x-1 sm:gap-x-2">
                     <div className="my-1">
                       <span className="text-xs sm:text-sm">Non - Alcoholic</span>
@@ -157,22 +159,27 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
                     <span className="absolute -top-2 -left-2 font-medium text-red-900 sm:-top-3 sm:-left-3">
                       R18+
                     </span>
-                    <FavouriteIcon
+                    <HugeiconsIcon
+                      icon={FavouriteIcon}
                       fill="#FF383C"
                       size={14}
                       className="absolute -top-2 -right-2 text-red-400 sm:-top-3 sm:-right-3"
                     />
                     <img src={IMAGES.foodThree} className="h-full w-full object-contain" alt="" />
                   </div>
-                  <p className="text-center text-sm font-semibold sm:text-lg" strong>
-                    Baileys
-                  </p>
+                  <p className="text-center text-sm font-semibold sm:text-lg">Baileys</p>
                   <div className="flex justify-between gap-x-1 sm:gap-x-2">
                     <div className="my-1">
                       <span className="text-xs sm:text-sm">Alcoholic</span>
                     </div>
                     <div className="my-1 flex items-center gap-1">
-                      <StarIcon size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon
+                        icon={StarIcon}
+                        size={14}
+                        fill="#FFC107"
+                        color="#FFC107"
+                        className="text-xs"
+                      />
                       <span className="text-xs sm:text-sm">4.5</span>
                     </div>
                   </div>
@@ -188,22 +195,32 @@ const PreviewPanel = ({ formData, uploadedImage }) => {
 
                 <Card className="overflow-hidden rounded-lg !border-2 !border-[#0CA921] !bg-[#D9D9D9] opacity-60">
                   <div className="relative mb-1 aspect-square rounded-lg sm:mb-2">
-                    <FavouriteIcon
+                    <HugeiconsIcon
+                      icon={FavouriteIcon}
                       size={14}
                       className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3"
                     />
                     <img src={IMAGES.foodFour} className="h-full w-full object-cover" alt="" />
                   </div>
-                  <p className="text-center text-sm font-semibold sm:text-lg" strong>
-                    Jollof Rice
-                  </p>
+                  <p className="text-center text-sm font-semibold sm:text-lg">Jollof Rice</p>
                   <div className="flex justify-between gap-x-1 sm:gap-x-2">
                     <div className="my-1 flex items-center gap-1">
-                      <Pot01Icon size={14} color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon
+                        icon={Pot01Icon}
+                        size={14}
+                        color="#FFC107"
+                        className="text-xs"
+                      />
                       <span className="text-xs text-gray-500 sm:text-sm">20 mins</span>
                     </div>
                     <div className="my-1 flex items-center gap-1">
-                      <StarIcon size={14} fill="#FFC107" color="#FFC107" className="text-xs" />
+                      <HugeiconsIcon
+                        icon={StarIcon}
+                        size={14}
+                        fill="#FFC107"
+                        color="#FFC107"
+                        className="text-xs"
+                      />
                       <span className="text-xs sm:text-sm">4.5</span>
                     </div>
                   </div>

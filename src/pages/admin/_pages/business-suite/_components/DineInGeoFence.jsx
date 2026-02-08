@@ -422,7 +422,7 @@ const DineInGeoFence = () => {
               onClick={() => navigate(-1)}
               className="rounded-md p-1 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
             >
-              <ArrowLeft01Icon className="h-5 w-5" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
             </button>
             <h1 className="text-base font-semibold text-gray-900 sm:text-xl">Dine-in Geofence</h1>
           </div>
