@@ -37,7 +37,14 @@ const MenuHero = () => {
               It’s now easier than ever, scan in the restaurant, order for delivery, or even as a
               guest. No stress, just good food.
             </p>
-            <button className="bg-primary mt-3 rounded-md px-10 py-2 text-white">Order Now</button>
+            <button
+              onClick={() =>
+                window.open("https://apps.apple.com/us/app/laras-kitchen/id6753684107", "_blank")
+              }
+              className="bg-primary mt-3 cursor-pointer rounded-md px-10 py-2 text-white"
+            >
+              Order Now
+            </button>
           </div>
         </div>
       </div>
@@ -66,7 +73,12 @@ const MenuHero = () => {
           </p>
 
           {/* Button */}
-          <button className="mt-4 rounded-md bg-green-900 px-6 py-2 text-sm text-white">
+          <button
+            onClick={() =>
+              window.open("https://apps.apple.com/us/app/laras-kitchen/id6753684107", "_blank")
+            }
+            className="mt-4 rounded-md bg-green-900 px-6 py-2 text-sm text-white"
+          >
             Order Now
           </button>
         </div>
