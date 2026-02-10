@@ -7,6 +7,7 @@ import { formatPhone } from "../../../../../utils/formatPhone";
 import { formattedDate } from "../../../../../utils/formateDate";
 import { formattedTime } from "../../../../../utils/formatTime";
 const ReceiptPreview = ({ order }) => {
+  console.log("order", order);
   const orderItems = order?.items || [];
 
   // Get values from order data
@@ -143,6 +144,13 @@ const ReceiptPreview = ({ order }) => {
             <span>£{Number(item.subtotal).toFixed(2)}</span>
           </div>
         ))}
+
+        {order?.note && (
+          <div className="mt-2 border-t border-dashed border-gray-300 pt-1 text-left text-xs">
+            <span className="font-medium">Note:</span>
+            <p className="mt-0.5 break-words">{order.note}</p>
+          </div>
+        )}
 
         <div className="my-2 border-t border-dotted border-gray-300" />
 
