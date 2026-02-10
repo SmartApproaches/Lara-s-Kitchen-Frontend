@@ -28,7 +28,7 @@ const CravingNigeriaFood = () => {
               rel="noopener noreferrer"
             >
               <img
-                src={IMAGES.playStore}
+                src={IMAGES.appStore}
                 alt="Get it on Google Play"
                 className="h-10 w-auto cursor-pointer transition-transform hover:scale-105 sm:h-12"
               />
@@ -41,7 +41,7 @@ const CravingNigeriaFood = () => {
               rel="noopener noreferrer"
             >
               <img
-                src={IMAGES.appStore}
+                src={IMAGES.playStore}
                 alt="Download on the App Store"
                 className="h-10 w-auto cursor-pointer transition-transform hover:scale-105 sm:h-12"
               />
