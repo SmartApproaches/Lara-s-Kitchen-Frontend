@@ -145,13 +145,21 @@ const ReceiptPreview = ({ order }) => {
           </div>
         ))}
 
-        {orderItems.map((item, idx) => (
+        {/* {orderItems.map((item, idx) => (
           <div key={idx} className="flex justify-between py-0.5 text-[13px]">
             <span>
               {item.menu_item?.name}
               {item.selected_size && ` (${item.selected_size})`} ×{item.quantity}
             </span>
             <span>£{Number(item.subtotal).toFixed(2)}</span>
+          </div>
+        ))} */}
+
+        {orderItems.map((item, idx) => (
+          <div key={idx} className="py-0.5 text-[13px]">
+            <div className="text-[11px] text-gray-500">
+              <span className="font-medium">Note:</span> {item.menu_item?.name}
+            </div>
           </div>
         ))}
 
