@@ -145,12 +145,15 @@ const ReceiptPreview = ({ order }) => {
           </div>
         ))}
 
-        {order?.note && (
-          <div className="mt-2 border-t border-dashed border-gray-300 pt-1 text-left text-xs">
-            <span className="font-medium">Note:</span>
-            <p className="mt-0.5 break-words">{order.note}</p>
+        {orderItems.map((item, idx) => (
+          <div key={idx} className="flex justify-between py-0.5 text-[13px]">
+            <span>
+              {item.menu_item?.name}
+              {item.selected_size && ` (${item.selected_size})`} ×{item.quantity}
+            </span>
+            <span>£{Number(item.subtotal).toFixed(2)}</span>
           </div>
-        )}
+        ))}
 
         <div className="my-2 border-t border-dotted border-gray-300" />
 
