@@ -32,6 +32,12 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
   const isPending = status === "pending";
   const isPreparing = status === "preparing";
   const isReady = status === "ready";
+  const isInTransit = status === "in_transit";
+  const isPickedUp = status === "picked_up";
+  const isDelivered = status === "delivered";
+
+  const showRiderInfo =
+    (isReady || isInTransit || isPickedUp || isDelivered) && orderData?.rider;
   const data = useMemo(() => {
     if (!orderData) return null;
 
@@ -339,59 +345,92 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
             )}
 
             <div className="p-6">
-              {/* Hide everything when READY */}
+              {isPending || isPreparing ? (
+                <div className="space-y-3">
+                  {/* Preparing Button */}
+                  <Button
+                    size="large"
+                    block
+                    disabled={!isPending}
+                    className={`flex-1 rounded-lg font-semibold ${
+                      isPreparing
+                        ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
+                        : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isPending) onMarkAsPreparing(orderData);
+                    }}
+                  >
+                    {isPreparing ? "Preparing" : "Mark as Preparing"}
+                  </Button>
 
-              <div className="space-y-3">
-                {/* Preparing Button */}
+                  {/* Ready Button */}
+                  <Button
+                    size="large"
+                    block
+                    disabled={!isPending && !isPreparing}
+                    className={`flex-1 rounded-lg font-semibold !text-white ${
+                      !isPending && !isPreparing
+                        ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
+                        : "!bg-[#1F5226] hover:!bg-[#0d5729]"
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isPending || isPreparing) onMarkAsReady(orderData);
+                    }}
+                  >
+                    Mark as Ready
+                  </Button>
 
-                <Button
-                  size="large"
-                  block
-                  disabled={!isPending}
-                  className={`flex-1 rounded-lg font-semibold ${
-                    isPreparing
-                      ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
-                      : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (isPending) onMarkAsPreparing(orderData);
-                  }}
-                >
-                  {isPreparing ? "Preparing" : "Mark as Preparing"}
-                </Button>
-
-                {/* Ready Button */}
-                <Button
-                  size="large"
-                  block
-                  disabled={!isPending && !isPreparing}
-                  className={`flex-1 rounded-lg font-semibold !text-white ${
-                    !isPending && !isPreparing
-                      ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
-                      : "!bg-[#1F5226] hover:!bg-[#0d5729]"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (isPending || isPreparing) onMarkAsReady(orderData);
-                  }}
-                >
-                  Mark as Ready
-                </Button>
-
-                {/* Cancel Button: ✅ Only active if Pending */}
-                <Button
-                  size="large"
-                  block
-                  onClick={handleCancel}
-                  danger
-                  ghost
-                  className="rounded-lg font-semibold"
-                  style={{ height: "48px" }}
-                >
-                  Cancel Order
-                </Button>
-              </div>
+                  {/* Cancel Button: ✅ Only active if Pending */}
+                  <Button
+                    size="large"
+                    block
+                    onClick={handleCancel}
+                    danger
+                    ghost
+                    className="rounded-lg font-semibold"
+                    style={{ height: "48px" }}
+                  >
+                    Cancel Order
+                  </Button>
+                </div>
+              ) : (
+                showRiderInfo && (
+                  <div className="flex items-center justify-between rounded-xl bg-[#D4F7DC] p-4 text-[#1F5226]">
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        size={48}
+                        className="bg-[#00BC1A] text-lg font-bold text-white"
+                        style={{ borderRadius: "10px" }}
+                      >
+                        {orderData.rider.name
+                          ? orderData.rider.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .toUpperCase()
+                              .slice(0, 2)
+                          : "R"}
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span className="text-xs text-[#2A3A25] opacity-70">
+                          Rider’s Name
+                        </span>
+                        <span className="text-base font-bold">
+                          {orderData.rider.name}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-[#1F5226]">
+                      Order{" "}
+                      {status.charAt(0).toUpperCase() +
+                        status.slice(1).replace("_", " ")}
+                    </div>
+                  </div>
+                )
+              )}
 
               <Button
                 icon={<HugeiconsIcon icon={PrinterIcon} className="h-4 w-4" />}
