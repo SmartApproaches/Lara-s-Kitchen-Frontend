@@ -89,8 +89,8 @@ const ReceiptPreview = ({ order }) => {
           <span>{order?.orderId || order?.order_number}</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-medium">Order Status</span>
-          <span className="font-bold uppercase">{order?.status?.replace("_", " ")}</span>
+          <span className="font-medium">Order Type</span>
+          <span className="font-bold uppercase">{order?.order_type?.replace("_", " ")}</span>
         </div>
         {order?.orderType === "dine_in" && (
           <div className="flex justify-between">

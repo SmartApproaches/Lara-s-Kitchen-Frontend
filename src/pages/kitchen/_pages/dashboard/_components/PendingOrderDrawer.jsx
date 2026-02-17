@@ -24,17 +24,88 @@ const parsePrice = (val) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+const normalizeStatus = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+
+const toStatusLabel = (value) =>
+  normalizeStatus(value)
+    .split("_")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const toMultilineStatusLabel = (value) => {
+  const words = toStatusLabel(value).split(" ").filter(Boolean);
+  if (words.length <= 1) return words[0] ?? "";
+  if (words.length === 2) return words.join("\n");
+
+  const pivot = Math.ceil(words.length / 2);
+  return `${words.slice(0, pivot).join(" ")}\n${words.slice(pivot).join(" ")}`;
+};
+
 const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsReady, onCancel }) => {
   const [activeKey, setActiveKey] = useState(["1"]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
-  const status = orderData?.status?.toLowerCase();
+  const status = normalizeStatus(orderData?.status);
   const isPending = status === "pending";
   const isPreparing = status === "preparing";
   const isReady = status === "ready";
   const isInTransit = status === "in_transit";
   const isPickedUp = status === "picked_up";
   const isDelivered = status === "delivered";
+  const backendStatusSteps = useMemo(() => {
+    const rawSteps =
+      orderData?.status_steps ??
+      orderData?.statuses ??
+      orderData?.status_flow ??
+      orderData?.available_statuses ??
+      orderData?.order_statuses ??
+      orderData?.tracking_statuses;
+
+    if (!Array.isArray(rawSteps)) return [];
+
+    return rawSteps
+      .map((step) => {
+        if (typeof step === "string") return normalizeStatus(step);
+        return normalizeStatus(step?.status ?? step?.name ?? step?.key);
+      })
+      .filter(Boolean);
+  }, [orderData]);
+
+  const orderStatusSteps = useMemo(() => {
+    const fallbackSteps = ["pending", "preparing", "ready", "in_transit", "delivered"];
+    const steps = backendStatusSteps.length ? [...backendStatusSteps] : fallbackSteps;
+
+    if (status && !steps.includes(status)) {
+      steps.push(status);
+    }
+
+    return [...new Set(steps)];
+  }, [backendStatusSteps, status]);
+
+  const activeStatusIndex = useMemo(() => {
+    if (!orderStatusSteps.length) return 0;
+    if (!status) return 0;
+
+    const exactIndex = orderStatusSteps.findIndex((step) => step === status);
+    if (exactIndex >= 0) return exactIndex;
+
+    if (status === "picked_up") {
+      const inTransitIndex = orderStatusSteps.findIndex((step) => step === "in_transit");
+      if (inTransitIndex >= 0) return inTransitIndex;
+    }
+
+    if (status === "in_transit") {
+      const pickedUpIndex = orderStatusSteps.findIndex((step) => step === "picked_up");
+      if (pickedUpIndex >= 0) return pickedUpIndex;
+    }
+
+    return Math.max(orderStatusSteps.length - 1, 0);
+  }, [orderStatusSteps, status]);
 
   const showRiderInfo =
     (isReady || isInTransit || isPickedUp || isDelivered) && orderData?.rider;
@@ -398,6 +469,7 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                 </div>
               ) : (
                 showRiderInfo && (
+                  <>
                   <div className="flex items-center justify-between rounded-xl bg-[#D4F7DC] p-4 text-[#1F5226]">
                     <div className="flex items-center gap-3">
                       <Avatar
@@ -425,10 +497,42 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
                     </div>
                     <div className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-[#1F5226]">
                       Order{" "}
-                      {status.charAt(0).toUpperCase() +
-                        status.slice(1).replace("_", " ")}
+                      {toStatusLabel(status)}
                     </div>
                   </div>
+
+                  <div className="mt-4 rounded-2xl border border-[#dfe6dd] p-4">
+                    <h3 className="mb-3 text-[24px] font-medium leading-none text-[#1f2620]">
+                      Order Status
+                    </h3>
+                    <div className="flex h-[64px] overflow-hidden rounded-[34px] border border-[#d8ddd7] bg-[#f3f5f2] shadow-[inset_0_8px_12px_-10px_rgba(0,0,0,0.45)]">
+                        {orderStatusSteps.map((step, index) => {
+                          const isActive = index === activeStatusIndex;
+                          const isLast = index === orderStatusSteps.length - 1;
+                          const label = toMultilineStatusLabel(step);
+
+                          return (
+                            <div
+                              key={`${step}-${index}`}
+                              className="relative flex h-full flex-1 items-center justify-center text-[11px] font-medium leading-tight"
+                            style={{
+                              color: isActive ? "#ffffff" : "#1f5a32",
+                              backgroundColor: isActive ? "#00BC1A" : "transparent",
+                              clipPath: isLast
+                                ? "none"
+                                : "polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%)",
+                              marginLeft: index === 0 ? "0" : "-18px",
+                              paddingLeft: index === 0 ? "0" : "18px",
+                              zIndex: isActive ? 2 : 1,
+                            }}
+                          >
+                            <span className="whitespace-pre-line text-center">{label}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  </>
                 )
               )}
 
