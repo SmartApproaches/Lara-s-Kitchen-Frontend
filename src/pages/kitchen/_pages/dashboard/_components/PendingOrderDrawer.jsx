@@ -107,8 +107,7 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
     return Math.max(orderStatusSteps.length - 1, 0);
   }, [orderStatusSteps, status]);
 
-  const showRiderInfo =
-    (isReady || isInTransit || isPickedUp || isDelivered) && orderData?.rider;
+  const showRiderInfo = (isReady || isInTransit || isPickedUp || isDelivered) && orderData?.rider;
   const data = useMemo(() => {
     if (!orderData) return null;
 
@@ -470,68 +469,89 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
               ) : (
                 showRiderInfo && (
                   <>
-                  <div className="flex items-center justify-between rounded-xl bg-[#D4F7DC] p-4 text-[#1F5226]">
-                    <div className="flex items-center gap-3">
-                      <Avatar
-                        size={48}
-                        className="bg-[#00BC1A] text-lg font-bold text-white"
-                        style={{ borderRadius: "10px" }}
-                      >
-                        {orderData.rider.name
-                          ? orderData.rider.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)
-                          : "R"}
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <span className="text-xs text-[#2A3A25] opacity-70">
-                          Rider’s Name
-                        </span>
-                        <span className="text-base font-bold">
-                          {orderData.rider.name}
-                        </span>
+                    <div className="flex items-center justify-between rounded-xl bg-[#D4F7DC] p-4 text-[#1F5226]">
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          size={48}
+                          className="bg-[#00BC1A] text-lg font-bold text-white"
+                          style={{ borderRadius: "10px" }}
+                        >
+                          {orderData.rider.name
+                            ? orderData.rider.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()
+                                .slice(0, 2)
+                            : "R"}
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <span className="text-xs text-[#2A3A25] opacity-70">Rider’s Name</span>
+                          <span className="text-base font-bold">{orderData.rider.name}</span>
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-[#1F5226]">
+                        Order {toStatusLabel(status)}
                       </div>
                     </div>
-                    <div className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-[#1F5226]">
-                      Order{" "}
-                      {toStatusLabel(status)}
-                    </div>
-                  </div>
 
-                  <div className="mt-4 rounded-2xl border border-[#dfe6dd] p-4">
-                    <h3 className="mb-3 text-[24px] font-medium leading-none text-[#1f2620]">
-                      Order Status
-                    </h3>
-                    <div className="flex h-[64px] overflow-hidden rounded-[34px] border border-[#d8ddd7] bg-[#f3f5f2] shadow-[inset_0_8px_12px_-10px_rgba(0,0,0,0.45)]">
+                    <div className="mt-4 rounded-2xl border border-[#dfe6dd] p-4">
+                      <h3 className="mb-3 text-[24px] leading-none font-medium text-[#1f2620]">
+                        Order Status
+                      </h3>
+                      <div className="flex h-[64px] overflow-hidden rounded-[34px] border border-[#d8ddd7] bg-[#f3f5f2] shadow-[inset_0_8px_12px_-10px_rgba(0,0,0,0.45)]">
                         {orderStatusSteps.map((step, index) => {
                           const isActive = index === activeStatusIndex;
+                          const isFirst = index === 0;
                           const isLast = index === orderStatusSteps.length - 1;
                           const label = toMultilineStatusLabel(step);
+
+                          // Clip path logic:
+                          // First: flat left, arrow right
+                          // Last: arrow-notch left, flat right (rounded handled by container)
+                          // Middle: arrow-notch left, arrow right
+                          // Active gets full green fill; inactive get transparent with light divider arrow shape
+
+                          const getClipPath = () => {
+                            if (isFirst && isLast) return "none";
+                            if (isFirst)
+                              return "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)";
+                            if (isLast) return "polygon(0 0, 100% 0, 100% 100%, 0 100%, 20px 50%)";
+                            return "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%)";
+                          };
 
                           return (
                             <div
                               key={`${step}-${index}`}
-                              className="relative flex h-full flex-1 items-center justify-center text-[11px] font-medium leading-tight"
-                            style={{
-                              color: isActive ? "#ffffff" : "#1f5a32",
-                              backgroundColor: isActive ? "#00BC1A" : "transparent",
-                              clipPath: isLast
-                                ? "none"
-                                : "polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%)",
-                              marginLeft: index === 0 ? "0" : "-18px",
-                              paddingLeft: index === 0 ? "0" : "18px",
-                              zIndex: isActive ? 2 : 1,
-                            }}
-                          >
-                            <span className="whitespace-pre-line text-center">{label}</span>
-                          </div>
-                        );
-                      })}
+                              className="relative flex h-full flex-1 items-center justify-center text-[11px] leading-tight font-medium"
+                              style={{
+                                color: isActive ? "#ffffff" : "#1f5a32",
+                                backgroundColor: isActive ? "#00BC1A" : "transparent",
+                                clipPath: getClipPath(),
+                                marginLeft: isFirst ? "0" : "-20px",
+                                paddingLeft: isFirst ? "0" : "20px",
+                                paddingRight: isLast ? "0" : "20px",
+                                zIndex: isActive
+                                  ? orderStatusSteps.length + 1
+                                  : orderStatusSteps.length - index,
+                              }}
+                            >
+                              {/* Divider arrow outline for inactive steps after active */}
+                              {!isActive && !isFirst && (
+                                <div
+                                  className="absolute inset-0"
+                                  style={{
+                                    clipPath: getClipPath(),
+                                    border: "none",
+                                  }}
+                                />
+                              )}
+                              <span className="text-center whitespace-pre-line">{label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
                   </>
                 )
               )}
