@@ -24,14 +24,90 @@ const parsePrice = (val) => {
   return Number.isFinite(n) ? n : 0;
 };
 
+const normalizeStatus = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+
+const toStatusLabel = (value) =>
+  normalizeStatus(value)
+    .split("_")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const toMultilineStatusLabel = (value) => {
+  const words = toStatusLabel(value).split(" ").filter(Boolean);
+  if (words.length <= 1) return words[0] ?? "";
+  if (words.length === 2) return words.join("\n");
+
+  const pivot = Math.ceil(words.length / 2);
+  return `${words.slice(0, pivot).join(" ")}\n${words.slice(pivot).join(" ")}`;
+};
+
 const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsReady, onCancel }) => {
   const [activeKey, setActiveKey] = useState(["1"]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
-  const status = orderData?.status?.toLowerCase();
+  const status = normalizeStatus(orderData?.status);
   const isPending = status === "pending";
   const isPreparing = status === "preparing";
   const isReady = status === "ready";
+  const isInTransit = status === "in_transit";
+  const isPickedUp = status === "picked_up";
+  const isDelivered = status === "delivered";
+  const backendStatusSteps = useMemo(() => {
+    const rawSteps =
+      orderData?.status_steps ??
+      orderData?.statuses ??
+      orderData?.status_flow ??
+      orderData?.available_statuses ??
+      orderData?.order_statuses ??
+      orderData?.tracking_statuses;
+
+    if (!Array.isArray(rawSteps)) return [];
+
+    return rawSteps
+      .map((step) => {
+        if (typeof step === "string") return normalizeStatus(step);
+        return normalizeStatus(step?.status ?? step?.name ?? step?.key);
+      })
+      .filter(Boolean);
+  }, [orderData]);
+
+  const orderStatusSteps = useMemo(() => {
+    const fallbackSteps = ["pending", "preparing", "ready", "in_transit", "delivered"];
+    const steps = backendStatusSteps.length ? [...backendStatusSteps] : fallbackSteps;
+
+    if (status && !steps.includes(status)) {
+      steps.push(status);
+    }
+
+    return [...new Set(steps)];
+  }, [backendStatusSteps, status]);
+
+  const activeStatusIndex = useMemo(() => {
+    if (!orderStatusSteps.length) return 0;
+    if (!status) return 0;
+
+    const exactIndex = orderStatusSteps.findIndex((step) => step === status);
+    if (exactIndex >= 0) return exactIndex;
+
+    if (status === "picked_up") {
+      const inTransitIndex = orderStatusSteps.findIndex((step) => step === "in_transit");
+      if (inTransitIndex >= 0) return inTransitIndex;
+    }
+
+    if (status === "in_transit") {
+      const pickedUpIndex = orderStatusSteps.findIndex((step) => step === "picked_up");
+      if (pickedUpIndex >= 0) return pickedUpIndex;
+    }
+
+    return Math.max(orderStatusSteps.length - 1, 0);
+  }, [orderStatusSteps, status]);
+
+  const showRiderInfo = (isReady || isInTransit || isPickedUp || isDelivered) && orderData?.rider;
   const data = useMemo(() => {
     if (!orderData) return null;
 
@@ -339,59 +415,146 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
             )}
 
             <div className="p-6">
-              {/* Hide everything when READY */}
+              {isPending || isPreparing ? (
+                <div className="space-y-3">
+                  {/* Preparing Button */}
+                  <Button
+                    size="large"
+                    block
+                    disabled={!isPending}
+                    className={`flex-1 rounded-lg font-semibold ${
+                      isPreparing
+                        ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
+                        : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isPending) onMarkAsPreparing(orderData);
+                    }}
+                  >
+                    {isPreparing ? "Preparing" : "Mark as Preparing"}
+                  </Button>
 
-              <div className="space-y-3">
-                {/* Preparing Button */}
+                  {/* Ready Button */}
+                  <Button
+                    size="large"
+                    block
+                    disabled={!isPending && !isPreparing}
+                    className={`flex-1 rounded-lg font-semibold !text-white ${
+                      !isPending && !isPreparing
+                        ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
+                        : "!bg-[#1F5226] hover:!bg-[#0d5729]"
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isPending || isPreparing) onMarkAsReady(orderData);
+                    }}
+                  >
+                    Mark as Ready
+                  </Button>
 
-                <Button
-                  size="large"
-                  block
-                  disabled={!isPending}
-                  className={`flex-1 rounded-lg font-semibold ${
-                    isPreparing
-                      ? "cursor-not-allowed !border-none !bg-[#FFEDC7] !text-[#F5AB0A]"
-                      : "border border-[#157F3B] !text-[#157F3B] hover:bg-[#e6f7ed]"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (isPending) onMarkAsPreparing(orderData);
-                  }}
-                >
-                  {isPreparing ? "Preparing" : "Mark as Preparing"}
-                </Button>
+                  {/* Cancel Button: ✅ Only active if Pending */}
+                  <Button
+                    size="large"
+                    block
+                    onClick={handleCancel}
+                    danger
+                    ghost
+                    className="rounded-lg font-semibold"
+                    style={{ height: "48px" }}
+                  >
+                    Cancel Order
+                  </Button>
+                </div>
+              ) : (
+                showRiderInfo && (
+                  <>
+                    <div className="flex items-center justify-between rounded-xl bg-[#D4F7DC] p-4 text-[#1F5226]">
+                      <div className="flex items-center gap-3">
+                        <Avatar
+                          size={48}
+                          className="bg-[#00BC1A] text-lg font-bold text-white"
+                          style={{ borderRadius: "10px" }}
+                        >
+                          {orderData.rider.name
+                            ? orderData.rider.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()
+                                .slice(0, 2)
+                            : "R"}
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <span className="text-xs text-[#2A3A25] opacity-70">Rider’s Name</span>
+                          <span className="text-base font-bold">{orderData.rider.name}</span>
+                        </div>
+                      </div>
+                      <div className="rounded-lg bg-white px-4 py-2 text-xs font-semibold text-[#1F5226]">
+                        Order {toStatusLabel(status)}
+                      </div>
+                    </div>
 
-                {/* Ready Button */}
-                <Button
-                  size="large"
-                  block
-                  disabled={!isPending && !isPreparing}
-                  className={`flex-1 rounded-lg font-semibold !text-white ${
-                    !isPending && !isPreparing
-                      ? "cursor-not-allowed !bg-[#1F5226] opacity-50"
-                      : "!bg-[#1F5226] hover:!bg-[#0d5729]"
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (isPending || isPreparing) onMarkAsReady(orderData);
-                  }}
-                >
-                  Mark as Ready
-                </Button>
+                    <div className="mt-4 rounded-2xl border border-[#dfe6dd] p-4">
+                      <h3 className="mb-3 text-[24px] leading-none font-medium text-[#1f2620]">
+                        Order Status
+                      </h3>
+                      <div className="flex h-[64px] overflow-hidden rounded-[34px] border border-[#d8ddd7] bg-[#f3f5f2] shadow-[inset_0_8px_12px_-10px_rgba(0,0,0,0.45)]">
+                        {orderStatusSteps.map((step, index) => {
+                          const isActive = index === activeStatusIndex;
+                          const isFirst = index === 0;
+                          const isLast = index === orderStatusSteps.length - 1;
+                          const label = toMultilineStatusLabel(step);
 
-                {/* Cancel Button: ✅ Only active if Pending */}
-                <Button
-                  size="large"
-                  block
-                  onClick={handleCancel}
-                  danger
-                  ghost
-                  className="rounded-lg font-semibold"
-                  style={{ height: "48px" }}
-                >
-                  Cancel Order
-                </Button>
-              </div>
+                          // Clip path logic:
+                          // First: flat left, arrow right
+                          // Last: arrow-notch left, flat right (rounded handled by container)
+                          // Middle: arrow-notch left, arrow right
+                          // Active gets full green fill; inactive get transparent with light divider arrow shape
+
+                          const getClipPath = () => {
+                            if (isFirst && isLast) return "none";
+                            if (isFirst)
+                              return "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%)";
+                            if (isLast) return "polygon(0 0, 100% 0, 100% 100%, 0 100%, 20px 50%)";
+                            return "polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%)";
+                          };
+
+                          return (
+                            <div
+                              key={`${step}-${index}`}
+                              className="relative flex h-full flex-1 items-center justify-center text-[11px] leading-tight font-medium"
+                              style={{
+                                color: isActive ? "#ffffff" : "#1f5a32",
+                                backgroundColor: isActive ? "#00BC1A" : "transparent",
+                                clipPath: getClipPath(),
+                                marginLeft: isFirst ? "0" : "-20px",
+                                paddingLeft: isFirst ? "0" : "20px",
+                                paddingRight: isLast ? "0" : "20px",
+                                zIndex: isActive
+                                  ? orderStatusSteps.length + 1
+                                  : orderStatusSteps.length - index,
+                              }}
+                            >
+                              {/* Divider arrow outline for inactive steps after active */}
+                              {!isActive && !isFirst && (
+                                <div
+                                  className="absolute inset-0"
+                                  style={{
+                                    clipPath: getClipPath(),
+                                    border: "none",
+                                  }}
+                                />
+                              )}
+                              <span className="text-center whitespace-pre-line">{label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </>
+                )
+              )}
 
               <Button
                 icon={<HugeiconsIcon icon={PrinterIcon} className="h-4 w-4" />}
