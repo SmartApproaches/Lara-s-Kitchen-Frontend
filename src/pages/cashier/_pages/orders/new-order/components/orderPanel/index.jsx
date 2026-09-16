@@ -9,7 +9,7 @@ import { countryCodes } from "../countryCode";
 import SuccessModal from "../sucessModal";
 import toast from "react-hot-toast";
 const libraries = ["places"];
-const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
+const GOOGLE_MAPS_API_KEY = "AIzaSyAdj9yCjRwmShW7rJbvHlEcyfMsztXw_iE";
 
 const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawerOpen }) => {
   const [collapseInfo, setCollapseInfo] = useState(true);

@@ -63,7 +63,7 @@ const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrd
 const KitchenMenuList = lazy(() => import("./pages/kitchen/_pages/menu-list/MenuList"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8";
+const GOOGLE_MAPS_API_KEY = "AIzaSyAdj9yCjRwmShW7rJbvHlEcyfMsztXw_iE";
 
 const App = () => {
   return (
