@@ -41,10 +41,12 @@ export const kitchenDashboardApiSlice = api.injectEndpoints({
     // UPDATE ORDER STATUS
     // =========================
     updateOrderStatus: builder.mutation({
-      query: ({ orderId, status }) => ({
+      // delivery_provider: "internal" (our rider, default) | "external" (SmartEatX rider).
+      // Only used by the backend for delivery orders moving to "ready".
+      query: ({ orderId, status, delivery_provider }) => ({
         url: `/kitchen/orders/${orderId}/update-order-status`,
         method: "PATCH",
-        body: { status },
+        body: { status, ...(delivery_provider && { delivery_provider }) },
       }),
       invalidatesTags: ["KitchenDashboard"],
     }),

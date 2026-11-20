@@ -6,6 +6,7 @@ import {
 import { Alert, Pagination, Skeleton } from "antd";
 import SpecialOrderCard from "./specilOrderCard";
 import toast from "react-hot-toast";
+import useMarkAsReady from "../../_components/delivery/useMarkAsReady";
 
 const SpecialOrders = () => {
   const [page, setPage] = useState(1);
@@ -19,6 +20,7 @@ const SpecialOrders = () => {
   );
 
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const { markAsReady, changeRider, deliveryModal } = useMarkAsReady();
 
   const handleMarkAsPreparing = async (order) => {
     try {
@@ -29,14 +31,8 @@ const SpecialOrders = () => {
     }
   };
 
-  const handleMarkAsReady = async (order) => {
-    try {
-      await updateOrderStatus({ orderId: order.id, status: "ready" }).unwrap();
-      toast.success("Order marked as Ready");
-    } catch {
-      toast.error("Failed to update ❌");
-    }
-  };
+  // Delivery orders open the "who delivers" pop-up; others are marked ready directly.
+  const handleMarkAsReady = (order) => markAsReady(order);
 
   return (
     <div>
@@ -65,6 +61,7 @@ const SpecialOrders = () => {
                 order={order}
                 onMarkAsPreparing={handleMarkAsPreparing}
                 onMarkAsReady={handleMarkAsReady}
+                onChangeRider={changeRider}
               />
             ))}
           </div>
@@ -79,6 +76,7 @@ const SpecialOrders = () => {
           </div>
         </>
       )}
+      {deliveryModal}
     </div>
   );
 };

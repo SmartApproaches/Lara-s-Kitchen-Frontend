@@ -17,6 +17,7 @@ import {
   playUrgentNotificationSound,
   stopUrgentNotificationSound,
 } from "../../../../utils/notificationAudio";
+import useMarkAsReady from "../../_components/delivery/useMarkAsReady";
 
 const Orders = () => {
   const [activeTab, setActiveTab] = useState("pending");
@@ -47,6 +48,7 @@ const Orders = () => {
   );
 
   const [updateOrderStatus, { isLoading: isUpdating }] = useUpdateOrderStatusMutation();
+  const { markAsReady, changeRider, deliveryModal } = useMarkAsReady();
 
   const orders = ordersData?.data?.data || [];
   const pagination = ordersData?.data;
@@ -101,8 +103,8 @@ const Orders = () => {
     try {
       await updateOrderStatus({ orderId, status }).unwrap();
       toast.success(`Order updated to ${status}`);
-    } catch {
-      toast.error("Failed to update status ❌");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update status ❌");
     }
   };
 
@@ -129,9 +131,9 @@ const Orders = () => {
           disablePreparing={order.status !== "pending"}
           disableReady={order.status !== "preparing"}
           onMarkAsPreparing={() => handleUpdateStatus(order.id, "preparing")}
-          onMarkAsReady={() => handleUpdateStatus(order.id, "ready")}
+          onMarkAsReady={(o) => markAsReady(o)}
+          onChangeRider={changeRider}
           isUpdating={isUpdating}
-
           isOverdue={isOverdue}
           onMute={() => setUserHasMuted(true)}
         />
@@ -198,6 +200,7 @@ const Orders = () => {
           </style>
         </div>
       )}
+      {deliveryModal}
     </div>
   );
 };
