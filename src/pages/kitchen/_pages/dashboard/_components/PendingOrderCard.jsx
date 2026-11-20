@@ -3,12 +3,14 @@ import { Avatar, Button, Tag } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PendingOrderDrawer from "./PendingOrderDrawer";
+import ExternalDeliveryInfo from "../../../_components/delivery/ExternalDeliveryInfo";
 
 const PendingOrderCard = ({
   order,
   onMarkAsPreparing,
   onMarkAsReady,
   onCancel,
+  onChangeRider,
   isOverdue,
   onMute,
 }) => {
@@ -104,6 +106,9 @@ const PendingOrderCard = ({
           ))}
         </div>
 
+        {/* SmartEatX delivery: badge, pickup code, rider, status */}
+        <ExternalDeliveryInfo order={order} onChangeRider={onChangeRider} />
+
         {/* Action Buttons */}
 
         {isPending || isPreparing ? (
@@ -179,6 +184,7 @@ const PendingOrderCard = ({
         onMarkAsPreparing={onMarkAsPreparing}
         onMarkAsReady={onMarkAsReady}
         onCancel={onCancel}
+        onChangeRider={onChangeRider}
       />
     </>
   );

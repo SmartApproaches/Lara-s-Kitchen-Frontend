@@ -45,6 +45,9 @@ const AdminAddNewFood = lazy(
 const AdminBusinessSuiteAppSettings = lazy(
   () => import("./pages/admin/_pages/business-suite/_components/AppSettings"),
 );
+const AdminAdsList = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdsList"));
+const AdminAdForm = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdForm"));
+const AdminAdDetail = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdDetail"));
 
 // Cashier Dashboard
 const CashierDashboardLayout = lazy(() => import("./layout/cashier/CashierDashboardLayout"));
@@ -115,6 +118,10 @@ const App = () => {
               path="admin/business-suite/app-settings"
               element={<AdminBusinessSuiteAppSettings />}
             />
+            <Route path="admin/business-suite/ads" element={<AdminAdsList />} />
+            <Route path="admin/business-suite/ads/new" element={<AdminAdForm />} />
+            <Route path="admin/business-suite/ads/:id" element={<AdminAdDetail />} />
+            <Route path="admin/business-suite/ads/:id/edit" element={<AdminAdForm />} />
           </Route>
         </Route>
 

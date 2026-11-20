@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Alert, Skeleton } from "antd";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Megaphone01Icon } from "@hugeicons/core-free-icons";
 
 import BusinessSuiteHeader from "./_components/BusinessSuiteHeader";
 import {
@@ -154,6 +156,12 @@ const BusinessSuite = () => {
       icon: ICONS.suiteSettingsIcon,
       link: "/admin/business-suite/app-settings",
     },
+    {
+      description: "Ads",
+      value: null,
+      hugeIcon: Megaphone01Icon,
+      link: "/admin/business-suite/ads",
+    },
   ];
 
   const renderSuiteCards = () => {
@@ -202,7 +210,11 @@ const BusinessSuite = () => {
         key={index}
         className="flex flex-col items-center justify-center rounded-xl bg-white p-3 shadow-md sm:py-10 transition-transform hover:scale-105 hover:shadow-lg sm:p-4 md:m-4"
       >
-        <img src={card.icon} alt={card.description} className="mb-2 h-10 w-10 sm:h-12 sm:w-12" />
+        {card.icon ? (
+          <img src={card.icon} alt={card.description} className="mb-2 h-10 w-10 sm:h-12 sm:w-12" />
+        ) : (
+          <HugeiconsIcon icon={card.hugeIcon} className="mb-2 h-10 w-10 text-[#00BC1A] sm:h-12 sm:w-12" />
+        )}
         <p className="px-2 text-center text-sm font-medium sm:text-base md:text-lg lg:text-xl">
           {card.description}
         </p>
