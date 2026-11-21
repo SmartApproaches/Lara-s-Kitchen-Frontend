@@ -1,6 +1,11 @@
 // Helpers for SmartEatX ("external") deliveries on kitchen orders.
 
-export const isDeliveryOrder = (order) => String(order?.order_type ?? "").toLowerCase() === "delivery";
+// Tolerates casing/spacing variants ("delivery", "DELIVERY", "Delivery ", "home_delivery").
+export const isDeliveryOrder = (order) =>
+  String(order?.order_type ?? order?.orderType ?? order?.type ?? "")
+    .trim()
+    .toLowerCase()
+    .includes("deliver");
 
 export const isExternalDelivery = (order) =>
   order?.delivery_provider === "external" && !!order?.external_delivery;

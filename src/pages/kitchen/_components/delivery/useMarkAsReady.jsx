@@ -16,6 +16,16 @@ const useMarkAsReady = () => {
   const [deliveryOrder, setDeliveryOrder] = useState(null);
 
   const markAsReady = async (order) => {
+    if (import.meta.env.DEV) {
+      // Local dev only: shows why the "who delivers" pop-up did or didn't open.
+      console.info("[mark-as-ready]", {
+        order_number: order?.order_number,
+        order_type: order?.order_type,
+        isDelivery: isDeliveryOrder(order),
+        order,
+      });
+    }
+
     if (isDeliveryOrder(order)) {
       setDeliveryOrder(order);
       return;
