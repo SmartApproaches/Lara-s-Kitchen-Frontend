@@ -52,13 +52,13 @@ const showPickupCodeToast = (pickupCode) =>
  */
 const DeliveryProviderModal = ({ order, onClose }) => {
   const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
-  const [provider, setProvider] = useState("internal");
+  const [provider, setProvider] = useState("external");
   const [error, setError] = useState(null);
 
   // Reset each time the pop-up opens for an order.
   useEffect(() => {
     if (order) {
-      setProvider("internal");
+      setProvider("external");
       setError(null);
     }
   }, [order?.id]);
@@ -111,20 +111,20 @@ const DeliveryProviderModal = ({ order, onClose }) => {
     >
       <div className="mt-4 space-y-3" onClick={(e) => e.stopPropagation()}>
         <ProviderOption
-          selected={provider === "internal"}
-          onSelect={() => setProvider("internal")}
-          disabled={isLoading}
-          icon={Motorbike01Icon}
-          title="Our rider"
-          subtitle="Lara's riders get the order, as usual."
-        />
-        <ProviderOption
           selected={provider === "external"}
           onSelect={() => setProvider("external")}
           disabled={isLoading}
           icon={DeliveryTruck01Icon}
           title="SmartEatX rider"
           subtitle={`We book a SmartEatX rider. The customer paid £${deliveryFee.toFixed(2)} for delivery.`}
+        />
+        <ProviderOption
+          selected={provider === "internal"}
+          onSelect={() => setProvider("internal")}
+          disabled={isLoading}
+          icon={Motorbike01Icon}
+          title="Our rider"
+          subtitle="Lara's riders get the order, as usual."
         />
 
         {error && (
