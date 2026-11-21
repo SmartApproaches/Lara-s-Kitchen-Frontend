@@ -11,6 +11,17 @@ import {
   useUpdateAppSettingsMutation,
 } from "../../../../../redux/slices/super-admin/businessSuiteApiSlice";
 
+// Converts a UK phone number to international format with no spaces (e.g. "07911 123456"
+// -> "+447911123456"), which is what the backend expects. Returns null if it isn't a UK number.
+const toUkInternational = (value) => {
+  let digits = String(value ?? "").replace(/[\s().-]/g, "");
+  if (digits.startsWith("+44")) digits = digits.slice(3);
+  else if (digits.startsWith("0044")) digits = digits.slice(4);
+  else if (digits.startsWith("44") && digits.length >= 11) digits = digits.slice(2);
+  if (digits.startsWith("0")) digits = digits.slice(1); // "0" trunk prefix, incl. "+44 (0)20…"
+  return /^[1-9]\d{8,9}$/.test(digits) ? `+44${digits}` : null;
+};
+
 const AppSettings = () => {
   const navigate = useNavigate();
   const { data, isLoading, error } = useGetAppSettingsQuery();
@@ -80,8 +91,11 @@ const AppSettings = () => {
       changedFields.is_maintenance_mode = formData.maintenanceMode;
     }
 
-    if (formData.restaurantPhone.trim() !== initialData.restaurantPhone) {
-      changedFields.restaurant_phone = formData.restaurantPhone.trim();
+    const phone = formData.restaurantPhone.trim()
+      ? toUkInternational(formData.restaurantPhone)
+      : "";
+    if (phone !== (toUkInternational(initialData.restaurantPhone) ?? initialData.restaurantPhone)) {
+      changedFields.restaurant_phone = phone;
     }
 
     return changedFields;
@@ -98,8 +112,7 @@ const AppSettings = () => {
     }
 
     // SmartEatX riders call this number, so it must be a UK phone number.
-    const phoneDigits = formData.restaurantPhone.replace(/[\s()-]/g, "");
-    if (phoneDigits && !/^(\+44|0)\d{9,10}$/.test(phoneDigits)) {
+    if (formData.restaurantPhone.trim() && !toUkInternational(formData.restaurantPhone)) {
       customInfoToast("Enter a valid UK phone number, e.g. 020 1234 5678 or +44 20 1234 5678");
       return;
     }
