@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Input, Select, Switch, Button, Skeleton, Alert } from "antd";
-import { LinkOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { LinkOutlined, ArrowLeftOutlined, PhoneOutlined } from "@ant-design/icons";
 
 import { Button as CustomButton } from "../../../../../components";
 import { customInfoToast } from "../../../../../utils/toast";
@@ -22,6 +22,7 @@ const AppSettings = () => {
     iosStoreUrl: "",
     androidStoreUrl: "",
     maintenanceMode: false,
+    restaurantPhone: "",
   });
 
   const [initialData, setInitialData] = useState({
@@ -30,6 +31,7 @@ const AppSettings = () => {
     iosStoreUrl: "",
     androidStoreUrl: "",
     maintenanceMode: false,
+    restaurantPhone: "",
   });
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const AppSettings = () => {
         iosStoreUrl: data.data?.ios_store_url || "",
         androidStoreUrl: data.data?.android_store_url || "",
         maintenanceMode: data.data?.is_maintenance_mode || false,
+        restaurantPhone: data.data?.restaurant_phone || "",
       };
       setFormData(loadedData);
       setInitialData(loadedData);
@@ -77,6 +80,10 @@ const AppSettings = () => {
       changedFields.is_maintenance_mode = formData.maintenanceMode;
     }
 
+    if (formData.restaurantPhone.trim() !== initialData.restaurantPhone) {
+      changedFields.restaurant_phone = formData.restaurantPhone.trim();
+    }
+
     return changedFields;
   };
 
@@ -87,6 +94,13 @@ const AppSettings = () => {
     }
     if (!formData.updateType) {
       customInfoToast("Please select update type");
+      return;
+    }
+
+    // SmartEatX riders call this number, so it must be a UK phone number.
+    const phoneDigits = formData.restaurantPhone.replace(/[\s()-]/g, "");
+    if (phoneDigits && !/^(\+44|0)\d{9,10}$/.test(phoneDigits)) {
+      customInfoToast("Enter a valid UK phone number, e.g. 020 1234 5678 or +44 20 1234 5678");
       return;
     }
 
@@ -250,6 +264,28 @@ const AppSettings = () => {
               value={formData.androidStoreUrl}
               onChange={(e) => handleInputChange("androidStoreUrl", e.target.value)}
               className="h-12 lg:flex-1"
+            />
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+            <div>
+              <label className="text-base font-medium whitespace-nowrap text-gray-700">
+                Restaurant Phone
+              </label>
+              <p className="text-xs text-gray-500">
+                SmartEatX riders call this number. Needed before booking SmartEatX riders.
+              </p>
+            </div>
+            <Input
+              prefix={<PhoneOutlined className="text-gray-400" />}
+              placeholder="e.g. 020 1234 5678"
+              type="tel"
+              value={formData.restaurantPhone}
+              onChange={(e) => handleInputChange("restaurantPhone", e.target.value)}
+              className="h-12 lg:max-w-[280px]"
+              size="large"
             />
           </div>
         </div>
