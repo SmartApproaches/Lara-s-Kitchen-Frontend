@@ -1,6 +1,11 @@
 import { Button } from "antd";
 
-import { canChangeRider, externalStatusChip, isExternalDelivery } from "./externalDelivery";
+import {
+  canChangeRider,
+  externalStatusChip,
+  getPickupCode,
+  isExternalDelivery,
+} from "./externalDelivery";
 
 /**
  * SmartEatX delivery panel for kitchen order cards and the order drawer:
@@ -9,7 +14,7 @@ import { canChangeRider, externalStatusChip, isExternalDelivery } from "./extern
 const ExternalDeliveryInfo = ({ order, onChangeRider, large = false }) => {
   if (!isExternalDelivery(order)) return null;
 
-  const delivery = order.external_delivery;
+  const delivery = order.external_delivery ?? {};
   const chip = externalStatusChip(delivery);
   const courierName = delivery.courier?.name;
 
@@ -40,7 +45,7 @@ const ExternalDeliveryInfo = ({ order, onChangeRider, large = false }) => {
               large ? "text-4xl" : "text-2xl"
             }`}
           >
-            {delivery.pickup_code ?? "—"}
+            {getPickupCode(order) ?? "—"}
           </p>
         </div>
         {courierName && (
