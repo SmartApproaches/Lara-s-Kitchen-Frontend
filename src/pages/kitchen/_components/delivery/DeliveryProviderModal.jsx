@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { DeliveryTruck01Icon, Motorbike01Icon } from "@hugeicons/core-free-icons";
 
 import { useUpdateOrderStatusMutation } from "../../../../redux/slices/kitchen/kitchenDashboardApiSlice";
+import { getPickupCode } from "./externalDelivery";
 
 const ProviderOption = ({ selected, onSelect, icon, title, subtitle, disabled }) => (
   <button
@@ -76,7 +77,7 @@ const DeliveryProviderModal = ({ order, onClose }) => {
       }).unwrap();
 
       if (chosen === "external") {
-        showPickupCodeToast(res?.data?.external_delivery?.pickup_code);
+        showPickupCodeToast(getPickupCode(res?.data));
       } else {
         toast.success("Order marked as Ready ✅ Our riders will take it.");
       }

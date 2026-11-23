@@ -7,8 +7,13 @@ export const isDeliveryOrder = (order) =>
     .toLowerCase()
     .includes("deliver");
 
+// SmartEatX's pickup code: on every order (null unless a SmartEatX rider is booked),
+// and also inside external_delivery.
+export const getPickupCode = (order) =>
+  order?.pickup_code ?? order?.external_delivery?.pickup_code ?? null;
+
 export const isExternalDelivery = (order) =>
-  order?.delivery_provider === "external" && !!order?.external_delivery;
+  order?.delivery_provider === "external" && (!!order?.external_delivery || !!getPickupCode(order));
 
 // Once SmartEatX's rider has collected the order it can no longer be called off.
 const COLLECTED_STATUSES = ["picked_up", "in_transit", "at_dropoff", "delivered"];
@@ -16,7 +21,7 @@ const COLLECTED_STATUSES = ["picked_up", "in_transit", "at_dropoff", "delivered"
 export const canChangeRider = (order) =>
   String(order?.status ?? "").toLowerCase() === "ready" &&
   isExternalDelivery(order) &&
-  !COLLECTED_STATUSES.includes(order.external_delivery.status);
+  !COLLECTED_STATUSES.includes(order.external_delivery?.status);
 
 const capitalise = (value) =>
   String(value ?? "")

@@ -92,7 +92,8 @@ const ReceiptPreview = ({ order }) => {
           <span className="font-medium">Order Type</span>
           <span className="font-bold uppercase">{order?.order_type?.replace("_", " ")}</span>
         </div>
-        {order?.delivery_provider === "external" && order?.external_delivery && (
+        {order?.delivery_provider === "external" &&
+          (order?.pickup_code || order?.external_delivery?.pickup_code) && (
           <>
             <div className="flex justify-between">
               <span className="font-medium">Rider</span>
@@ -101,7 +102,7 @@ const ReceiptPreview = ({ order }) => {
             <div className="flex justify-between">
               <span className="font-medium">Pickup Code</span>
               <span className="text-base font-bold tracking-widest">
-                {order.external_delivery.pickup_code ?? "-"}
+                {order.pickup_code ?? order.external_delivery?.pickup_code}
               </span>
             </div>
           </>
