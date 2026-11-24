@@ -1,4 +1,9 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const ADS_BASE = "/admin/business-suite/ads";
 
@@ -16,7 +21,9 @@ export const getAdState = (ad) => {
   return { label: `${days} day${days === 1 ? "" : "s"} left`, bg: "#D6FADB", color: "#0CA921" };
 };
 
-export const formatAdDate = (value) => (value ? dayjs(value).format("D MMM YYYY, HH:mm") : "—");
+// Ad times are shown in UK time, whatever the viewer's own time zone.
+export const formatAdDate = (value) =>
+  value ? dayjs(value).tz("Europe/London").format("D MMM YYYY, HH:mm") : "—";
 
 export const errorMessage = (error, fallback) => error?.data?.message || fallback;
 
