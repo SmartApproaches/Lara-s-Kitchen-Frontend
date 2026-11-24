@@ -1,6 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
 import { api } from "../api/rtkQuery";
+import { adClientApi } from "../api/adClientApi";
 import loginSlice from "../features/auth/loginSlice";
 import tokenSlice from "../features/auth/tokenSlice";
 import categoriesSlice from "../slices/super-admin/categoriesSlice";
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   categories: categoriesSlice.reducer,
   notifications: notificationsSlice.reducer,
   [api.reducerPath]: api.reducer,
+  [adClientApi.reducerPath]: adClientApi.reducer,
 });
 
 export default rootReducer;

@@ -14,6 +14,7 @@ import storage from "redux-persist/lib/storage";
 
 import rootReducer from "../rootReducer/rootReducer";
 import { api } from "../api/rtkQuery";
+import { adClientApi } from "../api/adClientApi";
 
 const persistConfig = {
   key: "root",
@@ -31,7 +32,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(api.middleware),
+    }).concat(api.middleware, adClientApi.middleware),
   devTools: true,
 });
 setupListeners(store.dispatch);

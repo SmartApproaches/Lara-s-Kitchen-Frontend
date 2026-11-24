@@ -45,6 +45,9 @@ const AdminAddNewFood = lazy(
 const AdminBusinessSuiteAppSettings = lazy(
   () => import("./pages/admin/_pages/business-suite/_components/AppSettings"),
 );
+const AdminBusinessSuiteRestaurant = lazy(
+  () => import("./pages/admin/_pages/business-suite/_components/RestaurantSettings"),
+);
 const AdminAdsList = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdsList"));
 const AdminAdForm = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdForm"));
 const AdminAdDetail = lazy(() => import("./pages/admin/_pages/business-suite/ads/AdDetail"));
@@ -66,6 +69,10 @@ const KitchenSpecialOrder = lazy(() => import("./pages/kitchen/_pages/specialOrd
 const KitchenMenuList = lazy(() => import("./pages/kitchen/_pages/menu-list/MenuList"));
 const DineInMenu = lazy(() => import("./pages/guest/menu"));
 
+// Advertisers (ad clients): public, signed in with an emailed code, not a staff login
+const Advertisers = lazy(() => import("./pages/advertisers/Advertisers"));
+const AdvertiserAd = lazy(() => import("./pages/advertisers/AdvertiserAd"));
+
 const GOOGLE_MAPS_API_KEY = "AIzaSyAdj9yCjRwmShW7rJbvHlEcyfMsztXw_iE";
 
 const App = () => {
@@ -78,6 +85,9 @@ const App = () => {
 
         <Route path="/login" element={<Login />} />
         <Route path="/dinein-menu" element={<DineInMenu />} />
+        {/* The ad emails link to /advertisers: keep this path */}
+        <Route path="/advertisers" element={<Advertisers />} />
+        <Route path="/advertisers/:id" element={<AdvertiserAd />} />
 
         {/* Admin Routes */}
         <Route element={<ProtectedRoutes />}>
@@ -117,6 +127,10 @@ const App = () => {
             <Route
               path="admin/business-suite/app-settings"
               element={<AdminBusinessSuiteAppSettings />}
+            />
+            <Route
+              path="admin/business-suite/restaurant"
+              element={<AdminBusinessSuiteRestaurant />}
             />
             <Route path="admin/business-suite/ads" element={<AdminAdsList />} />
             <Route path="admin/business-suite/ads/new" element={<AdminAdForm />} />

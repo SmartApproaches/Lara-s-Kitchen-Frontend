@@ -317,7 +317,11 @@ const AdForm = () => {
             />
           </Field>
 
-          <Field label="Client email" error={errors.client_email}>
+          <Field
+            label="Client email"
+            error={errors.client_email}
+            hint="The client gets emails about this ad, and signs in with this email to see how it's doing."
+          >
             <Input
               size="large"
               type="email"
