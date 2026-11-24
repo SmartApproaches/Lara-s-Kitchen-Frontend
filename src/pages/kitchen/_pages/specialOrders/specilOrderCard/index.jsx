@@ -5,8 +5,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import PendingOrderDrawer from "../../dashboard/_components/PendingOrderDrawer";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Call02Icon, FireIcon } from "@hugeicons/core-free-icons";
+import ExternalDeliveryInfo from "../../../_components/delivery/ExternalDeliveryInfo";
 
-const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady }) => {
+const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onChangeRider }) => {
   dayjs.extend(relativeTime);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -93,6 +94,9 @@ const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady }) => {
           ))}
         </div>
 
+        {/* SmartEatX delivery: badge, pickup code, rider, status */}
+        <ExternalDeliveryInfo order={order} onChangeRider={onChangeRider} />
+
         {/* Action Buttons */}
         {!isReady && (
           <div className="mt-4 flex gap-3">
@@ -131,6 +135,7 @@ const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady }) => {
         onClose={() => setSelectedOrder(null)}
         onMarkAsPreparing={onMarkAsPreparing}
         onMarkAsReady={onMarkAsReady}
+        onChangeRider={onChangeRider}
       />
     </>
   );

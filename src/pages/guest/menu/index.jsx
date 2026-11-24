@@ -50,8 +50,8 @@ const DineInMenu = () => {
   const [tableNumber, setTableNumber] = useState("");
   const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceDineInOrderMutation();
   const [orderSuccess, setOrderSuccess] = useState(null);
-  const GOOGLE_MAPS_API_KEY = "AIzaSyDNN-TIVDyH6GNq9GcVplwpov6xI8llTkI";
-  // ✅ BACKGROUND SYNC FOR PAGE 1
+  const GOOGLE_MAPS_API_KEY = "AIzaSyAdj9yCjRwmShW7rJbvHlEcyfMsztXw_iE";
+
   useEffect(() => {
     if (page1Data?.data?.data && page > 1) {
       const page1Items = page1Data.data.data;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Input, Select, Switch, Button, Skeleton, Alert } from "antd";
-import { LinkOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { LinkOutlined, ArrowLeftOutlined, PhoneOutlined } from "@ant-design/icons";
 
 import { Button as CustomButton } from "../../../../../components";
 import { customInfoToast } from "../../../../../utils/toast";
@@ -10,6 +10,17 @@ import {
   useGetAppSettingsQuery,
   useUpdateAppSettingsMutation,
 } from "../../../../../redux/slices/super-admin/businessSuiteApiSlice";
+
+// Converts a UK phone number to international format with no spaces (e.g. "07911 123456"
+// -> "+447911123456"), which is what the backend expects. Returns null if it isn't a UK number.
+const toUkInternational = (value) => {
+  let digits = String(value ?? "").replace(/[\s().-]/g, "");
+  if (digits.startsWith("+44")) digits = digits.slice(3);
+  else if (digits.startsWith("0044")) digits = digits.slice(4);
+  else if (digits.startsWith("44") && digits.length >= 11) digits = digits.slice(2);
+  if (digits.startsWith("0")) digits = digits.slice(1); // "0" trunk prefix, incl. "+44 (0)20…"
+  return /^[1-9]\d{8,9}$/.test(digits) ? `+44${digits}` : null;
+};
 
 const AppSettings = () => {
   const navigate = useNavigate();
@@ -22,6 +33,7 @@ const AppSettings = () => {
     iosStoreUrl: "",
     androidStoreUrl: "",
     maintenanceMode: false,
+    restaurantPhone: "",
   });
 
   const [initialData, setInitialData] = useState({
@@ -30,6 +42,7 @@ const AppSettings = () => {
     iosStoreUrl: "",
     androidStoreUrl: "",
     maintenanceMode: false,
+    restaurantPhone: "",
   });
 
   useEffect(() => {
@@ -40,6 +53,7 @@ const AppSettings = () => {
         iosStoreUrl: data.data?.ios_store_url || "",
         androidStoreUrl: data.data?.android_store_url || "",
         maintenanceMode: data.data?.is_maintenance_mode || false,
+        restaurantPhone: data.data?.restaurant_phone || "",
       };
       setFormData(loadedData);
       setInitialData(loadedData);
@@ -77,6 +91,13 @@ const AppSettings = () => {
       changedFields.is_maintenance_mode = formData.maintenanceMode;
     }
 
+    const phone = formData.restaurantPhone.trim()
+      ? toUkInternational(formData.restaurantPhone)
+      : "";
+    if (phone !== (toUkInternational(initialData.restaurantPhone) ?? initialData.restaurantPhone)) {
+      changedFields.restaurant_phone = phone;
+    }
+
     return changedFields;
   };
 
@@ -87,6 +108,12 @@ const AppSettings = () => {
     }
     if (!formData.updateType) {
       customInfoToast("Please select update type");
+      return;
+    }
+
+    // SmartEatX riders call this number, so it must be a UK phone number.
+    if (formData.restaurantPhone.trim() && !toUkInternational(formData.restaurantPhone)) {
+      customInfoToast("Enter a valid UK phone number, e.g. 020 1234 5678 or +44 20 1234 5678");
       return;
     }
 
@@ -250,6 +277,28 @@ const AppSettings = () => {
               value={formData.androidStoreUrl}
               onChange={(e) => handleInputChange("androidStoreUrl", e.target.value)}
               className="h-12 lg:flex-1"
+            />
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+            <div>
+              <label className="text-base font-medium whitespace-nowrap text-gray-700">
+                Restaurant Phone
+              </label>
+              <p className="text-xs text-gray-500">
+                SmartEatX riders call this number. Needed before booking SmartEatX riders.
+              </p>
+            </div>
+            <Input
+              prefix={<PhoneOutlined className="text-gray-400" />}
+              placeholder="e.g. 020 1234 5678"
+              type="tel"
+              value={formData.restaurantPhone}
+              onChange={(e) => handleInputChange("restaurantPhone", e.target.value)}
+              className="h-12 lg:max-w-[280px]"
+              size="large"
             />
           </div>
         </div>

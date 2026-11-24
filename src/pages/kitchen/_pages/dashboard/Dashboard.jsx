@@ -19,6 +19,7 @@ import {
   playUrgentNotificationSound,
   stopUrgentNotificationSound,
 } from "../../../../utils/notificationAudio";
+import useMarkAsReady from "../../_components/delivery/useMarkAsReady";
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
@@ -74,6 +75,7 @@ const Dashboard = () => {
   );
 
   const [updateOrderStatus, { isLoading: isUpdatingStatus }] = useUpdateOrderStatusMutation();
+  const { markAsReady, changeRider, deliveryModal } = useMarkAsReady();
 
   const pendingOrders = pendingOrdersData?.data?.data || [];
 
@@ -149,27 +151,17 @@ const Dashboard = () => {
     try {
       await updateOrderStatus({
         orderId: order.id,
-        status: "cancel",
+        status: "cancelled",
       }).unwrap();
 
-      toast.success("Order moved to Preparing");
+      toast.success("Order cancelled");
     } catch (error) {
       toast.error(error?.data?.message || "Failed to update order ❌");
     }
   };
 
-  const handleMarkAsReady = async (order) => {
-    try {
-      await updateOrderStatus({
-        orderId: order.id,
-        status: "ready",
-      }).unwrap();
-
-      toast.success("Order marked as Ready ✅");
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to update order ❌");
-    }
-  };
+  // Delivery orders open the "who delivers" pop-up; others are marked ready directly.
+  const handleMarkAsReady = (order) => markAsReady(order);
 
   const renderStatsCards = () => {
     if (isLoadingStats) {
@@ -229,7 +221,7 @@ const Dashboard = () => {
         disableReady={order.status !== "preparing"}
         onMarkAsPreparing={handleMarkAsPreparing}
         onMarkAsReady={handleMarkAsReady}
-
+        onChangeRider={changeRider}
         onCancel={handleCancel}
         isOverdue={
           order.status === "pending" && dayjs().diff(dayjs(order.created_at), "minute") > 20
@@ -273,6 +265,7 @@ const Dashboard = () => {
           </style>
         </div>
       )}
+      {deliveryModal}
     </div>
   );
 };

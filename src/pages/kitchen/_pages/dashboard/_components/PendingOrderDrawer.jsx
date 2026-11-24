@@ -5,6 +5,7 @@ import { ArrowDown01Icon, ArrowUp01Icon, PrinterIcon } from "@hugeicons/core-fre
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import ReceiptPreview from "../../../../cashier/_pages/orders/receipt";
+import ExternalDeliveryInfo from "../../../_components/delivery/ExternalDeliveryInfo";
 dayjs.extend(relativeTime);
 
 const { Panel } = Collapse;
@@ -46,7 +47,14 @@ const toMultilineStatusLabel = (value) => {
   return `${words.slice(0, pivot).join(" ")}\n${words.slice(pivot).join(" ")}`;
 };
 
-const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsReady, onCancel }) => {
+const PendingOrderDrawer = ({
+  orderData,
+  onClose,
+  onMarkAsPreparing,
+  onMarkAsReady,
+  onCancel,
+  onChangeRider,
+}) => {
   const [activeKey, setActiveKey] = useState(["1"]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
@@ -415,6 +423,11 @@ const PendingOrderDrawer = ({ orderData, onClose, onMarkAsPreparing, onMarkAsRea
             )}
 
             <div className="p-6">
+              {/* SmartEatX delivery: badge, pickup code, rider, status */}
+              <div className="mb-4 empty:hidden">
+                <ExternalDeliveryInfo order={orderData} onChangeRider={onChangeRider} large />
+              </div>
+
               {isPending || isPreparing ? (
                 <div className="space-y-3">
                   {/* Preparing Button */}
