@@ -23,7 +23,7 @@ const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onChangeRid
     <>
       <div
         onClick={() => setSelectedOrder(order)}
-        className="w-full cursor-pointer rounded-xl bg-white p-5 shadow transition-all hover:shadow-md"
+        className="flex h-full w-full cursor-pointer flex-col rounded-xl bg-white p-5 shadow transition-all hover:shadow-md"
       >
         {/* 🟧 SPECIAL ORDER TAG */}
         <div className="mb-2 flex items-center">
@@ -94,39 +94,42 @@ const SpecialOrderCard = ({ order, onMarkAsPreparing, onMarkAsReady, onChangeRid
           ))}
         </div>
 
-        {/* SmartEatX delivery: badge, pickup code, rider, status */}
-        <ExternalDeliveryInfo order={order} onChangeRider={onChangeRider} />
+        {/* Pinned to the bottom so cards in a row line up; spare space sits above it */}
+        <div className="mt-auto">
+          {/* SmartEatX delivery: badge, pickup code, rider, status */}
+          <ExternalDeliveryInfo order={order} onChangeRider={onChangeRider} />
 
-        {/* Action Buttons */}
-        {!isReady && (
-          <div className="mt-4 flex gap-3">
-            <Button
-              disabled={!isPending}
-              className={`flex-1 rounded-lg !text-[10px] font-semibold ${
-                isPreparing
-                  ? "!bg-[#FFEDC7] !text-[#F5AB0A]"
-                  : "border border-[#157F3B] !text-[#157F3B]"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isPending) onMarkAsPreparing(order);
-              }}
-            >
-              {isPreparing ? "Preparing" : "Mark as Preparing"}
-            </Button>
+          {/* Action Buttons */}
+          {!isReady && (
+            <div className="mt-4 flex gap-3">
+              <Button
+                disabled={!isPending}
+                className={`flex-1 rounded-lg !text-[10px] font-semibold ${
+                  isPreparing
+                    ? "!bg-[#FFEDC7] !text-[#F5AB0A]"
+                    : "border border-[#157F3B] !text-[#157F3B]"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isPending) onMarkAsPreparing(order);
+                }}
+              >
+                {isPreparing ? "Preparing" : "Mark as Preparing"}
+              </Button>
 
-            <Button
-              disabled={!isPending && !isPreparing}
-              className="flex-1 rounded-lg !bg-[#1F5226] text-[10px] !text-white"
-              onClick={(e) => {
-                e.stopPropagation();
-                onMarkAsReady(order);
-              }}
-            >
-              Mark as Ready
-            </Button>
-          </div>
-        )}
+              <Button
+                disabled={!isPending && !isPreparing}
+                className="flex-1 rounded-lg !bg-[#1F5226] text-[10px] !text-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMarkAsReady(order);
+                }}
+              >
+                Mark as Ready
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Drawer */}

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Alert, Skeleton } from "antd";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Megaphone01Icon } from "@hugeicons/core-free-icons";
+import { Megaphone01Icon, Store01Icon } from "@hugeicons/core-free-icons";
 
 import BusinessSuiteHeader from "./_components/BusinessSuiteHeader";
 import {
@@ -157,6 +157,13 @@ const BusinessSuite = () => {
       link: "/admin/business-suite/app-settings",
     },
     {
+      description: "Restaurant",
+      subtitle: "Where riders collect orders",
+      value: null,
+      hugeIcon: Store01Icon,
+      link: "/admin/business-suite/restaurant",
+    },
+    {
       description: "Ads",
       value: null,
       hugeIcon: Megaphone01Icon,
@@ -218,6 +225,10 @@ const BusinessSuite = () => {
         <p className="px-2 text-center text-sm font-medium sm:text-base md:text-lg lg:text-xl">
           {card.description}
         </p>
+
+        {card.subtitle && (
+          <p className="mt-1 px-2 text-center text-sm text-gray-500">{card.subtitle}</p>
+        )}
 
         {index === 1 ? (
           <div className="mt-2 flex w-full max-w-xs items-center justify-center gap-x-2 rounded-xl bg-[#EFFFF1] p-2 text-sm font-semibold">
