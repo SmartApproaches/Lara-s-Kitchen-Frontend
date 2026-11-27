@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Drawer, Button, Input, message, Modal, Select } from "antd";
 import { DeleteOutlined, EnvironmentOutlined, CheckCircleFilled } from "@ant-design/icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -8,7 +8,16 @@ import { LoadScript, Autocomplete } from "@react-google-maps/api";
 import { countryCodes } from "../countryCode";
 import SuccessModal from "../sucessModal";
 import toast from "react-hot-toast";
+import {
+  applyHouseNumber,
+  extractHouseNumber,
+  getGoogleHouseNumber,
+} from "../../../../../../../utils/houseNumber";
 const libraries = ["places"];
+// Ask Google for the address parts too, so we can tell whether it kept the house number.
+const AUTOCOMPLETE_OPTIONS = {
+  fields: ["address_components", "formatted_address", "geometry", "name"],
+};
 const GOOGLE_MAPS_API_KEY = "AIzaSyAdj9yCjRwmShW7rJbvHlEcyfMsztXw_iE";
 
 const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawerOpen }) => {
@@ -17,6 +26,14 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
   const [autocomplete, setAutocomplete] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [orderData, setOrderData] = useState(null);
+
+  // House / flat number: auto-filled from the typed address, editable. Google often
+  // resolves UK addresses to street or postcode level and drops the number.
+  const [houseNumber, setHouseNumber] = useState("");
+  const houseNumberRef = useRef("");
+  const houseNumberEditedRef = useRef(false);
+  const typedAddressRef = useRef("");
+  const googleAddressRef = useRef(null); // the picked suggestion, before adding the number
 
   // Form state
   const [formData, setFormData] = useState({
@@ -59,6 +76,11 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
         guest_longitude: "",
         note: "",
       });
+      setHouseNumber("");
+      houseNumberRef.current = "";
+      houseNumberEditedRef.current = false;
+      typedAddressRef.current = "";
+      googleAddressRef.current = null;
     }
   }, [isSuccess, createOrderData, setCart, setIsDrawerOpen]);
 
@@ -93,6 +115,28 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
     setAutocomplete(autocompleteInstance);
   };
 
+  const updateHouseNumber = (value) => {
+    houseNumberRef.current = value;
+    setHouseNumber(value);
+  };
+
+  const handleAddressTyping = (value) => {
+    typedAddressRef.current = value;
+    googleAddressRef.current = null;
+    handleInputChange("guest_address", value);
+    // Fill the house number from what's typed, until the cashier edits it themselves.
+    if (!houseNumberEditedRef.current) updateHouseNumber(extractHouseNumber(value) ?? "");
+  };
+
+  const handleHouseNumberChange = (value) => {
+    houseNumberEditedRef.current = value.trim().length > 0;
+    updateHouseNumber(value);
+    // Already picked an address: rebuild it with the new number.
+    if (googleAddressRef.current) {
+      handleInputChange("guest_address", applyHouseNumber(googleAddressRef.current, value));
+    }
+  };
+
   const onPlaceChanged = () => {
     if (autocomplete !== null) {
       const place = autocomplete.getPlace();
@@ -101,9 +145,20 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
 
+        const googleAddress = place.formatted_address || place.name || "";
+        const typedNumber =
+          houseNumberRef.current.trim() || extractHouseNumber(typedAddressRef.current) || "";
+        googleAddressRef.current = googleAddress;
+        if (!typedNumber) {
+          const googleNumber = getGoogleHouseNumber(place);
+          if (googleNumber) updateHouseNumber(googleNumber);
+        } else if (!houseNumberRef.current.trim()) {
+          updateHouseNumber(typedNumber);
+        }
+
         setFormData((prev) => ({
           ...prev,
-          guest_address: place.formatted_address || "",
+          guest_address: applyHouseNumber(googleAddress, typedNumber),
           guest_latitude: lat.toString(),
           guest_longitude: lng.toString(),
         }));
@@ -378,10 +433,14 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
                   <p className="mb-1 text-sm text-gray-500">
                     Delivery Address: <span className="text-red-500">*</span>
                   </p>
-                  <Autocomplete onLoad={onLoadAutocomplete} onPlaceChanged={onPlaceChanged}>
+                  <Autocomplete
+                    onLoad={onLoadAutocomplete}
+                    onPlaceChanged={onPlaceChanged}
+                    options={AUTOCOMPLETE_OPTIONS}
+                  >
                     <Input
                       value={formData.guest_address}
-                      onChange={(e) => handleInputChange("guest_address", e.target.value)}
+                      onChange={(e) => handleAddressTyping(e.target.value)}
                       className="h-9 rounded-md"
                       placeholder="Search and select address"
                       prefix={<EnvironmentOutlined />}
@@ -390,6 +449,13 @@ const OrderPanel = ({ drawerOpen, cartItemsArray, subTotal, setCart, setIsDrawer
                   {formData.guest_latitude && formData.guest_longitude && (
                     <p className="mt-1 text-xs text-green-600">✓ Location confirmed</p>
                   )}
+                  <p className="mt-3 mb-1 text-sm text-gray-500">House / flat number:</p>
+                  <Input
+                    value={houseNumber}
+                    onChange={(e) => handleHouseNumberChange(e.target.value)}
+                    className="h-9 rounded-md"
+                    placeholder="e.g. 34 or Flat 2, 34"
+                  />
                 </div>
               )}
 
